@@ -1,0 +1,3 @@
+*.pyc
+zappa_settings.json
+db.sqlite3

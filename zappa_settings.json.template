@@ -65,7 +65,7 @@
         "environment_variables": {
             "DEBUG": "true",
 
-            "SECRET_KEY": "django-insecure-_r96n_=-eqybwy_ck!!gmmky+=x_wlrk8r&(gzox8*$fu6av_n",
+            "SECRET_KEY": "<GENERA CASUALMENTE UNA CHIAVE DI ALMENO 20 CARATTERI CON LETTERE MINUSCOLE, MAUISCOLE E CARATTERI SPECIALI>",
             "ALLOWED_HOSTS_1": "localhost",
 
             "DATABASE_DEFAULT_ENGINE": "django.db.backends.sqlite3",

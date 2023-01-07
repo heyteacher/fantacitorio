@@ -37,7 +37,6 @@ Per lo sviluppo e l'utilizzo in locale, si utilizza per comodità `sqlite3`.
   sudo apt get virtualenv
   sudo apt install virtualenv
   virtualenv  venv --python python3.9 --pip 22.3.1
-  source ve/bin/activate
   ```
 
 - rinominare `zappa_settings.json.template` in `zappa_settings.json`. Nella sezione dev contiene già le impostazioni per utilizzare il database locale `sqlite3`
@@ -49,12 +48,16 @@ Per lo sviluppo e l'utilizzo in locale, si utilizza per comodità `sqlite3`.
 
 - Installazione di Django e delle dipendenze richieste
   ```
-  pip install -r requirements-txt
+  pip install -r requirements.txt
   ```
 
 - generazione delle tabelle di sistema della applicazione fc_gestione_app
   ```
   python manage.py migrate
+  ```
+- creazione della tabella cache DynamoDB
+  ```
+  python manage.py createcachetable
   ```
 
 - caricamento dei dati aggiornati alla 6 puntata di propaganda
@@ -107,6 +110,11 @@ Prima è necessario creare il database la `VPC`
   zappa manage production migrate
   ```
 
+- creazione della tabella cache DynamoDB
+  ```
+  zappa manage production createcachetable
+  ```
+
 - creazione del super utente Django
   ```
   zappa invoke production "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
@@ -146,14 +154,19 @@ Naturalmente il database `AWS RDS postgres` e la `VPC` vanno cancellate manualme
 
 ## Rilascio in ambiente di stage
 
-L'ambiente di stage di AWS utilizza il database sqlite3 caricati in un bucket e acceduto da Django per le letture e le scritture, quindi è un utilizzabile per la produzione ma per demo e test.
+L'ambiente di stage di AWS utilizza il database sqlite3 caricati in un bucket e acceduto da Django per le letture e le scritture, quindi è un utilizzabile per gli ambienti di `stage` e `local` ma non per la `production`
 
 Dopo aver configurato la sezione `stage` di `zappa_settings.json` si rilascia su AWS con il seguente comando
 
+
 ```
 zappa deploy stage
+zappa manage stage migrate
+zappa manage stage createcachetable
+zappa invoke stage "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
+zappa manage stage loaddata fc_gestione_app
+zappa manage stage sqlite_create_views
 ```
-
 
 # Appendice: come è fatto il progetto in Django
 

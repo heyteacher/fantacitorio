@@ -9,12 +9,12 @@
     - [x] nome squadra 
     - [x] nome politici  
     - [x] lega - squadra
-- [] Django cache
-- [] rest api
-- [] homepage classifiche (django datagrid)
-- [] custom error message
-- [] cloudfront
+- [x] Django cache DynamoDB
 - [] auth twitter
+- [] homepage classifiche (django datagrid)
+- [] cloudfront
+- [] custom error message
+- [] rest api
 - [] wireframe client
 - [] app client
 

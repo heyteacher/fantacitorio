@@ -46,6 +46,8 @@ INSTALLED_APPS = [
      # moduli aggiuntivi
     'django_s3_storage',
     'django_s3_sqlite',
+    'django_dynamodb_cache',
+    #'django_dynamodb_cache'
     'admin_auto_filters',
     'import_export',
      # le due applicazioni
@@ -55,8 +57,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -149,10 +153,23 @@ if os.environ.get('STATICFILES_STORAGE') is not None:
     STATIC_URL = "https://%s/%s" % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_KEY_PREFIX_STATIC)
 
     # OR...if you create a fancy custom domain for your static files use:
-    if not os.environ.get('AWS_CLOUDFRONT_ENDPOINT','') == '':
+    if not os.environ.get('AWS_CLOUDFRONT_ENDPOINT') is not None:
         AWS_S3_PUBLIC_URL_STATIC = "%s/%s" % (os.environ.get('AWS_CLOUDFRONT_ENDPOINT') ,AWS_S3_KEY_PREFIX_STATIC)
 else:
     STATIC_URL = 'static/'
+
+# Django Cache + Session Engine
+if os.environ.get('CACHE_DEFAULT_BACHEND') is not None:
+    CACHES = {
+        "default": {
+            "BACKEND": os.environ.get('CACHE_DEFAULT_BACHEND'), 
+            "LOCATION": os.environ.get('CACHE_DEFAULT_LOCATION'), 
+            "OPTIONS": {
+                "aws_region_name": os.environ.get('CACHE_DEFAULT_AWS_REGION') 
+            }
+        }
+    }
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # SMTP Settings
 if os.environ.get('EMAIL_HOST') is not None:

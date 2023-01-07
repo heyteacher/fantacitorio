@@ -1,10 +1,7 @@
 django 
-psycopg2 
-psycopg2-binary 
 django-admin-autocomplete-filter  
 django-import-export
 django_s3_storage
 django-s3-sqlite
-django-s3-cache
 git+https://github.com/heyteacher/django-dynamodb-cache.git
 zappa

@@ -7,6 +7,8 @@
         "runtime": "python3.9",
         "s3_bucket": "<ZAPPA DEPLOY S3 BUCKET",        
         "timeout_seconds": 600,
+        "domain": "<DOMINIO>",
+        "certificate_arn": "<ARN DEL CERTIFICATO HTTPS GENERATO IN AWS DEL DOMINIO",
         "vpc_config": {
             "SubnetIds": ["subnet-***********", "subnet-***********"],
             "SecurityGroupIds": ["sg-***************"]
@@ -29,6 +31,10 @@
             "AWS_S3_BUCKET_NAME_STATIC": "<S3 STATIC BUCKET>",
             "AWS_S3_KEY_PREFIX_STATIC": "static/",
             "AWS_CLOUDFRONT_ENDPOINT": "<CLOUD FRONT END POINT>",
+
+            "CACHE_DEFAULT_BACHEND": "django_dynamodb_cache.backend.DjangoCacheBackend",
+            "CACHE_DEFAULT_LOCATION": "<TABELLA DYNAMODB>",
+            "CACHE_DEFAULT_AWS_REGION": "<REGIONE AWS>"
         }
     },
     "stage": {
@@ -40,10 +46,6 @@
         "s3_bucket": "<ZAPPA DEPLOY S3 BUCKET",
         "timeout_seconds": 600,
         "use_precompiled_packages": false,
-        "vpc_config": {
-            "SubnetIds": ["subnet-***********", "subnet-***********"],
-            "SecurityGroupIds": ["sg-***************"]
-        },
         "aws_environment_variables": {
             "DEBUG": "true",
 
@@ -58,7 +60,10 @@
             "STATICFILES_STORAGE": "django_s3_storage.storage.StaticS3Storage"
             "AWS_S3_BUCKET_NAME_STATIC": "<S3 STATIC BUCKET>",
             "AWS_S3_KEY_PREFIX_STATIC": "static/",
-            "AWS_CLOUDFRONT_ENDPOINT": "<CLOUD FRONT END POINT>"
+
+            "CACHE_DEFAULT_BACHEND": "django_dynamodb_cache.backend.DjangoCacheBackend",
+            "CACHE_DEFAULT_LOCATION": "<TABELLA DYNAMODB>",
+            "CACHE_DEFAULT_AWS_REGION": "<REGIONE AWS>"
         }
     },
     "local": {
@@ -69,7 +74,7 @@
             "ALLOWED_HOSTS_1": "localhost",
 
             "DATABASE_DEFAULT_ENGINE": "django.db.backends.sqlite3",
-            "DATABASE_DEFAULT_NAME": "db.sqlite3",
+            "DATABASE_DEFAULT_NAME": "db.sqlite3"
        }
     }
 }

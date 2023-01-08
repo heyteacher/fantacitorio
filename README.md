@@ -1,7 +1,7 @@
 
 # Progetto Web Fantacitorio 
 
-Progetto web __Fantacitorio__ è nato dai fogli `Google Sheet` gestiti da https://twitter.com/rosyilcapo, per strutturare i dati in un database SQL ed automatizzare i calcoli delle classifiche. 
+Progetto web __Fantacitorio__ nato dai fogli `Google Sheet` gestiti da https://twitter.com/rosyilcapo per strutturare i dati in un database SQL ed automatizzare i calcoli delle classifiche. 
 
 In particolare la base dati è stata creata partendo da __classifica generale provvisoria__ https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0
 
@@ -12,7 +12,7 @@ Info disponibili:
 - Regolamento: https://www.la7.it/propagandalive/video/fantacitorio-16-02-2022-423442
 - Monologo di __Valerio Aprea__: https://www.la7.it/embedded/la7?w=640&h=360&tid=player&content=423442
 
-Il progetto web si compone in:
+Il progetto è composto da:
 
 - una sezione pubblica dove sono visualizzate `classifica generale`, le `classifiche per lega`, e la `classifica politico`
 - un'area di amministrazione protetta per la gestione dei contenuti:
@@ -26,11 +26,11 @@ Il progetto web si compone in:
 
 # Demo
 
-Una demo del progetto è disponibile su AWS al seguente indirizzo:
+Una demo del progetto è disponibile sul Cloud AWS al seguente indirizzo:
 
  https://fc-project-stage.adessospiana.it
 
-le credenziali in sola lettura:
+le credenziali in sola lettura per accedere all' `admin` per la gestione dei contenuti: per:
 
 - login: fantautente
 - password: fantacitorio
@@ -51,16 +51,22 @@ Il progetto è basato sul framework `Django` con l'aggiunta dei seguenti moduli/
 
 All'interno del `project Django` __fc_project__ ed è organizzato un due `app Django`:
 
-- __fc_gestione_app__ aèè dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi
+- __fc_gestione_app__ app dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi
 - __fc_classifiche_app__ app per la generazione/visualizzazione delle classifiche
 
 ##  Installazione ed esecuzione in locale
 
-Per lo sviluppo e l'utilizzo in locale, si utilizza per comodità `sqlite3`.
+Per lo sviluppo e l'utilizzo in locale, è utilizzato `sqlite3` come database.
+
+### Prerequisiti
+
+- Linux o WSL si Windows
+- python3.9
+
+### setup ambiente locale
 
 - creazione del virtualenv che ospiterà Django in locale
   ```
-  sudo apt get virtualenv
   sudo apt install virtualenv
   virtualenv  venv --python python3.9 --pip 22.3.1
   ```
@@ -72,7 +78,7 @@ Per lo sviluppo e l'utilizzo in locale, si utilizza per comodità `sqlite3`.
   source ve/bin/activate
   ```
 
-- Installazione di Django e delle dipendenze richieste
+- Installazione di Django e delle dipendenze contenute in requirente.txt
   ```
   pip install -r requirements.txt
   ```
@@ -81,12 +87,13 @@ Per lo sviluppo e l'utilizzo in locale, si utilizza per comodità `sqlite3`.
   ```
   python manage.py migrate
   ```
+
 - creazione della tabella cache DynamoDB
   ```
   python manage.py createcachetable
   ```
 
-- caricamento dei dati aggiornati alla 6 puntata di propaganda
+- caricamento dei dati aggiornati alla 6° puntata di propaganda
   ```
   python manage.py loaddata fc_gestione_app
   ```
@@ -107,7 +114,7 @@ Per lo sviluppo e l'utilizzo in locale, si utilizza per comodità `sqlite3`.
   python manage.py runserver
   ```
 
-- accedere a http://localhost:8000 e autenticarsi tramite il super user creato
+- accedere a http://localhost:8000. Cliccare su `Admin` e autenticarsi tramite il super user creato
 
 ### Dump dei dati e creazione della fixture di fc_gestione_app
 
@@ -115,15 +122,13 @@ Per lo sviluppo e l'utilizzo in locale, si utilizza per comodità `sqlite3`.
 python manage.py dumpdata fc_gestione_app -o fc_gestione_app/fixtures/fc_gestione_app.json.bz2
 ```
 
-## Rilascio in produzione  su AWS con Zappa
+### Rilascio in produzione  su AWS con Zappa
 
 L'ambiente di produzione è rilasciato nel cloud `AWS` tramite `zappa` su una instanza `AWS RDS` di `postgres`.
 
-Prima è necessario creare il database la `VPC`
-
 ### Deploy su AWS
 
-- dopo aver creato il database RDS e la VPC, configurare zappa per il proprio ambiente AWS edidando la sezione `production` del file`zappa_settings.json`
+- dopo aver creato il database AWS RDS, configurare zappa per il proprio ambiente AWS edidando la sezione `production` del file`zappa_settings.json`
 
 - deployare l'applicazione nel cloud
   ```
@@ -176,7 +181,7 @@ Per cancellare completamente l'applicazione utilizzare il seguente comando:
 zappa undeploy production
 ```
 
-Naturalmente il database `AWS RDS postgres` e la `VPC` vanno cancellate manualmente da AWS.
+Naturalmente il database `AWS RDS postgresql` vanno cancellate manualmente da AWS.
 
 ## Rilascio in ambiente di stage
 
@@ -194,14 +199,9 @@ zappa manage stage loaddata fc_gestione_app
 zappa manage stage sqlite_create_views
 ```
 
-# Appendice: come è fatto il progetto in Django
+# Appendice: comandi creazione progetto Django
 
-Il progetto Django è denominato `fc_project` e, come sopra esposto, è costituito da 2 app Django denominate in:
-
-- `fc_gestione_app` 
-- `fc_classifica_app` 
-
-di seguito i comandi con cui sono stati creati:
+Di seguito i comandi con cui sono stati creati:
 
 ```
 django-admin startproject fc_project .
@@ -211,7 +211,7 @@ django-admin startapp fc_classifiche_app
 
 Inizialmente il database di `fc_gestione_app` è stato creato graficamente con `PgAdmin` poi generato nel postgres locale. 
 
-Quindi i models di Django sono stati creati tramite `reverse engineering` con il comand `inspectdb`
+Quindi i models di Django sono stati creati tramite `reverse engineering` con il comando `inspectdb`
 
 ```
 python manage.py inspectdb > fc_gestione_app/models.py
@@ -219,4 +219,4 @@ python manage.py inspectdb > fc_gestione_app/models.py
 
 I models Django di `fc_classifiche_app` sono stati creati a mano sulle tre viste materializzate e non gestite da Django (vedi nei models `managed=False`)
 
-La configurazione inziale di `Zappa` è stata generata eseguendo il comando `zappa init` che riconosce l'ambiente Django in locale e crea il file `zappa_setting.json` tramite un wizard di domande. 
+La configurazione inziale di `Zappa` è stata generata eseguendo il comando `zappa init` __eseguito dentro il virtualenv del progetto__. In questo modo riconosce l'ambiente Django installato nel virtualenv e crea il file `zappa_setting.json` tramite un wizard. 

@@ -24,12 +24,7 @@ class ClassificaPerLega(models.Model):
     lega = models.ForeignKey(Lega, models.DO_NOTHING, )
     squadra = models.ForeignKey(Squadra, models.DO_NOTHING, )
     totale_punti = models.IntegerField()
-
-    def __str__(self):
-        return self.name
     class Meta:
         managed = False
         db_table = 'v_classifica_per_lega'
         verbose_name_plural = 'classifica per lega'
-        unique_together = (('lega', 'squadra'),)
-        ordering = ['lega__name','posizione']

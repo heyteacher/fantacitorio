@@ -47,9 +47,11 @@ INSTALLED_APPS = [
     'django_s3_storage',
     'django_s3_sqlite',
     'django_dynamodb_cache',
-    #'django_dynamodb_cache'
+    'django_filters',
     'admin_auto_filters',
     'import_export',
+    'django_tables2',
+    'bootstrap3',
      # le due applicazioni
     'fc_gestione_app',
     'fc_classifiche_app'
@@ -157,6 +159,7 @@ if os.environ.get('STATICFILES_STORAGE') is not None:
         AWS_S3_PUBLIC_URL_STATIC = "%s/%s" % (os.environ.get('AWS_CLOUDFRONT_ENDPOINT') ,AWS_S3_KEY_PREFIX_STATIC)
 else:
     STATIC_URL = 'static/'
+    STATIC_ROOT = 'static/'
 
 # Django Cache + Session Engine
 if os.environ.get('CACHE_DEFAULT_BACHEND') is not None:

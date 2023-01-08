@@ -15,11 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,reverse_lazy
-from django.views.generic.base import RedirectView
+#from django.views.generic.base import RedirectView
 #from django.contrib.auth import views as auth_views
-
+from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, ClassificaPoliticoListView
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', ClassificaGeneraleListView.as_view()),
+    path('classifica_per_lega', ClassificaPerLegaListView.as_view()),
+    path('classifica_politico', ClassificaPoliticoListView.as_view()),
+
 #    path(
 #        'admin/password_reset/',
 #        auth_views.PasswordResetView.as_view(),
@@ -40,6 +45,5 @@ urlpatterns = [
 #        auth_views.PasswordResetCompleteView.as_view(),
 #        name='password_reset_complete',
 #    ),
-    path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url=reverse_lazy('admin:index'))),
+ #   path('', RedirectView.as_view(url=reverse_lazy('admin:index'))),
 ] 

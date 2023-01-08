@@ -1,7 +1,7 @@
 
 # Progetto Web Fantacitorio 
 
-Progetto web __Fantacitorio__ creata partendo dai fogli di calcolo creati e gestiti da https://twitter.com/rosyilcapo, in particolare la base dati è stata creata partendo dalla __classifica generale provvisoria__ https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0
+Progetto web __Fantacitorio__ creata partendo dai fogli di calcolo gestiti da https://twitter.com/rosyilcapo, in particolare la base dati è stata creata partendo dalla __classifica generale provvisoria__ https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0
 
 Fantacitorio è un _fanta game_ inventato dalla trasmissione __Propaganda Live__ di __La7__ nel 2021. 
 
@@ -10,11 +10,23 @@ Info disponibili:
 - Regolamento: https://www.la7.it/propagandalive/video/fantacitorio-16-02-2022-423442
 - Monologo di __Valerio Aprea__: https://www.la7.it/embedded/la7?w=640&h=360&tid=player&content=423442
 
+Il progetto web si compone in:
+
+- una sezione pubblica dove sono visualizzate `classifica generale`, le `classifiche per lega`, e la `classifica politico`
+- un'area di amministrazione protetta per la gestione dei contenuti:
+  - `cariche`
+  - `politici`
+  - `squadre`
+  - `leghe`
+  - `associazioni lega-squadra`
+  - `punteggi`
+  - `puntate`
+
 # Demo
 
 Una demo del progetto è disponibile su AWS al seguente indirizzo:
 
-https://ivkxyxrgkd.execute-api.eu-west-1.amazonaws.com/stage
+ https://fc-project-stage.adessospiana.it
 
 le credenziali in sola lettura:
 
@@ -23,10 +35,22 @@ le credenziali in sola lettura:
 
 # Per Sviluppatori
 
-Il sito (`project Django`) è organizzato in due sezioni (`app Django`):
+Il progetto è basato sul framework `Django` con l'aggiunta dei seguenti moduli/backeng/tool python:
 
-- `GESTIONE` add dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi
-- `CLASSIFICA` app per la visualizzazione delle classifiche
+- `zappa`: tool per il rilascio stateless su cloud AWS
+- `django-s3-sqlite`: backend database django per `sqlite` su `AWS S3`
+- `django_s3_storage`: modulo django per la gestione dalle risorse statiche su `AWS S3`
+- `django-dynamodb-cache`: bachend cache django per `AWS DynamoDB`
+- `django-tables2`: modulo django che implementa una datadrid avanzata
+- `django-filter`: modulo django che implementa filtri avanzati 
+- `django-bootstrap3`: modulo django per utilizzare `bootstrap 3` nei template
+- `django-import-export`: modulo Django per importazione ed espostazione dei dati
+- `django-admin-autocomplete-filter`: modulo Django che implementa i filtri autocomplete nell'admin
+
+All'interno del `project Django` __fc_project__ ed è organizzato un due `app Django`:
+
+- __fc_gestione_app__ aèè dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi
+- __fc_classifiche_app__ app per la generazione/visualizzazione delle classifiche
 
 ##  Installazione ed esecuzione in locale
 

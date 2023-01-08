@@ -1,7 +1,9 @@
 
 # Progetto Web Fantacitorio 
 
-Progetto web __Fantacitorio__ creata partendo dai fogli di calcolo gestiti da https://twitter.com/rosyilcapo, in particolare la base dati è stata creata partendo dalla __classifica generale provvisoria__ https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0
+Progetto web __Fantacitorio__ è nato dai fogli `Google Sheet` gestiti da https://twitter.com/rosyilcapo, per strutturare i dati in un database SQL ed automatizzare i calcoli delle classifiche. 
+
+In particolare la base dati è stata creata partendo da __classifica generale provvisoria__ https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0
 
 Fantacitorio è un _fanta game_ inventato dalla trasmissione __Propaganda Live__ di __La7__ nel 2021. 
 

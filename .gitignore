@@ -2,3 +2,5 @@
 zappa_settings.json
 db.sqlite3
 images
+static
+venv

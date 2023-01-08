@@ -112,6 +112,7 @@ AS
     v_classifica_generale.totale_punti
    FROM v_classifica_generale
      JOIN lega_squadra ON v_classifica_generale.squadra_id = lega_squadra.squadra_id
+   ORDER BY lega_squadra.lega_id, row_number() OVER (PARTITION BY lega_squadra.lega_id ORDER BY v_classifica_generale.totale_punti DESC)
 """,
 """
 CREATE VIEW v_classifica_politico

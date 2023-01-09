@@ -51,7 +51,12 @@ Il progetto è basato sul framework `Django` con l'aggiunta dei seguenti moduli/
 - `django-import-export`: modulo Django per importazione ed espostazione dei dati
 - `django-admin-autocomplete-filter`: modulo Django che implementa i filtri autocomplete nell'admin
 
-La struttura del progetto:
+L'ambiente di produzione il database `sqlite` è sostituito con `PostgreSql` quindi i package `django-s3-sqlite` è sostituito con i driver python di `PostgreSql`:
+
+- `psycopg2` 
+- `psycopg2-binary` 
+
+La struttura del progetto è la seguente:
 
 - `_fc_project__`: il project Django:
 - `fc_gestione_app`: app Django dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi
@@ -74,7 +79,7 @@ La struttura del progetto:
 
 - Attivazione del virtualenv creato
   ```
-  source ve/bin/activate
+  source venv/bin/activate
   ```
 
 - Installazione di Django e delle dipendenze contenute in requirente.txt
@@ -87,9 +92,10 @@ La struttura del progetto:
   python manage.py migrate
   ```
 
-- creazione della tabella cache DynamoDB
+- creazione super utente da utilizzare per autenticarsi al sito (es: `admin`)
+
   ```
-  python manage.py createcachetable
+  python manage.py createsuperuser --username <SUPER UTENTE>
   ```
 
 - caricamento dei dati aggiornati alla 6° puntata di propaganda
@@ -100,12 +106,6 @@ La struttura del progetto:
 - generazione delle viste dell'applicazione fc_classifiche_app
   ```
   python manage.py sqlite_create_views
-  ```
-
-- creazione super utente da utilizzare per autenticarsi al sito (es: `admin`)
-
-  ```
-  python manage.py createsuperuser --username <SUPER UTENTE>
   ```
 
 - esecuzione in locale
@@ -119,88 +119,88 @@ Per lo sviluppo in locale, è stato utilizzato `sqlite3` come database.
 
 ### Dump dei dati e creazione della fixture di fc_gestione_app
 
-Per generare un dump del database per migrarlo presso un nuovo ambiente si utilizza il comando Django `dumpdata`
+Per generare una fixture del database per migrarlo presso un nuovo ambiente si utilizza il comando Django `dumpdata`
 
 ```
 python manage.py dumpdata fc_gestione_app -o fc_gestione_app/fixtures/fc_gestione_app.json.bz2
 ```
 
+### Rilascio in stage
+
+Le caratteristiche dell'ambiente di stage sono:
+
+- database `sqlite` caricato in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` di Django per le letture e le scritture.
+
+- `cache Django` attiva su backed `AWS DynamoDB` per le `session` e la `pagine`
+
+- file statici forniti da un `AWS S3 bucket`
+
+Dopo aver configurato la sezione `stage` di `zappa_settings.json` si rilascia l'ambiente di stage sul cloud AWS grazie a `Zappa`
+
+1. deploy dell'ambiente (solo la prima volta)
+   ```
+   zappa deploy stage
+   ```
+
+1. generazione delle tabelle di sistema della applicazione fc_gestione_app
+   ```
+   zappa manage stage migrate
+   ```
+
+1. creazione dell'utente superuser di amministrazione
+   ```
+   zappa invoke stage "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
+   ```
+
+1. creazione della tabella di caching `AWS DynamoDB`  
+   ```
+    zappa manage stage createcachetable 
+   ```
+
+1. caricamento dei dati presenti nella fixture di fc_gestiona_app
+   ```
+   zappa manage stage loaddata fc_gestione_app
+   ```
+
+1. creazione delle viste classifiche
+   ```
+   zappa manage stage sqlite_create_views
+   ```
+
 ### Rilascio in produzione  su AWS con Zappa
 
-L'ambiente di produzione è rilasciato nel cloud `AWS` tramite `zappa` su una instanza `AWS RDS` di `PostgreSql`.
+L'ambiente di produzione, a differenza dell'ambiente di stage, utilizza come database una instanza `AWS RDS` di `PostgreSql`.
 
-### Deploy su AWS
+1. configurare la sezione `production` del file`zappa_settings.json`
 
-- dopo aver creato il database AWS RDS, configurare zappa per il proprio ambiente AWS edidando la sezione `production` del file`zappa_settings.json`
-
-- deployare l'applicazione nel cloud
+1. deployare l'applicazione nel cloud
   ```
   zappa deploy production
-  ```
-  Al termine del deploy, viene visualizzato l' URL del sito rilasciato.
-   
-- creazione del tabelle nel database
-  ```
   zappa manage production migrate
-  ```
-
-- creazione della tabella cache DynamoDB
-  ```
   zappa manage production createcachetable
-  ```
-
-- creazione del super utente Django
-  ```
   zappa invoke production "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
-  ```
-
-- caricamento dei dati iniziali del database
-  ```
   zappa manage production loaddata fc_gestione_app
-  ```
-
-- creazione delle viste materializzate, i trigger e le procedure delle classifiche
-  ```
   zappa manage production pg_create_mat_views
-  ```
-
-- refresh delle viste materializzate per popolarle
-  ```
   zappa manage production pg_refresh_mat_views
   ```
 
 ### aggiornamento progetto su AWS 
 
-Una volta deployato, se si effettuano modifiche in locale, il progetto può essere aggiornato con `update`
+Una volta deployato, il progetto può essere aggiornato applicando le modifiche locali al progetto con il comando `update`. Ad esempio, per l'ambiente di produzione:
+
 ```
 zappa update production
 ```
 
 ### Cancellazione del progetto su AWS
 
-Per cancellare completamente l'applicazione utilizzare il seguente comando:
+Per cancellare completamente l'applicazione su AWS, utilizzare il comando di `undeploy`. Ad esempio, per l'ambiente di produzione:
 
 ```
 zappa undeploy production
 ```
 
-Naturalmente il database `AWS RDS PostgreSql` vanno cancellate manualmente da AWS.
-
-### Rilascio in ambiente di stage
-
-L'ambiente di stage di AWS utilizza il database sqlite3 caricati in un bucket e acceduto da Django per le letture e le scritture, quindi è un utilizzabile per gli ambienti di `stage` e `local` ma non per la `production`
-
-Dopo aver configurato la sezione `stage` di `zappa_settings.json` si rilascia su AWS con il seguente comando
-
-
-```
-zappa deploy stage
-zappa manage stage migrate
-zappa manage stage createcachetable
-zappa invoke stage "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
-zappa manage stage loaddata fc_gestione_app
-zappa manage stage sqlite_create_views
-```
+Il database di produzione `AWS RDS PostgreSql` ed gli `AWS S3 bucket` vanno cancellati manualmente da AWS in quanto non gestiti da `Zappa`
 
 ## Comandi creazione progetto Django
 
@@ -212,7 +212,9 @@ django-admin startapp fc_gestione_app
 django-admin startapp fc_classifiche_app
 ```
 
-Inizialmente il database di `fc_gestione_app` è stato creato graficamente con `PgAdmin ERD` poi generato nel postgres locale. Di seguito lo schema ER generato da PgAdmin ERD.
+Inizialmente il database di `fc_gestione_app` è stato creato graficamente con `PgAdmin ERD` poi generato nel postgres locale. 
+
+Di seguito lo schema ER generato da PgAdmin ERD:
 
 ![Schema ER generato da PgAdmin ERD](./images/fantacitorio_dbschema.png)
 
@@ -222,7 +224,7 @@ Quindi i models di Django sono stati creati tramite `reverse engineering` con il
 python manage.py inspectdb > fc_gestione_app/models.py
 ```
 
-I models Django di `fc_classifiche_app` sono stati creati a mano sulle tre viste materializzate e non gestite da Django (vedi nei models `managed=False`)
+I models Django di `fc_classifiche_app` sono stati creati manualmente sulle tre viste materializzate e non gestite da Django (vedi nei models `managed=False`)
 
 La configurazione inziale di `Zappa` è stata generata eseguendo il comando `zappa init` __eseguito dentro il virtualenv del progetto__. In questo modo riconosce l'ambiente Django installato nel virtualenv e crea il file `zappa_setting.json` tramite un wizard. 
 
@@ -231,7 +233,7 @@ La configurazione inziale di `Zappa` è stata generata eseguendo il comando `zap
 puoi contribuire:
 
 * eseguendo un `fork` del progetto e contribuendo allo sviluppo 
-*segnalando malfunzionamenti
+* segnalando malfunzionamenti
 * suggerendo nuove funzionalità
 
 Aprendo una [segnalazione](https://github.com/heyteacher/fantacitorio/issues/new).

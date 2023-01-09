@@ -27,7 +27,7 @@
             "DATABASE_DEFAULT_HOST": "<ENDPOINT DEL DATABASE>",
             "DATABASE_DEFAULT_PORT": "5432",
 
-            "STATICFILES_STORAGE": "django_s3_storage.storage.StaticS3Storage"
+            "STATICFILES_STORAGE": "django_s3_storage.storage.StaticS3Storage",
             "AWS_S3_BUCKET_NAME_STATIC": "<S3 STATIC BUCKET>",
             "AWS_S3_KEY_PREFIX_STATIC": "static/",
             "AWS_CLOUDFRONT_ENDPOINT": "<CLOUD FRONT END POINT>",
@@ -57,7 +57,7 @@
             "DATABASE_DEFAULT_NAME": "db.sqlite3",
             "DATABASE_DEFAULT_BUCKET": "<S3 DATABASE BUCKET>",
 
-            "STATICFILES_STORAGE": "django_s3_storage.storage.StaticS3Storage"
+            "STATICFILES_STORAGE": "django_s3_storage.storage.StaticS3Storage",
             "AWS_S3_BUCKET_NAME_STATIC": "<S3 STATIC BUCKET>",
             "AWS_S3_KEY_PREFIX_STATIC": "static/",
 

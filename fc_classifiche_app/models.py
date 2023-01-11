@@ -3,28 +3,26 @@ from fc_gestione_app.models import Squadra, Politico, Lega
 
 class ClassificaPolitico(models.Model):
     posizione = models.IntegerField(primary_key=True)
-    politico = models.ForeignKey(Politico, models.DO_NOTHING, )
+    nome_politico = models.CharField(max_length=200)
     totale_punti = models.IntegerField()  
     class Meta:
-        managed = False
-        db_table = 'v_classifica_politico'
+        db_table = 'classifica_politico'
         verbose_name_plural = 'classifica politici'
 
 class ClassificaGenerale(models.Model):
     posizione = models.IntegerField(primary_key=True)
-    squadra = models.ForeignKey(Squadra, models.DO_NOTHING, )
+    nome_squadra = models.CharField(max_length=200)
     totale_punti = models.IntegerField()
     class Meta:
-        managed = False
-        db_table = 'v_classifica_generale'
+        db_table = 'classifica_generale'
         verbose_name_plural = 'classifica generale'
 
 class ClassificaPerLega(models.Model):
     posizione = models.IntegerField()
-    lega = models.ForeignKey(Lega, models.DO_NOTHING, )
-    squadra = models.ForeignKey(Squadra, models.DO_NOTHING, )
+    lega_id = models.IntegerField()
+    nome_lega = models.CharField(max_length=100)
+    nome_squadra = models.CharField(max_length=200)
     totale_punti = models.IntegerField()
     class Meta:
-        managed = False
-        db_table = 'v_classifica_per_lega'
+        db_table = 'classifica_per_lega'
         verbose_name_plural = 'classifica per lega'

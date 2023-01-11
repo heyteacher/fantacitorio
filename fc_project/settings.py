@@ -106,6 +106,19 @@ DATABASES = {
     }
 }
 
+if os.environ.get('DATABASE_CLASSIFICHE_ENGINE') is not None:
+    DATABASES['db_classifiche'] = {
+            'ENGINE': os.environ.get('DATABASE_CLASSIFICHE_ENGINE'),
+            'NAME': os.environ.get('DATABASE_CLASSIFICHE_NAME'),
+            # django_s3_sqlite 
+            'BUCKET': os.environ.get('DATABASE_CLASSIFICHE_BUCKET'),
+    }
+
+DATABASE_ROUTERS = [
+    'fc_gestione_app.routers.GestioneRouter', 
+    'fc_classifiche_app.routers.ClassificheRouter'
+]
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 

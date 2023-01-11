@@ -6,16 +6,19 @@ class Command(BaseCommand):
     help = 'Creates Postgres materialized views, related procedure and related triggers'
 
     def handle(self, *args, **options):
-      queries = [
+      commands = [{ 'action':'drop materialized view v_classifica_per_lega', 'query':
 """
 DROP MATERIALIZED VIEW IF EXISTS v_classifica_per_lega
-""",
+"""
+        },{ 'action':'drop materialized view v_classifica_generale', 'query':
 """
 DROP MATERIALIZED VIEW IF EXISTS v_classifica_generale CASCADE
-""",
+"""
+        },{ 'action':'drop view materialized v_classifica_politico', 'query':
 """
 DROP MATERIALIZED VIEW IF EXISTS v_classifica_politico
-""",
+"""
+        },{ 'action':'create view materialized v_classifica_generale', 'query':
 """
 CREATE MATERIALIZED VIEW public.v_classifica_generale
 TABLESPACE pg_default
@@ -101,7 +104,8 @@ AS
                    FROM punteggio
                      JOIN puntata ON punteggio.puntata_id = puntata.id
                   WHERE squadra."11_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data + '21:15:00'::time without time zone)))) DESC) classifica_squadre
-WITH DATA""",
+WITH DATA"""
+        },{ 'action':'create view materialized v_classifica_per_lega', 'query':
 """
 CREATE MATERIALIZED VIEW public.v_classifica_per_lega
 TABLESPACE pg_default
@@ -114,7 +118,8 @@ AS
    FROM v_classifica_generale
      JOIN lega_squadra ON v_classifica_generale.squadra_id = lega_squadra.squadra_id
 WITH DATA
-""",
+"""
+        },{ 'action':'create view materialized v_classifica_politico', 'query':
 """
 CREATE MATERIALIZED VIEW public.v_classifica_politico
 TABLESPACE pg_default
@@ -131,7 +136,8 @@ AS
           GROUP BY politico.id, politico.name
           ORDER BY (sum(punteggio.punti)) DESC) classifica_politico
 WITH DATA
-""",
+"""
+        },{ 'action':'create procedure refresh_mat_view', 'query':
 """
 CREATE OR REPLACE PROCEDURE public.refresh_mat_views(
 	)
@@ -141,7 +147,8 @@ REFRESH MATERIALIZED VIEW v_classifica_generale;
 REFRESH MATERIALIZED VIEW v_classifica_per_lega;
 REFRESH MATERIALIZED VIEW v_classifica_politico;
 $BODY$
-""",
+"""
+        },{ 'action':'create function refresh_mat_view', 'query':
 """
 CREATE OR REPLACE FUNCTION public.refresh_mat_view()
     RETURNS trigger
@@ -156,31 +163,35 @@ begin
     return null;
 end 
 $BODY$
-""",
+"""
+        },{ 'action':'create trigger refresh_mat_view on punteggio', 'query':
 """
 CREATE OR REPLACE TRIGGER refresh_mat_view
     AFTER INSERT OR DELETE OR TRUNCATE OR UPDATE 
     ON public.punteggio
     FOR EACH STATEMENT
     EXECUTE FUNCTION public.refresh_mat_view();
-""",
+"""
+        },{ 'action':'create trigger refresh_mat_view on lega_squadra', 'query':
 """
 CREATE OR REPLACE TRIGGER refresh_mat_view
     AFTER INSERT OR DELETE OR TRUNCATE OR UPDATE 
     ON public.lega_squadra
     FOR EACH STATEMENT
     EXECUTE FUNCTION public.refresh_mat_view();
-""",
+"""
+        },{ 'action':'create trigger refresh_mat_view on lega', 'query':
 """
 CREATE OR REPLACE TRIGGER refresh_mat_view
     AFTER INSERT OR DELETE OR TRUNCATE OR UPDATE 
     ON public.lega
     FOR EACH STATEMENT
     EXECUTE FUNCTION public.refresh_mat_view();
-"""]
+"""
+}]
       self.stdout.write(self.style.SUCCESS('Starting create Postgres materialized views, related procedure and related triggers'))
       with connection.cursor() as cursor:
-         for query in queries:
-            self.stdout.write(self.style.NOTICE('EXECUTE: %s' % query))
-            cursor.execute(query)
+         for command in commands:
+            self.stdout.write(self.style.NOTICE(command['action']))
+            cursor.execute(command['query'])
       self.stdout.write(self.style.SUCCESS('All Done'))

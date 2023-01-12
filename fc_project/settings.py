@@ -33,6 +33,21 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "true" == os.environ.get('DEBUG', '').lower() 
 
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'root': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    }
+
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS_1'),os.environ.get('ALLOWED_HOSTS_2'),]
 
 # Application definition
@@ -106,7 +121,7 @@ DATABASES = {
     }
 }
 
-if os.environ.get('DATABASE_CLASSIFICHE_ENGINE') is not None:
+if not os.environ.get('DATABASE_CLASSIFICHE_ENGINE') == '':
     DATABASES['db_classifiche'] = {
             'ENGINE': os.environ.get('DATABASE_CLASSIFICHE_ENGINE'),
             'NAME': os.environ.get('DATABASE_CLASSIFICHE_NAME'),
@@ -157,7 +172,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 # DJANGO S3 STATIC
-if os.environ.get('STATICFILES_STORAGE') is not None:
+if not os.environ.get('STATICFILES_STORAGE','') == '':
     STATICFILES_STORAGE = os.environ.get('STATICFILES_STORAGE')
     AWS_S3_BUCKET_NAME_STATIC = os.environ.get('AWS_S3_BUCKET_NAME_STATIC')
     AWS_S3_KEY_PREFIX_STATIC = os.environ.get('AWS_S3_KEY_PREFIX_STATIC')
@@ -168,14 +183,13 @@ if os.environ.get('STATICFILES_STORAGE') is not None:
     STATIC_URL = "https://%s/%s" % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_KEY_PREFIX_STATIC)
 
     # OR...if you create a fancy custom domain for your static files use:
-    if not os.environ.get('AWS_CLOUDFRONT_ENDPOINT') is not None:
+    if not os.environ.get('AWS_CLOUDFRONT_ENDPOINT','') == '':
         AWS_S3_PUBLIC_URL_STATIC = "%s/%s" % (os.environ.get('AWS_CLOUDFRONT_ENDPOINT') ,AWS_S3_KEY_PREFIX_STATIC)
 else:
     STATIC_URL = 'static/'
-    STATIC_ROOT = 'static/'
 
 # Django Cache + Session Engine
-if os.environ.get('CACHE_DEFAULT_BACHEND') is not None:
+if not os.environ.get('CACHE_DEFAULT_BACHEND','') == '':
     CACHES = {
         "default": {
             "BACKEND": os.environ.get('CACHE_DEFAULT_BACHEND'), 
@@ -188,7 +202,7 @@ if os.environ.get('CACHE_DEFAULT_BACHEND') is not None:
     SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # SMTP Settings
-if os.environ.get('EMAIL_HOST') is not None:
+if not os.environ.get('EMAIL_HOST','') == '':
     EMAIL_HOST = os.environ.get('EMAIL_HOST')
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')

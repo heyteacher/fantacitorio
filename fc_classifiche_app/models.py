@@ -8,6 +8,7 @@ class ClassificaPolitico(models.Model):
     class Meta:
         db_table = 'classifica_politico'
         verbose_name_plural = 'classifica politici'
+        ordering = ('posizione',)
 
 class ClassificaGenerale(models.Model):
     posizione = models.IntegerField(primary_key=True)
@@ -16,7 +17,8 @@ class ClassificaGenerale(models.Model):
     class Meta:
         db_table = 'classifica_generale'
         verbose_name_plural = 'classifica generale'
-
+        ordering = ('posizione',)
+ 
 class ClassificaPerLega(models.Model):
     posizione = models.IntegerField()
     lega_id = models.IntegerField()
@@ -26,3 +28,4 @@ class ClassificaPerLega(models.Model):
     class Meta:
         db_table = 'classifica_per_lega'
         verbose_name_plural = 'classifica per lega'
+        ordering = ('lega_id','posizione')

@@ -1,14 +1,17 @@
 import django_tables2 as tables
 from .models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico
-from django_filters import FilterSet, CharFilter, ModelChoiceFilter
+from django_filters import FilterSet, CharFilter, ChoiceFilter
 from fc_gestione_app.models import Lega
 
-template_name = "django_tables2/bootstrap.html"
-per_page = 20
-attrs =  {"class": "table table-bordered  table-striped table-condensed"}
+template_name = "django_tables2/bootstrap-responsive.html"
+per_page = 15
+attrs =  {
+    "class": "table table-bordered  table-striped table-condensed",
+    "td": {"style": "white-space:pre-wrap"}
+}
 
 class ClassificaGeneraleFilter(FilterSet):
-    nome_squadra = CharFilter('squadra__name','icontains' , label="Nome squadra")
+    nome_squadra = CharFilter('nome_squadra','icontains' , label="Nome squadra")
     class Meta:
         model = ClassificaGenerale
         fields = ['nome_squadra']
@@ -21,11 +24,11 @@ class ClassificaGeneraleTable(tables.Table):
         attrs = attrs
 
 class ClassificaPerLegaFilter(FilterSet):
-    lega = ModelChoiceFilter(queryset=Lega.objects.all(), empty_label="- Seleziona una lega -")
-    nome_squadra = CharFilter('squadra__name','icontains' , label="Nome squadra")
+    lega_id = ChoiceFilter(choices=Lega.objects.all().values_list('id','name'), empty_label="- Seleziona una lega -")
+    nome_squadra = CharFilter('nome_squadra','icontains' , label="Nome squadra")
     class Meta:
         model = ClassificaPerLega
-        fields = ['lega','nome_squadra']
+        fields = ['lega_id','nome_squadra']
 
 class ClassificaPerLegaTable(tables.Table):
     class Meta:
@@ -33,10 +36,10 @@ class ClassificaPerLegaTable(tables.Table):
         template_name = template_name
         per_page = per_page
         attrs = attrs
-        exclude = ["id"]
+        exclude = ['id','lega_id']
 
 class ClassificaPoliticoFilter(FilterSet):
-    nome_politico = CharFilter('politico__name','icontains' , label="Nome politico")
+    nome_politico = CharFilter('nome_politico','icontains' , label="Nome politico")
     class Meta:
         model = ClassificaPolitico
         fields = ['nome_politico']

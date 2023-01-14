@@ -13,6 +13,8 @@
             "SubnetIds": ["subnet-***********", "subnet-***********"],
             "SecurityGroupIds": ["sg-***************"]
         },
+        "exclude": [".git*", "db.sqlite3", "*.md", "images", "static"],
+
         "aws_environment_variables": {
             "DEBUG": "false",
 
@@ -46,6 +48,15 @@
         "s3_bucket": "<ZAPPA DEPLOY S3 BUCKET",
         "timeout_seconds": 600,
         "use_precompiled_packages": false,
+        "domain": "<AWS DOMAIN>",
+        "certificate_arn": "<CERTIFICATE_ARN>",
+        "exclude": [".git*", "db.sqlite3", "*.md", "images", "static"],
+
+        "events": [{
+            "function": "zappa_commands.sqlite_refresh_classifiche",
+            "expression": "rate(1 hour)"
+        }],
+
         "aws_environment_variables": {
             "DEBUG": "true",
 
@@ -57,9 +68,14 @@
             "DATABASE_DEFAULT_NAME": "db.sqlite3",
             "DATABASE_DEFAULT_BUCKET": "<S3 DATABASE BUCKET>",
 
+            "DATABASE_CLASSIFICHE_ENGINE": "django_s3_sqlite",
+            "DATABASE_CLASSIFICHE_NAME": "rankdb.sqlite3",
+            "DATABASE_CLASSIFICHE_BUCKET": "<S3 DATABASE BUCKET>",
+
             "STATICFILES_STORAGE": "django_s3_storage.storage.StaticS3Storage",
             "AWS_S3_BUCKET_NAME_STATIC": "<S3 STATIC BUCKET>",
             "AWS_S3_KEY_PREFIX_STATIC": "static/",
+            "AWS_CLOUDFRONT_ENDPOINT": "<AWS CLOUDFRONT ENDPOINT>",
 
             "CACHE_DEFAULT_BACHEND": "django_dynamodb_cache.backend.DjangoCacheBackend",
             "CACHE_DEFAULT_LOCATION": "<TABELLA DYNAMODB>",
@@ -72,9 +88,13 @@
 
             "SECRET_KEY": "<GENERA CASUALMENTE UNA CHIAVE DI ALMENO 20 CARATTERI CON LETTERE MINUSCOLE, MAUISCOLE E CARATTERI SPECIALI>",
             "ALLOWED_HOSTS_1": "localhost",
+            "ALLOWED_HOSTS_2": "127.0.0.1",
 
             "DATABASE_DEFAULT_ENGINE": "django.db.backends.sqlite3",
-            "DATABASE_DEFAULT_NAME": "db.sqlite3"
-       }
+            "DATABASE_DEFAULT_NAME": "db.sqlite3",
+
+            "DATABASE_CLASSIFICHE_ENGINE": "django.db.backends.sqlite3",
+            "DATABASE_CLASSIFICHE_NAME": "rankdb.sqlite3"
+        }
     }
 }

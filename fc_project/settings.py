@@ -33,21 +33,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "true" == os.environ.get('DEBUG', '').lower() 
 
-if DEBUG:
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-            },
-        },
-        'root': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        },
-    }
-
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS_1'),os.environ.get('ALLOWED_HOSTS_2'),]
 
 # Application definition
@@ -187,6 +172,7 @@ if not os.environ.get('STATICFILES_STORAGE','') == '':
         AWS_S3_PUBLIC_URL_STATIC = "%s/%s" % (os.environ.get('AWS_CLOUDFRONT_ENDPOINT') ,AWS_S3_KEY_PREFIX_STATIC)
 else:
     STATIC_URL = 'static/'
+    STATIC_ROOT = 'static/'
 
 # Django Cache + Session Engine
 if not os.environ.get('CACHE_DEFAULT_BACHEND','') == '':

@@ -4,7 +4,7 @@ from django.conf import settings
 from fc_classifiche_app.models import ClassificaGenerale
 
 class Command(BaseCommand):
-    help = 'Creates Sqlite3 views'
+    help = 'refresh sqlite classifiche'
 
 
     def handle(self, *args, **options):

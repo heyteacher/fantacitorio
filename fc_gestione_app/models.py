@@ -28,6 +28,8 @@ class Carica(models.Model):
                 Lower('name'),
                 name='carica_name_unique'),
         ]
+        ordering = ('-fanfani',)
+
 
 class PoliticoManager(models.Manager):
     def get_by_natural_key(self, name):
@@ -64,6 +66,7 @@ class Politico(models.Model):
                 Lower('name'),
                 name='politico_name_unique'),
         ]
+        ordering = ('name',)
 
 
 class LegaManager(models.Manager):
@@ -90,6 +93,7 @@ class Lega(models.Model):
                 Lower('name'),
                 name='lega_name_unique'),
         ]
+        ordering = ('name',)
 
 class SquadraManager(models.Manager):
     def get_by_natural_key(self, name):
@@ -149,6 +153,8 @@ class Squadra(models.Model):
                 fields=('name', 'leader_politico','number_1_politico','number_2_politico','number_3_politico','number_4_politico','number_5_politico','number_6_politico','number_7_politico','number_8_politico','number_9_politico','number_10_politico','number_11_politico'),
                 name='squadra_unique'),
         ]
+        ordering = ('creato_il',)
+
 
 class LegaSquadraManager(models.Manager):
     def get_by_natural_key(self, lega, squadra):
@@ -168,6 +174,7 @@ class LegaSquadra(models.Model):
         db_table = 'lega_squadra'
         verbose_name_plural = 'leghe - squadre'
         unique_together = ['lega', 'squadra']
+        ordering = ('lega__name', 'squadra__name')
 
 class PuntataManager(models.Manager):
     def get_by_natural_key(self, numero, data):
@@ -189,6 +196,7 @@ class Puntata(models.Model):
     class Meta:
         db_table = 'puntata'
         verbose_name_plural = 'puntate'
+        ordering = ('-numero',)
 
 class Punteggio(models.Model):
     politico = models.ForeignKey(Politico, models.PROTECT, )
@@ -204,3 +212,4 @@ class Punteggio(models.Model):
     class Meta:
         db_table = 'punteggio'
         verbose_name_plural = 'punteggi'
+        ordering = ('-puntata__numero','-aggiornato_il')

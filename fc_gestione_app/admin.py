@@ -22,7 +22,6 @@ class PoliticoInline(admin.TabularInline):
 class CaricaAdmin(ImportExportActionModelAdmin):
     resource_classes = [CaricaResource]
     list_display = ('name', 'fanfani')
-    ordering = ('name','fanfani')
     search_fields =('name',)
     inlines = [
         PoliticoInline,
@@ -38,7 +37,6 @@ class PunteggioPoliticoInline(admin.TabularInline):
 class PoliticoAdmin(ImportExportActionModelAdmin):
     resource_classes = [PoliticoResource]
     list_display = ('name', 'carica', 'totale_punti')
-    ordering = ('name','carica',)
     fields = ('name', 'carica', 'fanfani')
     readonly_fields = ('totale_punti',)
     list_filter = (CaricaFilter,)
@@ -58,7 +56,6 @@ class LegaSquadraInline(admin.TabularInline):
 class LegaAdmin(ImportExportActionModelAdmin):
     resource_classes = [LegaResource]
     list_display = ('name',)
-    ordering = ('name',)
     search_fields = ('name',)
     inlines = [
         LegaSquadraInline,
@@ -91,7 +88,6 @@ class SquadraAdmin(ImportExportActionModelAdmin):
         ('totale_fanfani', 'creato_il', 'aggiornato_il'), 
     )
     readonly_fields = ('totale_fanfani','creato_il', 'aggiornato_il', 'codice')
-    ordering = ('name', 'leader_politico')
     #list_filter = (,)
     autocomplete_fields = ('number_1_politico','number_2_politico','number_3_politico','number_4_politico','number_5_politico','number_6_politico','number_7_politico','number_8_politico','number_9_politico','number_10_politico','number_11_politico', )
     search_fields = ('name', 'codice')
@@ -108,7 +104,6 @@ class SquadraAdmin(ImportExportActionModelAdmin):
 class LegaSquadraAdmin(ImportExportActionModelAdmin):
     resource_classes = [LegaSquadraResource]
     list_display = ('lega', 'squadra')
-    ordering = ('lega', 'squadra')
     list_filter = (LegaFilter, SquadraFilter)
     autocomplete_fields = ('lega', 'squadra')
     search_fields = ('lega__name', 'squadra__name',) 
@@ -141,7 +136,6 @@ class PunteggioAdmin(ImportExportActionModelAdmin):
     form = PunteggioAdminForm
     resource_classes = [PunteggioResource]
     list_display = ('puntata', 'politico', 'punti')
-    ordering = ('puntata', 'politico', 'punti')
     exclude = ('name',)
     list_filter = (PoliticoFilter, PuntataFilter,)
     autocomplete_fields = ('politico', 'puntata')

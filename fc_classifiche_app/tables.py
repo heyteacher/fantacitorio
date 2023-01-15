@@ -1,13 +1,14 @@
 import django_tables2 as tables
+import django_tables2.paginators as LazyPaginator
 from .models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico
 from django_filters import FilterSet, CharFilter, ChoiceFilter
 from fc_gestione_app.models import Lega
 
-template_name = "django_tables2/bootstrap-responsive.html"
+#template_name = "django_tables2/bootstrap-responsive.html"
+template_name = "django_tables2/bootstrap5.html"
 per_page = 15
 attrs =  {
-    "class": "table table-bordered  table-striped table-condensed",
-    "td": {"style": "white-space:pre-wrap"}
+    "class": "table table-dark table-bordered  table-striped table-sm ",
 }
 
 class ClassificaGeneraleFilter(FilterSet):
@@ -22,6 +23,7 @@ class ClassificaGeneraleTable(tables.Table):
         template_name = template_name
         per_page = per_page
         attrs = attrs
+        paginator_class = LazyPaginator
 
 class ClassificaPerLegaFilter(FilterSet):
     lega_id = ChoiceFilter(choices=Lega.objects.all().values_list('id','name'), empty_label="- Seleziona una lega -")

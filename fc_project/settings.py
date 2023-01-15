@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'admin_auto_filters',
     'import_export',
     'django_tables2',
-    'bootstrap3',
+    'django_bootstrap5',
      # le due applicazioni
     'fc_gestione_app',
     'fc_classifiche_app'
@@ -197,3 +197,11 @@ if not os.environ.get('EMAIL_HOST','') == '':
     EMAIL_SUBJECT_PREFIX = os.environ.get('EMAIL_SUBJECT_PREFIX')
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '').lower() == 'true'
     EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', '').lower() == 'true'
+
+# Django Table2 settings
+DJANGO_TABLES2_PAGE_RANGE=5
+
+# Bootstrap5 settings
+BOOTSTRAP5 = {
+    'server_side_validation': False
+}

@@ -5,6 +5,6 @@ django_s3_storage
 django-s3-sqlite
 django-tables2
 django-filter
-django-bootstrap3
+django-bootstrap5
 git+https://github.com/heyteacher/django-dynamodb-cache.git
 zappa

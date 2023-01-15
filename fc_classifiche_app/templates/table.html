@@ -1,15 +1,18 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %} 
 {% load render_table from django_tables2 %} 
-{% load bootstrap3 %} 
-{% include "header.html" %} 
+
+{% block content %}
 
 {% if filter %}
-<form action="" method="get" class="form form-inline">
-    <div class="form-group">
-        {% bootstrap_form filter.form layout='inline' %} {% bootstrap_button 'filter' %}
-    </div>   
+<form class="row row-cols-lg-auto g-1 align-items-center " novalidate>
+    {% for field in filter.form %}
+        <div class="col-12">
+        {% bootstrap_field field show_label=False placeholder=field.label size='sm' field_class='input-group mb-2 pr-2'%}
+        </div>
+    {% endfor %}
 </form>
 {% endif %} 
 
 {% render_table table %} 
-
-{% include "footer.html" %}
+{% endblock%}

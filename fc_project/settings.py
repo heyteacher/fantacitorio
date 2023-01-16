@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
      # moduli aggiuntivi
     'django_s3_storage',
     'django_s3_sqlite',
@@ -52,10 +53,19 @@ INSTALLED_APPS = [
     'import_export',
     'django_tables2',
     'django_bootstrap5',
-     # le due applicazioni
+     'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.twitter_oauth2',
+    # le due applicazioni
     'fc_gestione_app',
     'fc_classifiche_app'
 ]
+
+SITE_ID = 1
+#ACCOUNT_EMAIL_VERIFICATION = "none"
+#LOGIN_REDIRECT_URL = "home"
+#ACCOUNT_LOGOUT_ON_GET = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,6 +95,14 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'fc_project.wsgi.application'
@@ -205,3 +223,18 @@ DJANGO_TABLES2_PAGE_RANGE=5
 BOOTSTRAP5 = {
     'server_side_validation': False
 }
+
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'root': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    }

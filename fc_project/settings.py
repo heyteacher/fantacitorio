@@ -53,19 +53,20 @@ INSTALLED_APPS = [
     'import_export',
     'django_tables2',
     'django_bootstrap5',
-     'allauth',
+    'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.twitter_oauth2',
+    'allauth.socialaccount.providers.twitter',
     # le due applicazioni
     'fc_gestione_app',
     'fc_classifiche_app'
 ]
 
 SITE_ID = 1
-#ACCOUNT_EMAIL_VERIFICATION = "none"
-#LOGIN_REDIRECT_URL = "home"
-#ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_ADAPTER = 'fc_project.account_adapter.NoNewUsersAccountAdapter'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,7 +85,7 @@ ROOT_URLCONF = 'fc_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,7 +100,7 @@ TEMPLATES = [
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
+    #'django.contrib.auth.backends.ModelBackend',
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',

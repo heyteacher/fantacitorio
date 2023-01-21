@@ -11,7 +11,6 @@
     - [x] lega - squadra
 - [x] Django cache DynamoDB
 - [x] homepage classifiche (django table2)
-- [ ] tuning cache
 - [ ] auth twitter
 - [ ] cloudfront
 - [ ] custom error message

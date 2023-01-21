@@ -10,6 +10,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Starting Refresh Postgres materialized views'))
         with connection.cursor() as cursor:
             for query in queries:
-                self.stdout.write(self.style.NOTICE('EXECUTE: %s' % query))
+                self.stdout.write(self.style.SUCCESS('EXECUTE: %s' % query))
                 cursor.execute(query)
         self.stdout.write(self.style.SUCCESS('Refresh Done'))

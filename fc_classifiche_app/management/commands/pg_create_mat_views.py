@@ -192,6 +192,6 @@ CREATE OR REPLACE TRIGGER refresh_mat_view
       self.stdout.write(self.style.SUCCESS('Starting create Postgres materialized views, related procedure and related triggers'))
       with connection.cursor() as cursor:
          for command in commands:
-            self.stdout.write(self.style.NOTICE(command['action']))
+            self.stdout.write(self.style.SUCCESS(command['action']))
             cursor.execute(command['query'])
       self.stdout.write(self.style.SUCCESS('All Done'))

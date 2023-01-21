@@ -65,7 +65,7 @@ La struttura del progetto è la seguente:
 ### Prerequisiti
 
 - Linux o WSL si Windows
-- python3.9
+- python3.9 o superiore
 
 ### setup ambiente locale
 
@@ -87,9 +87,10 @@ La struttura del progetto è la seguente:
   pip install -r requirements.txt
   ```
 
-- generazione delle tabelle di sistema della applicazione fc_gestione_app
+- generazione delle tabelle di sistema della applicazione fc_gestione_app e fc_classifiche_app
   ```
-  python manage.py migrate
+  python manage.py migrate fc_gestione_app --database default
+  python manage.py migrate fc_classifiche_app --database db_classifiche 
   ```
 
 - creazione super utente da utilizzare per autenticarsi al sito (es: `admin`)
@@ -103,9 +104,10 @@ La struttura del progetto è la seguente:
   python manage.py loaddata fc_gestione_app
   ```
 
-- generazione delle viste dell'applicazione fc_classifiche_app
+- generazione delle viste e refresh dei dati di fc_classifiche_app 
   ```
   python manage.py sqlite_create_views
+  python manage.py sqlite_refresh_classifiche
   ```
 
 - esecuzione in locale

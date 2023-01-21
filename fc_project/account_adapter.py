@@ -11,4 +11,4 @@ class NoNewUsersAccountAdapter(DefaultAccountAdapter):
 
         (Comment reproduced from the overridden method.)
         """
-        return False
+        return '/accounts/twitter/login/callback/' in request.path

@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.decorators import login_required
-from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, ClassificaPoliticoListView
+from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, ClassificaPoliticoListView, SquadraPuntiListView
 
 admin.site.login = login_required(admin.site.login)
 
@@ -26,4 +26,6 @@ urlpatterns = [
     path('', ClassificaGeneraleListView.as_view(), name='home'),
     path('classifica_per_lega', ClassificaPerLegaListView.as_view()),
     path('classifica_politico', ClassificaPoliticoListView.as_view()),
-] 
+    path('classifica_politico', ClassificaPoliticoListView.as_view()),
+    path('squadra_punti/<squadra_id>', SquadraPuntiListView.as_view(), name='squadra_punti'),
+  ] 

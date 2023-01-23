@@ -8,7 +8,6 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS('ClassificaGenerale count %s' % ClassificaGenerale.objects.count()))
  
         classifiche_filename = settings.DATABASES['db_classifiche']['NAME']
 
@@ -29,7 +28,7 @@ delete from rankdb.classifica_per_lega
 """
    },{ 'action':'populate classifica_per_lega on rackdb', 'query':
 """
-insert into rankdb.classifica_per_lega select id, posizione,lega_id, nome_lega, nome_squadra, totale_punti from v_classifica_per_lega
+insert into rankdb.classifica_per_lega select id, posizione,lega_id, nome_lega, squadra_id, nome_squadra, totale_punti from v_classifica_per_lega
 """
    },{ 'action':'populate classifica_politico on rackdb', 'query':
 """
@@ -37,15 +36,20 @@ insert into rankdb.classifica_politico select posizione, nome_politico, totale_p
 """
 },{ 'action':'populate classifica_generale on rackdb', 'query':
 """
-insert into rankdb.classifica_generale select posizione, nome_squadra, totale_punti from v_classifica_generale
+insert into rankdb.classifica_generale select posizione, squadra_id, nome_squadra, totale_punti from v_classifica_generale
+"""
+},{ 'action':'populate squadra_punti on rackdb', 'query':
+"""
+insert into rankdb.squadra_punti (squadra_id, squadra_name, politico_name, puntata_numero, puntata_data, punti) select squadra_id, squadra_name, politico_name, puntata_numero, puntata_data, punti from v_squadra_punti
 """
 },{ 'action':'detach database rankdb', 'query': "DETACH DATABASE rankdb"
 }]
         self.stdout.write(self.style.SUCCESS('Starting create Sqlite views'))
+        self.stdout.write(self.style.SUCCESS('ClassificaGenerale count %s' % ClassificaGenerale.objects.count()))
 
         with connection.cursor() as cursor:
          for command in commands:
-            self.stdout.write(self.style.SUCCESS(command['action']))
+            self.stdout.write(self.style.NOTICE(command['action']))
             cursor.execute(command['query'])
   
         self.stdout.write(self.style.SUCCESS('ClassificaGenerale count %s' % ClassificaGenerale.objects.count()))

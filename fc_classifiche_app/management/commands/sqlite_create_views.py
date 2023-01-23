@@ -18,7 +18,11 @@ DROP VIEW IF EXISTS  v_classifica_generale
 """
 DROP VIEW IF EXISTS v_classifica_politico
 """
-        },{ 'action':'create view v_classifica_generale', 'query':
+        },{ 'action':'drop view v_squadra_punti', 'query':
+"""
+DROP VIEW IF EXISTS v_squadra_punti
+"""
+   },{ 'action':'create view v_classifica_generale', 'query':
 """
 CREATE VIEW v_classifica_generale
 AS
@@ -113,6 +117,7 @@ AS
     row_number() OVER (PARTITION BY lega_squadra.lega_id ORDER BY v_classifica_generale.totale_punti DESC) AS posizione,
     lega_squadra.lega_id,
     lega.name as nome_lega,
+    v_classifica_generale.squadra_id,
     v_classifica_generale.nome_squadra,
     v_classifica_generale.totale_punti
    FROM v_classifica_generale
@@ -135,12 +140,199 @@ AS
           GROUP BY politico.id, politico.name
           ORDER BY (sum(punteggio.punti)) DESC) classifica_politico
 """
+   },{ 'action':'create view v_squadra_punti', 'query':
+"""
+CREATE VIEW v_squadra_punti
+AS
+select squadra_id, squadra_name, politico_name, puntata_numero, puntata_data, punti 
+FROM (
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra.leader_politico_id = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."1_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."2_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."3_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."4_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."5_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."6_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."7_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."8_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."9_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."10_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+UNION
+SELECT
+  squadra.id AS squadra_id,
+  squadra.name AS squadra_name,
+  squadra.creato_il,
+  punteggio.punti,
+  punteggio.politico_id,
+  politico.name as politico_name,
+  puntata.numero as puntata_numero,
+  puntata.data as puntata_data
+FROM squadra 
+JOIN punteggio ON punteggio.puntata_id = puntata.id
+AND squadra."11_politico_id" = punteggio.politico_id AND squadra.creato_il <= puntata.data
+JOIN politico ON punteggio.politico_id = politico.id
+JOIN puntata ON punteggio.puntata_id = puntata.id
+) ORDER BY squadra_name, puntata_numero, politico_name
+"""
 }]
         self.stdout.write(self.style.SUCCESS('Starting create Sqlite views'))
 
         with connection.cursor() as cursor:
          for command in commands:
-            self.stdout.write(self.style.SUCCESS(command['action']))
+            self.stdout.write(self.style.NOTICE(command['action']))
             cursor.execute(command['query'])
 
         self.stdout.write(self.style.SUCCESS('All Done'))

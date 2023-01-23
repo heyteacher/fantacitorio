@@ -1,10 +1,10 @@
 import django_tables2 as tables
+from django_tables2.utils import A
 import django_tables2.paginators as LazyPaginator
-from .models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico
+from .models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico, SquadraPunti
 from django_filters import FilterSet, CharFilter, ChoiceFilter
 from fc_gestione_app.models import Lega
 
-#template_name = "django_tables2/bootstrap-responsive.html"
 template_name = "django_tables2/bootstrap5.html"
 per_page = 15
 attrs =  {
@@ -18,6 +18,8 @@ class ClassificaGeneraleFilter(FilterSet):
         fields = ['nome_squadra']
 
 class ClassificaGeneraleTable(tables.Table):
+    nome_squadra = tables.LinkColumn("squadra_punti", args=[A("squadra_id")])
+
     class Meta:
         model = ClassificaGenerale
         template_name = template_name
@@ -52,3 +54,12 @@ class ClassificaPoliticoTable(tables.Table):
         template_name = template_name
         per_page = per_page
         attrs = attrs
+
+class SquadraPuntiTable(tables.Table):
+
+    class Meta:
+        model = SquadraPunti
+        template_name = template_name
+        per_page = per_page
+        attrs = attrs
+        fields = ['puntata', 'politico_name', 'punti']

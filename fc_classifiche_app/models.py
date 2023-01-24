@@ -15,7 +15,20 @@ class ClassificaGenerale(models.Model):
     posizione = models.IntegerField(primary_key=True)
     squadra_id = models.IntegerField()
     nome_squadra = models.CharField(max_length=200)
+    creato_il = models.DateTimeField(null=True)
     totale_punti = models.IntegerField()
+    leader_politico = models.CharField(max_length=100, null=True)
+    politico_1 = models.CharField(max_length=100, null=True)
+    politico_2 = models.CharField(max_length=100, null=True)
+    politico_3 = models.CharField(max_length=100, null=True)
+    politico_4 = models.CharField(max_length=100, null=True)
+    politico_5 = models.CharField(max_length=100, null=True)
+    politico_6 = models.CharField(max_length=100, null=True)
+    politico_7 = models.CharField(max_length=100, null=True)
+    politico_8 = models.CharField(max_length=100, null=True)
+    politico_9 = models.CharField(max_length=100, null=True)
+    politico_10 = models.CharField(max_length=100, null=True)
+    politico_11 = models.CharField(max_length=100, null=True)
     class Meta:
         db_table = 'classifica_generale'
         verbose_name_plural = 'classifica generale'
@@ -42,7 +55,7 @@ class SquadraPunti(models.Model):
     punti = models.IntegerField()
     @property
     def puntata(self):
-        return '%s ° del %s' % (self.puntata_numero, date(self.puntata_data,'D d/m/Y'))
+        return '%s° del %s' % (self.puntata_numero, date(self.puntata_data,'d/m/Y'))
 
     class Meta:
         db_table = 'squadra_punti'

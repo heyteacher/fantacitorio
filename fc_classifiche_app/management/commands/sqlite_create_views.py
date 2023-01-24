@@ -28,11 +28,37 @@ CREATE VIEW v_classifica_generale
 AS
 SELECT 
     row_number() OVER ( ORDER BY totale_punti DESC) as posizione ,
-    classifica_squadre.squadra_name as nome_squadra,
     classifica_squadre.squadra_id,
-    classifica_squadre.totale_punti
+    classifica_squadre.squadra_name as nome_squadra,
+    classifica_squadre.creato_il,
+    classifica_squadre.totale_punti,
+    classifica_squadre.leader_politico,
+    classifica_squadre.politico_1,
+    classifica_squadre.politico_2,
+    classifica_squadre.politico_3,
+    classifica_squadre.politico_4,
+    classifica_squadre.politico_5,
+    classifica_squadre.politico_6,
+    classifica_squadre.politico_7,
+    classifica_squadre.politico_8,
+    classifica_squadre.politico_9,
+    classifica_squadre.politico_10,
+    classifica_squadre.politico_11
    FROM ( SELECT squadra.id AS squadra_id,
             squadra.name AS squadra_name,
+            creato_il,
+            (select name from politico where id = squadra.leader_politico_id) as leader_politico,
+            (select name from politico where id = squadra."1_politico_id") as politico_1,
+            (select name from politico where id = squadra."2_politico_id") as politico_2,
+            (select name from politico where id = squadra."3_politico_id") as politico_3,
+            (select name from politico where id = squadra."4_politico_id") as politico_4,
+            (select name from politico where id = squadra."5_politico_id") as politico_5,
+            (select name from politico where id = squadra."6_politico_id") as politico_6,
+            (select name from politico where id = squadra."7_politico_id") as politico_7,
+            (select name from politico where id = squadra."8_politico_id") as politico_8,
+            (select name from politico where id = squadra."9_politico_id") as politico_9,
+            (select name from politico where id = squadra."10_politico_id") as politico_10,
+            (select name from politico where id = squadra."11_politico_id") as politico_11,
             (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
                    FROM punteggio
                      JOIN puntata ON punteggio.puntata_id = puntata.id

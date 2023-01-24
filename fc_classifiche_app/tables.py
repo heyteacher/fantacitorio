@@ -19,13 +19,13 @@ class ClassificaGeneraleFilter(FilterSet):
 
 class ClassificaGeneraleTable(tables.Table):
     nome_squadra = tables.LinkColumn("squadra_punti", args=[A("squadra_id")])
-
     class Meta:
         model = ClassificaGenerale
         template_name = template_name
         per_page = per_page
         attrs = attrs
         paginator_class = LazyPaginator
+        fields = ['posizione', 'nome_squadra', 'totale_punti']
 
 class ClassificaPerLegaFilter(FilterSet):
     lega_id = ChoiceFilter(choices=Lega.objects.all().values_list('id','name'), empty_label="- Seleziona una lega -")
@@ -35,12 +35,13 @@ class ClassificaPerLegaFilter(FilterSet):
         fields = ['lega_id','nome_squadra']
 
 class ClassificaPerLegaTable(tables.Table):
+    nome_squadra = tables.LinkColumn("squadra_punti", args=[A("squadra_id")])
     class Meta:
         model = ClassificaPerLega
         template_name = template_name
         per_page = per_page
         attrs = attrs
-        exclude = ['id','lega_id']
+        exclude = ['id','lega_id', 'squadra_id']
 
 class ClassificaPoliticoFilter(FilterSet):
     nome_politico = CharFilter('nome_politico','icontains' , label="Nome politico")
@@ -56,7 +57,6 @@ class ClassificaPoliticoTable(tables.Table):
         attrs = attrs
 
 class SquadraPuntiTable(tables.Table):
-
     class Meta:
         model = SquadraPunti
         template_name = template_name

@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, ClassificaPoliticoListView, SquadraPuntiListView
 
-admin.site.login = login_required(admin.site.login)
+#admin.site.login = login_required(admin.site.login)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

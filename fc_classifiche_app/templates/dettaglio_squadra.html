@@ -5,15 +5,44 @@
 {% block content %}
 
 <dl class="row m-2">
-    <dt class="col-sm-2">Squadra</dt>
-    <dd class="col-sm-10"><span class="badge rounded-pill bg-primary">{{classifica.nome_squadra}}</span></dd>
-    <dt class="col-sm-2">Posizione</dt>
-    <dd class="col-sm-10"><span class="badge rounded-pill bg-secondary">{{classifica.posizione}}</span></dd>
-    <dt class="col-sm-2">Totale Punti</dt>
-    <dd class="col-sm-10"><span class="badge rounded-pill bg-secondary">{{classifica.totale_punti}}</span></dd>
-    <dt class="col-sm-2">Data Creazione</dt>
-    <dd class="col-sm-10"><span class="badge rounded-pill bg-secondary">{{classifica.creato_il}}</span></dd>
-    <dt class="col-sm-2">Formazione</dt>
+    <dt class="col-sm-2">
+        Squadra
+    </dt>
+    <dd class="col-sm-10">
+        <span class="badge rounded-pill bg-primary">{{classifica.nome_squadra}}</span>
+    </dd>
+    <dt class="col-sm-2">
+        Data Creazione
+    </dt>
+    <dd class="col-sm-10">
+        <span class="badge rounded-pill bg-danger">{{classifica.creato_il}}</span>
+    </dd>
+    <dt class="col-sm-2">
+        Totale Punti
+    </dt>
+    <dd class="col-sm-10">
+        <span class="badge rounded-pill bg-secondary">{{classifica.totale_punti}}</span>
+    </dd>
+    <dt class="col-sm-2">
+        Posizione in Generale
+    </dt>
+    <dd class="col-sm-10">
+        <span class="badge rounded-pill bg-success">{{classifica.posizione}}°</span>
+    </dd>
+    {% if classifica_leghe %}
+    <dt class="col-sm-2">
+        Posizione nelle Leghe
+    </dt>
+    <dd class="col-sm-10">
+        {% for classifica_lega in classifica_leghe %}
+        <span class="badge rounded-pill bg-success">{{classifica_lega.posizione}}°</span>
+        <span class="badge rounded-pill bg-secondary">{{classifica_lega.nome_lega}}</span> &nbsp;&nbsp;&nbsp;
+        {% endfor %}
+    </dd>
+    {% endif %}
+    <dt class="col-sm-2">
+        Formazione
+    </dt>
     <dd class="col-sm-10">
         <div class="container">
             <div class="row">
@@ -58,9 +87,17 @@
             </div>
         </div>            
     </dd>
+    <dt class="col-sm-2">
+        Fanfani
+    </dt>
+    <dd class="col-sm-10">
+        <span class="badge rounded-pill bg-info text-dark">{{classifica.fanfani}} / 160</span>
+    </dd>
+    <dt class="col-sm-2">
+        Dettaglio Punteggio
+    </dt>
+    <dd class="col-sm-10">
+        {% render_table table %} 
+        {% endblock%}
+    </dd>
 </dl>
-
-<h3>Dettaglio Punteggio</h3>
-
-{% render_table table %} 
-{% endblock%}

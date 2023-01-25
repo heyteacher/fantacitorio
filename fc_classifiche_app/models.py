@@ -29,6 +29,7 @@ class ClassificaGenerale(models.Model):
     politico_9 = models.CharField(max_length=100, null=True)
     politico_10 = models.CharField(max_length=100, null=True)
     politico_11 = models.CharField(max_length=100, null=True)
+    fanfani = models.IntegerField(default=0)
     class Meta:
         db_table = 'classifica_generale'
         verbose_name_plural = 'classifica generale'
@@ -60,7 +61,7 @@ class SquadraPunti(models.Model):
     class Meta:
         db_table = 'squadra_punti'
         verbose_name_plural = 'punti squadra'
-        ordering = ('puntata_numero',)
+        ordering = ('-puntata_numero', '-id')
         indexes = [
             Index(fields = ('squadra_id',), name='squadra_id_idx'),
         ]

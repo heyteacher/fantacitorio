@@ -16,7 +16,6 @@ class ClassificaPoliticoAdmin(ExportActionMixin, admin.ModelAdmin):
     resource_classes = [ClassificaPoliticoResource]
     list_display = ('posizione', 'nome_politico', 'totale_punti')
     readonly_fields= ('posizione', 'nome_politico', 'totale_punti')
-    ordering = ('posizione', 'nome_politico', 'totale_punti')
     search_fields = ('nome_politico',) 
     actions = None
  
@@ -42,7 +41,6 @@ class ClassificaGeneraleResource(resources.ModelResource):
 class ClassificaGeneraleAdmin(ExportActionMixin, admin.ModelAdmin):
     resource_classes = [ClassificaGeneraleResource]
     list_display = ('posizione', 'nome_squadra', 'totale_punti')
-    ordering = ('posizione', 'nome_squadra', 'totale_punti')
     readonly_fields= ('posizione', 'nome_squadra', 'totale_punti')
     search_fields = ('nome_squadra',) 
     actions = None
@@ -76,7 +74,6 @@ class ClassificaPerLegaAdmin(ExportActionMixin, admin.ModelAdmin):
     list_display = ('nome_lega', 'posizione', 'nome_squadra', 'totale_punti')
     list_display_links = None
     search_fields = ('nome_lega','nome_squadra')
-    ordering = ('nome_lega','posizione',)
     
     def has_add_permission(self, request, obj=None):
         return False

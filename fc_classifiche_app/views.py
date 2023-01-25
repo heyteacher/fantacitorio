@@ -29,11 +29,13 @@ class ClassificaPoliticoListView(SingleTableMixin, FilterView):
 class SquadraPuntiListView(SingleTableView):
     table_class = SquadraPuntiTable
     template_name = 'dettaglio_squadra.html'
-
+    table_pagination = False
+    
     def get_queryset(self):
         return SquadraPunti.objects.filter(squadra_id=self.kwargs['squadra_id'])
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['classifica'] = ClassificaGenerale.objects.get(squadra_id=self.kwargs['squadra_id'])
+        context['classifica_leghe'] = ClassificaPerLega.objects.filter(squadra_id=self.kwargs['squadra_id'])
         return context

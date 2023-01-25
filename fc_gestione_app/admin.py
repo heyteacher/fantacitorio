@@ -120,7 +120,7 @@ class PunteggioAdminForm( forms.ModelForm ):
 class PunteggioPuntataInline(admin.TabularInline):
     model = Punteggio
     fields = ('politico','punti')
-    readonly_fields = ('politico','punti')
+    #readonly_fields = ('politico','punti')
     extra = 0
 
 @admin.register(Puntata)

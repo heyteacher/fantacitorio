@@ -60,6 +60,6 @@ class SquadraPuntiTable(tables.Table):
     class Meta:
         model = SquadraPunti
         template_name = template_name
-        per_page = per_page
+        #per_page = per_page
         attrs = attrs
         fields = ['puntata', 'politico_name', 'punti']

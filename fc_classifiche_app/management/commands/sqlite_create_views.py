@@ -43,7 +43,8 @@ SELECT
     classifica_squadre.politico_8,
     classifica_squadre.politico_9,
     classifica_squadre.politico_10,
-    classifica_squadre.politico_11
+    classifica_squadre.politico_11,
+    classifica_squadre.fanfani
    FROM ( SELECT squadra.id AS squadra_id,
             squadra.name AS squadra_name,
             creato_il,
@@ -59,6 +60,18 @@ SELECT
             (select name from politico where id = squadra."9_politico_id") as politico_9,
             (select name from politico where id = squadra."10_politico_id") as politico_10,
             (select name from politico where id = squadra."11_politico_id") as politico_11,
+            (COALESCE((select fanfani from politico where id = squadra.leader_politico_id),0) +
+             COALESCE((select fanfani from politico where id = squadra."1_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."2_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."3_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."4_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."5_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."6_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."7_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."8_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."9_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."10_politico_id"),0) +
+             COALESCE((select fanfani from politico where id = squadra."11_politico_id"),0)) as fanfani,
             (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
                    FROM punteggio
                      JOIN puntata ON punteggio.puntata_id = puntata.id

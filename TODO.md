@@ -11,6 +11,8 @@
     - [x] lega - squadra
 - [x] Django cache DynamoDB
 - [x] homepage classifiche (django table2)
+- [ ] descrizione architettura nel README
+- [ ] descrizione certificati nel README
 - [ ] auth twitter
 - [ ] cloudfront
 - [ ] custom error message

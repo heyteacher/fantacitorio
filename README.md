@@ -3,7 +3,7 @@
 
 [![GitHub license](https://img.shields.io/github/license/heyteacher/fantacitorio)](https://github.com//fantacitorio/blob/master/LICENSE) [![GitHub commit](https://img.shields.io/github/last-commit/heyteacher/fantacitorio)](https://github.com/heyteacher//fantacitorio/commits/main)
 
-Progetto web __Fantacitorio__ nato dai `Google Sheet` gestiti da [@rosyilcapo](https://twitter.com/rosyilcapo)  per strutturare i dati in un database SQL ed automatizzare i calcoli delle classifiche. 
+Progetto web __Fantacitorio__ nato dai `Google Sheet` gestiti da [@rosyilcapo](https://twitter.com/rosyilcapo)  per strutturare i dati in un database SQL ed visualizzare le classifiche (generale, per lega, politici). 
 
 In particolare la base dati è stata creata partendo dal `Google Sheet` [* Fantacitorio 2022 - classifica generale PROVVISORIA](https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0).
 
@@ -30,18 +30,21 @@ Il progetto è composto da:
 
 Una demo del progetto è disponibile sul Cloud AWS al seguente indirizzo:
 
- https://fc-project-stage.adessospiana.it
+ https://classifiche-fantacitorio.adessospiana.it
 
-le credenziali in sola lettura per accedere all' `admin` per la gestione dei contenuti: per:
+le credenziali in sola lettura per accedere all' `admin` per la gestione dei contenuti per:
 
 - __login__: ``fantautente``
 - __password__: ``fantacitorio``
 
 ## Per gli sviluppatori
 
+### librerie, dipendenze
+
 Il progetto è basato sul framework `Django` con l'aggiunta dei seguenti moduli/backeng/tool python:
 
 - `zappa`: tool per il rilascio stateless su cloud AWS
+- `django`: storico framework CMS in `python` che, tra i tanti, ha dato i natali ad `Instagram`
 - `django-s3-sqlite`: backend database django per `sqlite` su `AWS S3`
 - `django_s3_storage`: modulo django per la gestione dalle risorse statiche su `AWS S3`
 - `django-dynamodb-cache`: bachend cache django per `AWS DynamoDB`
@@ -56,16 +59,18 @@ L'ambiente di produzione il database `sqlite` è sostituito con `PostgreSql` qui
 - `psycopg2` 
 - `psycopg2-binary` 
 
+### struttura 
+
 La struttura del progetto è la seguente:
 
 - `_fc_project__`: il project Django:
-- `fc_gestione_app`: app Django dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi
+- `fc_gestione_app`: app Django dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi tramite l'`admin` di Django
 - `fc_classifiche_app`: app Django per la generazione/visualizzazione delle classifiche
 
 ### Prerequisiti
 
-- Linux o WSL si Windows
-- python3.9 o superiore
+- Linux o WSL su Windows e forse anche Windows (non testato)
+- python3.9 (è attualmente la versione massima supportata dalla `AWS Lambda` in python)
 
 ### setup ambiente locale
 
@@ -94,7 +99,6 @@ La struttura del progetto è la seguente:
   ```
 
 - creazione super utente da utilizzare per autenticarsi al sito (es: `admin`)
-
   ```
   python manage.py createsuperuser --username <SUPER UTENTE>
   ```
@@ -115,37 +119,65 @@ La struttura del progetto è la seguente:
   python manage.py runserver
   ```
 
-- accedere a http://localhost:8000. Cliccare su `Admin` e autenticarsi tramite il super user creato
-
-Per lo sviluppo in locale, è stato utilizzato `sqlite3` come database.
+- accedere a http://localhost:8000, saranno mostrate le classifiche, mentre par accedere all'`admin` cliccare sulla rotellina in alto a destra, quindi autenticarsi tramite il super user creato
 
 ### Dump dei dati e creazione della fixture di fc_gestione_app
 
-Per generare una fixture del database per migrarlo presso un nuovo ambiente si utilizza il comando Django `dumpdata`
+Per generare una `fixture` del database per migrarlo presso un nuovo ambiente si utilizza il comando Django `dumpdata`
 
 ```
 python manage.py dumpdata fc_gestione_app -o fc_gestione_app/fixtures/fc_gestione_app.json.bz2
 ```
 
+Per caricare la `fixture` utilizzare il comando load data (in automatico cerca le fixture dentro l'app0)
+
+```
+python manage.py loaddata fc_gestione_app
+```
+
+Le `fixture` sono agnostiche rispetto al database utilizzato, quindi possono essere utilizzate per migrare i data verso qualsiasi database supportato da Django.
+
 ### Rilascio in stage
 
-Le caratteristiche dell'ambiente di stage sono:
+La configurazione dell'ambiente di stage su cloud 'AWS' è la sequente:
 
-- database `sqlite` caricato in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` di Django per le letture e le scritture.
+- Django distribuito sul cloud `AWS` in modalità `serverless` tramite `AWS Lambda` e `AWS Api gateway` tramite `zappa`
 
-- `cache Django` attiva su backed `AWS DynamoDB` per le `session` e la `pagine`
+- 2 database `sqlite` (`gestione` e `classifiche`) caricati in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` di Django per le letture e le scritture, tramite il pacchetto `django-s3-sqlite`.
 
-- file statici forniti da un `AWS S3 bucket`
+- `cache Django` attiva su backed `AWS DynamoDB` per le `session` e la `pagine` tramite il pacchetto `django-dynamodb-cache`
 
-Dopo aver configurato la sezione `stage` di `zappa_settings.json` si rilascia l'ambiente di stage sul cloud AWS grazie a `Zappa`
+- file statici forniti da un `AWS S3 bucket`, built-in `Django`
+
+- `AWS event` schedulato ogni ora per aggiornamento del database classifiche partendo dai dati del database gestione.
+
+Il razionale di avere due database distinti, uno per la gestione dei dati e uno per le classifiche è  separare completamente `presentation` dei dati (database classifiche) dalla `administration` dei dati (database gestione):
+
+- il database classifiche è readonly aggiornato ogni ora ottimizzato per la visualizzazione (join risolti, poche tabelle di grandi dimensione non in 3° forma normale). Quando viene consultato dalla lambda viene scaricato da S3 ma non sovrascritto in quanto mai modificato. Quindi può essere acceduto concorrentemente ed è il database della parte pubblica del sito.
+
+- il datatanse di gestione (che è il default) è il classico database in 3° forma normale gestito tramite la `Admin` di `Django` ossia un `CRUD`. Durante le modifiche, viene scaricato da S3, modificato tramite query di INSERT, UPDATE, DELETE e ricaricato su S3. Non supporta accessi concorrenti. E' il database della parte privata di amministrazione del sito, acceduta dall'amministratore per aggiornare i dati.
+
+Il vantaggio di questa configurazione è che utilizza risorse AWS il cui costo è calcolato esclusivamente a consumo e non utilizza risorse AWS a canone come i classici database relazionali (`AWS RDS` con `PostgreSQL`, `Oracle`, `MariaDB`, `MySql`, `Sql Server` ) 
+
+Paradossalmente, se nessuno accede al sito, l'infrastuttura non ha costo.
+
+La configurazione di `Zappa` per il rilascio su AWS è nella  sezione `stage` di `zappa_settings.json`
+
+Come pre-requisito è necessario un account AWS personale con le chiavi configurate in locale per l'accesso all'infartruttura. Di seguito i comandi `Zappa` per il rilascio dell'ambiente di stage: 
 
 1. deploy dell'ambiente (solo la prima volta)
    ```
    zappa deploy stage
    ```
+   per aggiornare l'ambiente le volte successive
+   ```
+   zappa update stage
+   ```
+   Al termine dell'esecuzione di `deploy` e `update`, se non vi sono errori, viene mostrato il URL del sito rilasciato all'interno della proprio cloud AWS.
 
 1. generazione delle tabelle di sistema della applicazione fc_gestione_app
    ```
+   zappa manage stage migrate fc_classifiche_app "--database db_classifiche"
    zappa manage stage migrate
    ```
 
@@ -154,12 +186,12 @@ Dopo aver configurato la sezione `stage` di `zappa_settings.json` si rilascia l'
    zappa invoke stage "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
    ```
 
-1. creazione della tabella di caching `AWS DynamoDB`  
+1. la prima volta: creazione della tabella di caching `AWS DynamoDB`  
    ```
     zappa manage stage createcachetable 
    ```
 
-1. caricamento dei dati presenti nella fixture di fc_gestiona_app
+1. la prima volta: caricamento dei dati presenti nella fixture di fc_gestiona_app 
    ```
    zappa manage stage loaddata fc_gestione_app
    ```
@@ -168,6 +200,12 @@ Dopo aver configurato la sezione `stage` di `zappa_settings.json` si rilascia l'
    ```
    zappa manage stage sqlite_create_views
    ```
+
+1. primo refresh delle classifiche (comando poi eseguito ogni ora dal `AWS Event`)
+   ```
+   zappa manage stage sqlite_refresh_views
+   ```
+
 
 ### Rilascio in produzione  su AWS con Zappa
 
@@ -182,8 +220,8 @@ L'ambiente di produzione, a differenza dell'ambiente di stage, utilizza come dat
   zappa manage production createcachetable
   zappa invoke production "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
   zappa manage production loaddata fc_gestione_app
-  zappa manage production pg_create_mat_views
-  zappa manage production pg_refresh_mat_views
+  zappa manage production pg_create_views
+  zappa manage production pg_refresh_classifiche
   ```
 
 ### aggiornamento progetto su AWS 

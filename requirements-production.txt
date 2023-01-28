@@ -6,6 +6,7 @@ django-import-export
 django_s3_storage
 django-tables2
 django-filter
-django-bootstrap3
+django-bootstrap5
+django-allauth
 git+https://github.com/heyteacher/django-dynamodb-cache.git
 zappa

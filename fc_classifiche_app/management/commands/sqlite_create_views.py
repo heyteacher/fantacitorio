@@ -29,6 +29,7 @@ AS
 SELECT 
     row_number() OVER ( ORDER BY totale_punti DESC) as posizione ,
     classifica_squadre.squadra_id,
+    classifica_squadre.squadra_codice as codice_squadra,
     classifica_squadre.squadra_name as nome_squadra,
     classifica_squadre.creato_il,
     classifica_squadre.totale_punti,
@@ -46,6 +47,7 @@ SELECT
     classifica_squadre.politico_11,
     classifica_squadre.fanfani
    FROM ( SELECT squadra.id AS squadra_id,
+            squadra.codice AS squadra_codice,
             squadra.name AS squadra_name,
             creato_il,
             (select name from politico where id = squadra.leader_politico_id) as leader_politico,

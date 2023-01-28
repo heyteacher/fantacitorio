@@ -40,9 +40,9 @@ insert into rankdb.classifica_politico (posizione, nome_politico, totale_punti) 
 """
         },{ 'action':'populate classifica_generale on rackdb', 'query':
 """
-insert into rankdb.classifica_generale (posizione, squadra_id, nome_squadra, creato_il, totale_punti, leader_politico, politico_1, 
+insert into rankdb.classifica_generale (posizione, squadra_id, codice_squadra, nome_squadra, creato_il, totale_punti, leader_politico, politico_1, 
   politico_2, politico_3, politico_4, politico_5, politico_6, politico_7, politico_8, politico_9, politico_10, politico_11,fanfani) 
-  select posizione, squadra_id, nome_squadra, creato_il, totale_punti, leader_politico, politico_1, politico_2, politico_3, politico_4, 
+  select posizione, squadra_id, codice_squadra, nome_squadra, creato_il, totale_punti, leader_politico, politico_1, politico_2, politico_3, politico_4, 
   politico_5, politico_6, politico_7, politico_8, politico_9, politico_10, politico_11, fanfani from v_classifica_generale
 """
         },{ 'action':'populate squadra_punti on rackdb', 'query':

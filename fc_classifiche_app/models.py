@@ -14,6 +14,7 @@ class ClassificaPolitico(models.Model):
 class ClassificaGenerale(models.Model):
     posizione = models.IntegerField(primary_key=True)
     squadra_id = models.IntegerField()
+    codice_squadra = models.CharField(max_length=20, null=True)
     nome_squadra = models.CharField(max_length=200)
     creato_il = models.DateTimeField(null=True)
     totale_punti = models.IntegerField()

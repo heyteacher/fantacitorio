@@ -9,7 +9,6 @@ from .import_export_resources import CaricaResource, LegaResource, LegaSquadraRe
 admin.ModelAdmin.save_on_top=True
 admin.ModelAdmin.save_as = True
 
-admin.site.site_header  =  "Fantacitorio"
 admin.site.site_title  =  "Fantacitorio"
 admin.site.index_title  =  "Fantacitorio"
 

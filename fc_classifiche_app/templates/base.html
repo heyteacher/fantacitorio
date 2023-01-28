@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Flassifiche Fantacitorio il gioco ideato da Propaganda Live su la7 ogni venerdì">
+    <meta name="description" content="Classifiche Fantacitorio il gioco ideato da Propaganda Live su la7 ogni venerdì">
     <meta name="author" content="heyteacher@github.com">
  
     <title>Fantacitorio</title>
@@ -17,20 +17,28 @@
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-0">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Classifiche Fantacitorio</a>
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-list-ol"></i> Classifiche Fantacitorio
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link {% if request.path == "/" %}active{% endif %}" href="/" aria-current="page" >Generale</a>
+            <a class="nav-link {% if request.path == "/" %}active{% endif %}" href="/" aria-current="page">
+              <i class="bi bi-list-ol"></i> Generale
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.path == "/classifica_per_lega" %}active{% endif %}" href="/classifica_per_lega" aria-current="page" >Per Lega</a>
+            <a class="nav-link {% if request.path == "/classifica_per_lega" %}active{% endif %}" href="/classifica_per_lega" aria-current="page">
+              <i class="bi bi-list-ol"></i>  Per Lega
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.path == "/classifica_politico" %}active{% endif %}" href="/classifica_politico" aria-current="page" >Per Politico</a>
+            <a class="nav-link {% if request.path == "/classifica_politico" %}active{% endif %}" href="/classifica_politico" aria-current="page">
+              <i class="bi bi-list-ol"></i> Per Politico
+            </a>
           </li>
         </ul>
         <ul class="navbar-nav mt-2 mt-md-0">
@@ -38,7 +46,10 @@
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-twitter"></i>
             </a>
-            <ul class="dropdown-menu bg-dark">
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li><a class="dropdown-item text-light" target="_blank" href="https://twitter.com/radical_scic">
+                <i class="bi bi-twitter"></i> Io</a>
+              </li>
               <li><a class="dropdown-item text-light" target="_blank" href="https://twitter.com/Fanta_citorio">
                 <i class="bi bi-twitter"></i> Fantacitorio Official</a>
               </li>
@@ -51,13 +62,72 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" target="_blank" href="https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit#gid=0">
-              <i class="bi bi-file-earmark-spreadsheet-fill"></i>
-            </a>
+            <li class="nav-item dropdown dropstart">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-github"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark">
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/heyteacher/fantacitorio">
+                    <i class="bi bi-github"></i> Fantacitorio (questo progetto)
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/zappa/Zappa">
+                    <i class="bi bi-github"></i> zappa
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/django/django">
+                    <i class="bi bi-github"></i> django
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/FlipperPA/django-s3-sqlite">
+                    <i class="bi bi-github"></i> django-s3-sqlite
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/etianen/django-s3-storage">
+                    <i class="bi bi-github"></i> django_s3_storage
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="hhttps://github.com/heyteacher/django-dynamodb-cache">
+                    <i class="bi bi-github"></i> django-dynamodb-cache (heyteaher Fork)
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/jieter/django-tables2">
+                    <i class="bi bi-github"></i> django-tables2
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/carltongibson/django-filter">
+                    <i class="bi bi-github"></i> django-filter
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/zostera/django-bootstrap5">
+                    <i class="bi bi-github"></i> django-bootstrap5
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/django-import-export/django-import-export">
+                    <i class="bi bi-github"></i> django-import-export
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/farhan0581/django-admin-autocomplete-filter">
+                    <i class="bi bi-github"></i> django-admin-autocomplete-filter
+                  </a>
+                </li>
+              </ul>
+            </li>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" target="_blank" href="https://github.com/heyteacher/fantacitorio">
-              <i class="bi bi-github"></i>
+            <a class="nav-link text-light" target="_blank" href="https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit#gid=0">
+              <i class="bi bi-file-earmark-spreadsheet-fill"></i>
             </a>
           </li>
           <li class="nav-item">

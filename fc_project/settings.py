@@ -183,12 +183,14 @@ if not os.environ.get('STATICFILES_STORAGE','') == '':
 
     # These next two lines will serve the static files directly 
     # from the s3 bucket
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_S3_BUCKET_NAME_STATIC
-    STATIC_URL = "https://%s/%s" % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_KEY_PREFIX_STATIC)
-
+    if os.environ.get('AWS_CLOUDFRONT_ENDPOINT','') == '':
+        AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_S3_BUCKET_NAME_STATIC
+        STATIC_URL = "https://%s/%s" % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_KEY_PREFIX_STATIC)
     # OR...if you create a fancy custom domain for your static files use:
-    if not os.environ.get('AWS_CLOUDFRONT_ENDPOINT','') == '':
+    else:
         AWS_S3_PUBLIC_URL_STATIC = "%s/%s" % (os.environ.get('AWS_CLOUDFRONT_ENDPOINT') ,AWS_S3_KEY_PREFIX_STATIC)
+        CSRF_TRUSTED_ORIGINS = ['https://*.adessospiana.it','https://diaxqw7u60tvx.cloudfront.net']
+        CSRF_COOKIE_DOMAIN = '.adessospiana.it'
 else:
     STATIC_URL = 'static/'
     STATIC_ROOT = 'static/'

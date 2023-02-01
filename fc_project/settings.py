@@ -59,9 +59,12 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     # le due applicazioni
     'fc_gestione_app',
-    'fc_classifiche_app'
+    'fc_classifiche_app',
+    # debug tootbar
+    "debug_toolbar"
 ]
 
+# ALLAUTH CONFIG
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 LOGIN_REDIRECT_URL = "home"
@@ -78,6 +81,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'fc_project.urls'
@@ -133,6 +137,7 @@ if not os.environ.get('DATABASE_CLASSIFICHE_ENGINE') == '':
             'BUCKET': os.environ.get('DATABASE_CLASSIFICHE_BUCKET'),
     }
 
+# DATABASE ROUTES
 DATABASE_ROUTERS = [
     'fc_gestione_app.routers.GestioneRouter', 
     'fc_classifiche_app.routers.ClassificheRouter'
@@ -160,11 +165,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = 'it-IT'
-
 TIME_ZONE = 'Europe/Rome'
-
 USE_I18N = True
-
 USE_TZ = True
 
 # Default primary key field type
@@ -175,27 +177,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-# DJANGO S3 STATIC
-if not os.environ.get('STATICFILES_STORAGE','') == '':
+# STATIC FILES SERVER BY CLOUDFRONT  
+if not os.environ.get('AWS_CLOUDFRONT_ENDPOINT','') == '':
+    STATIC_URL = "%s/%s" % (os.environ.get('AWS_CLOUDFRONT_ENDPOINT') ,'static/')
+    CSRF_TRUSTED_ORIGINS = [os.environ.get('AWS_CLOUDFRONT_ENDPOINT')]
+# STATIC FILES SERVER BY S3 STORAGE  
+elif not os.environ.get('STATICFILES_STORAGE','') == '':
     STATICFILES_STORAGE = os.environ.get('STATICFILES_STORAGE')
     AWS_S3_BUCKET_NAME_STATIC = os.environ.get('AWS_S3_BUCKET_NAME_STATIC')
-    AWS_S3_KEY_PREFIX_STATIC = os.environ.get('AWS_S3_KEY_PREFIX_STATIC')
-
-    # These next two lines will serve the static files directly 
-    # from the s3 bucket
-    if os.environ.get('AWS_CLOUDFRONT_ENDPOINT','') == '':
-        AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_S3_BUCKET_NAME_STATIC
-        STATIC_URL = "https://%s/%s" % (AWS_S3_CUSTOM_DOMAIN, AWS_S3_KEY_PREFIX_STATIC)
-    # OR...if you create a fancy custom domain for your static files use:
-    else:
-        AWS_S3_PUBLIC_URL_STATIC = "%s/%s" % (os.environ.get('AWS_CLOUDFRONT_ENDPOINT') ,AWS_S3_KEY_PREFIX_STATIC)
-        CSRF_TRUSTED_ORIGINS = ['https://*.adessospiana.it','https://diaxqw7u60tvx.cloudfront.net']
-        CSRF_COOKIE_DOMAIN = '.adessospiana.it'
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_S3_BUCKET_NAME_STATIC
+    STATIC_URL = "https://%s/%s" % (AWS_S3_CUSTOM_DOMAIN, 'static/')
+# STATIC FILES SERVER BY DJANGO
 else:
     STATIC_URL = 'static/'
     STATIC_ROOT = 'static/'
 
-# Django Cache + Session Engine
+# DJANGO CACHE + SESSION ENGINE
 if not os.environ.get('CACHE_DEFAULT_BACHEND','') == '':
     CACHES = {
         "default": {
@@ -208,7 +205,7 @@ if not os.environ.get('CACHE_DEFAULT_BACHEND','') == '':
     }
     SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
-# SMTP Settings
+### SMTP
 if not os.environ.get('EMAIL_HOST','') == '':
     EMAIL_HOST = os.environ.get('EMAIL_HOST')
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -219,14 +216,15 @@ if not os.environ.get('EMAIL_HOST','') == '':
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '').lower() == 'true'
     EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', '').lower() == 'true'
 
-# Django Table2 settings
+### DJANGO TABLE2
 DJANGO_TABLES2_PAGE_RANGE=5
 
-# Bootstrap5 settings
+### BOOTSTRAP5 
 BOOTSTRAP5 = {
     'server_side_validation': False
 }
 
+### LOGGING
 if DEBUG:
     LOGGING = {
         'version': 1,
@@ -241,3 +239,10 @@ if DEBUG:
             'level': 'DEBUG',
         },
     }
+
+### DJANGO DEBUG TOOLBAR
+def show_toolbar(request):
+    return DEBUG
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+}

@@ -9,3 +9,4 @@ django-bootstrap5
 django-allauth
 git+https://github.com/heyteacher/django-dynamodb-cache.git
 zappa
+django-debug-toolbar

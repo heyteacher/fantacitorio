@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, ClassificaPoliticoListView, SquadraPuntiListView
+from fc_project import settings
 
 #admin.site.login = login_required(admin.site.login)
 
@@ -29,3 +30,10 @@ urlpatterns = [
     path('classifica_politico', ClassificaPoliticoListView.as_view()),
     path('squadra_punti/<squadra_id>', SquadraPuntiListView.as_view(), name='squadra_punti'),
   ] 
+
+# DEBUG TOOLBAR
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

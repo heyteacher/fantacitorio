@@ -14,7 +14,7 @@
 - [ ] descrizione architettura nel README
 - [ ] descrizione certificati nel README
 - [ ] auth twitter
-- [ ] cloudfront
+- [x] cloudfront
 - [ ] custom error message
 - [ ] form inserimento squadra + SQS
 - [ ] rest api

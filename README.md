@@ -18,7 +18,8 @@ Info disponibili:
 
 Il progetto è composto da:
 
-- una sezione pubblica dove sono visualizzate `classifica generale`, le `classifiche per lega`, e la `classifica politico`
+- una sezione pubblica dove sono visualizzate `classifica generale`, le `classifiche per lega`, la `classifica politico` e la possibilità di visualizzare il `dettaglio` di una squadra dove viene mostrata la `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe e il `dettaglio del punteggio`
+
 - un'area di amministrazione protetta per la gestione dei contenuti:
   - `cariche`
   - `politici`

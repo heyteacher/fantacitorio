@@ -14,6 +14,8 @@ Info disponibili:
 - [Regolamento](https://www.la7.it/propagandalive/video/fantacitorio-16-02-2022-423442)
 - [Monologo di __Valerio Aprea__](https://www.la7.it/embedded/la7?w=640&h=360&tid=player&content=423442)
 
+## Struttura del sito
+
 Il progetto è composto da:
 
 - una sezione pubblica dove sono visualizzate `classifica generale`, le `classifiche per lega`, e la `classifica politico`
@@ -26,22 +28,25 @@ Il progetto è composto da:
   - `punteggi`
   - `puntate`
 
+
 ## Demo
 
 Una demo del progetto è disponibile sul Cloud AWS al seguente indirizzo:
 
  https://classifiche-fantacitorio.adessospiana.it
 
-le credenziali in sola lettura per accedere all' `admin` per la gestione dei contenuti per:
+Le credenziali in sola lettura per accedere all' area di amministazione per la gestione dei contenuti per:
 
 - __login__: ``fantautente``
 - __password__: ``fantacitorio``
 
-## Per gli sviluppatori
+## Area Developer
 
-### librerie, dipendenze
+### framekork Django
 
-Il progetto è basato sul framework `Django` con l'aggiunta dei seguenti moduli/backeng/tool python:
+Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `zappa`.
+
+Di seguito la lista package python utilizzati:
 
 - `zappa`: tool per il rilascio stateless su cloud AWS
 - `django`: storico framework CMS in `python` che, tra i tanti, ha dato i natali ad `Instagram`
@@ -54,25 +59,27 @@ Il progetto è basato sul framework `Django` con l'aggiunta dei seguenti moduli/
 - `django-import-export`: modulo Django per importazione ed espostazione dei dati
 - `django-admin-autocomplete-filter`: modulo Django che implementa i filtri autocomplete nell'admin
 
-L'ambiente di produzione il database `sqlite` è sostituito con `PostgreSql` quindi i package `django-s3-sqlite` è sostituito con i driver python di `PostgreSql`:
+Una alternativa al database `sqlite` è  `PostgreSql` quindi i package `django-s3-sqlite` è sostituito con i driver python di `PostgreSql`:
 
 - `psycopg2` 
 - `psycopg2-binary` 
 
-### struttura 
+### Struttura 
 
-La struttura del progetto è la seguente:
+La struttura del progetto è costituita da un Django `project` a due Django `app`:
 
-- `_fc_project__`: il project Django:
-- `fc_gestione_app`: app Django dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi tramite l'`admin` di Django
-- `fc_classifiche_app`: app Django per la generazione/visualizzazione delle classifiche
+- `_fc_project__`: il project che contiene i `settings` e `url resolver`  
+- `fc_gestione_app`: app dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi tramite l'`admin` di Django
+- `fc_classifiche_app`: app per la generazione/visualizzazione delle classifiche
 
 ### Prerequisiti
 
-- Linux o WSL su Windows e forse anche Windows (non testato)
-- python3.9 (è attualmente la versione massima supportata dalla `AWS Lambda` in python)
+- `Linux` o `WSL` su `Windows` e forse anche `Windows` (non testato)
+- `python3.9` (è attualmente la versione massima supportata dalla `AWS Lambda` in python. Attenzione `python3.10` attualmente non è supportato da `AWS Lambda`)
 
-### setup ambiente locale
+### Setup local environment
+
+L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per il deploy su `AWS. 
 
 - creazione del virtualenv che ospiterà Django in locale
   ```
@@ -87,12 +94,12 @@ La struttura del progetto è la seguente:
   source venv/bin/activate
   ```
 
-- Installazione di Django e delle dipendenze contenute in requirente.txt
+- Installazione di Django e delle dipendenze contenute in requirements.txt
   ```
   pip install -r requirements.txt
   ```
 
-- generazione delle tabelle di sistema della applicazione fc_gestione_app e fc_classifiche_app
+- generazione delle tabelle di sistema della applicazione fc_gestione_app e fc_classifiche_app. si utilizza il `database routing` per gestire il database di principale e quello delle classifiche.
   ```
   python manage.py migrate fc_gestione_app --database default
   python manage.py migrate fc_classifiche_app --database db_classifiche 
@@ -137,19 +144,23 @@ python manage.py loaddata fc_gestione_app
 
 Le `fixture` sono agnostiche rispetto al database utilizzato, quindi possono essere utilizzate per migrare i data verso qualsiasi database supportato da Django.
 
-### Rilascio in stage
+### Deploy su AWS
 
-La configurazione dell'ambiente di stage su cloud 'AWS' è la sequente:
+`zappa` è lo strumento che permette di rilasciare facilmente su cloud `AWS` dell'ambiente di stage e produzione. Nel dettaglio l'architettura del sito sul Cloud:
 
-- Django distribuito sul cloud `AWS` in modalità `serverless` tramite `AWS Lambda` e `AWS Api gateway` tramite `zappa`
+- Django distribuito sul cloud `AWS` in modalità `serverless` tramite `AWS Lambda` e `AWS Api Gateway` 
 
-- 2 database `sqlite` (`gestione` e `classifiche`) caricati in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` di Django per le letture e le scritture, tramite il pacchetto `django-s3-sqlite`.
+- 2 database `sqlite` (`gestione` e `classifiche`) caricati in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` (dove è installato `Django`) per le letture e le scritture, tramite il pacchetto `django-s3-sqlite`.
 
 - `cache Django` attiva su backed `AWS DynamoDB` per le `session` e la `pagine` tramite il pacchetto `django-dynamodb-cache`
 
 - file statici forniti da un `AWS S3 bucket`, built-in `Django`
 
 - `AWS event` schedulato ogni ora per aggiornamento del database classifiche partendo dai dati del database gestione.
+
+- `AWS Cloudfront` le la distribuzione dei contenuti che si occupa anche del routing delle richieste verso la parte statica `S3` oppure il backend servito dalle `AWS Api Gateway`
+
+- con un dominio gestito da `AWS Route53` e certificati di dominio HTTPS generati e gestiti da `AWS Certificate` e configurati sia sul `AWS Cloudfront` che `AWS Api Gateway`    
 
 Il razionale di avere due database distinti, uno per la gestione dei dati e uno per le classifiche è  separare completamente `presentation` dei dati (database classifiche) dalla `administration` dei dati (database gestione):
 
@@ -158,8 +169,8 @@ Il razionale di avere due database distinti, uno per la gestione dei dati e uno 
 - il datatanse di gestione (che è il default) è il classico database in 3° forma normale gestito tramite la `Admin` di `Django` ossia un `CRUD`. Durante le modifiche, viene scaricato da S3, modificato tramite query di INSERT, UPDATE, DELETE e ricaricato su S3. Non supporta accessi concorrenti. E' il database della parte privata di amministrazione del sito, acceduta dall'amministratore per aggiornare i dati.
 
 Il vantaggio di questa configurazione è che utilizza risorse AWS il cui costo è calcolato esclusivamente a consumo e non utilizza risorse AWS a canone come i classici database relazionali (`AWS RDS` con `PostgreSQL`, `Oracle`, `MariaDB`, `MySql`, `Sql Server` ) 
-
-Paradossalmente, se nessuno accede al sito, l'infrastuttura non ha costo.
+   
+L'infrastuttura ha costo praticamente zero fino anche a 100.000 di accessi mensili.
 
 La configurazione di `Zappa` per il rilascio su AWS è nella  sezione `stage` di `zappa_settings.json`
 
@@ -206,43 +217,79 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
    zappa manage stage sqlite_refresh_views
    ```
 
+### certificato HTTPS e dominio 
 
-### Rilascio in produzione  su AWS con Zappa
+Al termine del deploy e update `zappa` mostra l'endopoint esposto sulle `AWS API Gateway` del nostro ambiente, che risulta già navigabile accedendo ad un URL tipo:
+```
+https://<STRINGA-RANDOM>.execute-api.eu-west-1.amazonaws.com/stage
+```
 
-L'ambiente di produzione, a differenza dell'ambiente di stage, utilizza come database una instanza `AWS RDS` di `PostgreSql`.
+Se si ha a disposizione un dominio gestito su `AWS Route53`, è possibile generare un certificato valido HTTPS sul nostro dominio. I certificati creati `AWS Certificate` possono essere utilizzati nelle risorse `AWS` sono gratis e `AWS` si occupa di rinnorarli in automatico dopo la scadenza annuale.
 
-1. configurare la sezione `production` del file`zappa_settings.json`
+Quindi dopo aver generato e validato il certificato HTTPS sul dominio, si copia il suo `ARN` dentro `zappa_setting.json` nel campo `"certificate_arn"` e si valorizza il dominio nel campo `domain`. Tramite il comando:
+
+```
+zappa certify stage
+```
+
+`zappa` si occupa di:
+
+1. creare un `Custom Domain` mappandolo allo stage delle `AWS API Gateway` 
+1. associa il certificato HTTPS il cui `ARN` è configurato nei settings 
+1. creare le entry sul DNS del dominio `AWS Route53` che puntano alle `AWS API Gateway` del nostro ambiente
+
+Al termine dell'esecuzione il comando mostra l'URL in HTTP del nostro domino che punta all'ambiente deployato: `https://miodominio.com`
+
+### AWS CloudFront
+
+`CloudFront` è la CDN (`Content Delivery Network`) di `AWS` per ottimizzare la distribuzione dei contenuti utilizzando i `CloudFront Edge` ossia mirror dei contenuti distribuiti in modo capillare nel mondo minimizzando latenza e massimizzando la velocità di fornitura dei contenuti agli utenti finali.
+
+`CloudFront` inoltre gestisce anche come fornire i contenuti in base a dove sono localizzati nelle `Origin` ossia le applicazioni o i contenuti esporti. Nel caso particolare di un progetto Django, a fronte di una richiesta di una pagine, `CloudFront` interroga:
+
+- le `AWS API Gateway` per i contenuti dinamici, ossia le pagine generate da Django
+- l' `AWS S3 Bucket` per i contenuti statici di Django (immagini, CSS, JavaScript)
+
+La configurazione di `CloudFront` per le applicazioni `Django` deployate con `zappa` è particolare e ha richiesto diversi tentativi prima di arrivare ad una soluzione soddisfacente:
+
+1. definito il dominio `fc-project-api-stage.adessospiana.it` per le `AWS API Gateway` che ospitano la  `AWS Lambda` di `Django`, configurando `zappa_setting.json` ed eseguento `zappa certify stage`
+
+1. creato la distribution `CloudFront` con le due origin:
+   * l'origin Custon `fc-project-api-stage.adessospiana.it`
+   * l'origin S3 `fc-zappa-static` 
+
+1. configurati i `beaviour` ossia le regole di distribuzione come segue:
+   * tutte le richieste `/static/*` sono indirizzate all'origin `fc-zappa-static` 
+   * tutto il resto `Default (*)` viene indirizzato alla origin custon `fc-project-api-stage.adessospiana.it` 
+
+1. Per il `beaviour`  `Default (*)` è stata specificato il passaggio dei `Cookie` alla Origin dato che di default ciò non avviene. Di seguito la configurazione del `beaviour` ![Configurazione AWS CloudFront del beaviour Default (*) ](./images/cloudfront_default_beaviour_config.png)
+
+## Deploy su AWS con database `AWS RDS` di `PostgreSql`
+
+In alternativa, è possibile deployare su AWS il progetto utilizzando un database di classe enterprice come `PostgreSql` e fornito da AWS tramite il servizio `AWS RDS`. Naturalmente in questi casi i costi aumentano dato che il database si paga dal momento che si avvia e non solo quanto viene utilizzato.
+
+Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzato `production` anche se non è stato deployata su AWS l'ambiente di `stage` sopra descritto. Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
+
+1. installare i pacchetti python con il requirement specifico:
+  ``` 
+  pip install -r requirements_production.txt
+  ```
+
+1. configurare la sezione `production` del file `zappa_settings.json`
 
 1. deployare l'applicazione nel cloud
   ```
   zappa deploy production
   zappa manage production migrate
   zappa manage production createcachetable
-  zappa invoke production "from django.contrib.auth.models import User; User.objects.     create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
+  zappa invoke production "from django.contrib.auth.models import User; User.objects.create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
   zappa manage production loaddata fc_gestione_app
   zappa manage production pg_create_views
   zappa manage production pg_refresh_classifiche
   ```
 
-### aggiornamento progetto su AWS 
+## Creazione progetto Django
 
-Una volta deployato, il progetto può essere aggiornato applicando le modifiche locali al progetto con il comando `update`. Ad esempio, per l'ambiente di produzione:
-
-```
-zappa update production
-```
-
-### Cancellazione del progetto su AWS
-
-Per cancellare completamente l'applicazione su AWS, utilizzare il comando di `undeploy`. Ad esempio, per l'ambiente di produzione:
-
-```
-zappa undeploy production
-```
-
-Il database di produzione `AWS RDS PostgreSql` ed gli `AWS S3 bucket` vanno cancellati manualmente da AWS in quanto non gestiti da `Zappa`
-
-## Comandi creazione progetto Django
+A titolo digulgativo, questa sezione mostra la genesi del progetto descrivendo i comandi per crearlo e il modo in cui è stata disegnata la base dati.
 
 Di seguito i comandi iniziali con cui sono stati creati:
 

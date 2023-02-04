@@ -85,7 +85,7 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
 - creazione del virtualenv che ospiterà Django in locale
   ```
   sudo apt install virtualenv
-  virtualenv  venv --python python3.9 --pip 22.3.1
+  virtualenv  venv --python python3.9 --pip 23.0
   ```
 
 - rinominare `zappa_settings.json.template` in `zappa_settings.json`. Nella sezione dev contiene già le impostazioni per utilizzare il database locale `sqlite3`

@@ -1,3 +1,4 @@
+{% load static %}
 {% load django_bootstrap5 %} 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +12,7 @@
     <title>Classifiche Fantacitorio Unofficial</title>
     {% bootstrap_css %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'fc_classifiche_app/css/style.css' %}">
   </head>
 
 <body class="bg-dark text-light">

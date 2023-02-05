@@ -4,23 +4,6 @@
 
 {% block content %}
 
-<style>
-    .page-link, select, input {
-        --bs-bg-opacity: 1;
-        background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;
-        --bs-text-opacity: 1;
-        color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important;
-    }
-    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-        --bs-text-opacity: 1;
-        color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important;
-     }      
-    ::-ms-input-placeholder { /* Microsoft Edge */
-        --bs-text-opacity: 1;
-        color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important;
-    }
-</style>
-    
 {% if filter %}
 <form class="row row-cols-lg-auto g-1 align-items-center " novalidate>
     {% for field in filter.form %}

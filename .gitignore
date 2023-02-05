@@ -1,5 +1,5 @@
 *.pyc
 zappa_settings.json
 *.sqlite3
-static
+/static
 venv

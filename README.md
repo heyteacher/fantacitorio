@@ -1,7 +1,10 @@
 
 # Progetto Web Fantacitorio 
 
-[![GitHub license](https://img.shields.io/github/license/heyteacher/fantacitorio)](https://github.com//fantacitorio/blob/master/LICENSE) [![GitHub commit](https://img.shields.io/github/last-commit/heyteacher/fantacitorio)](https://github.com/heyteacher//fantacitorio/commits/main) [![Django versions](https://img.shields.io/badge/Django_versions-4.0_4.1_4.2_-blue)](https://github.com/django/django) [![Python versions](https://img.shields.io/badge/Python_versions-3.7_3.8_3.9-yellow)](https://www.python.org/downloads/release/python-390/)
+[![GitHub license](https://img.shields.io/github/license/heyteacher/fantacitorio)](https://github.com//fantacitorio/blob/master/LICENSE) 
+[![GitHub commit](https://img.shields.io/github/last-commit/heyteacher/fantacitorio)](https://github.com/heyteacher/fantacitorio/commits/main) 
+[![Django versions](https://img.shields.io/badge/Django_versions-4.0_4.1_4.2_-blue)](https://github.com/django/django) 
+[![Python versions](https://img.shields.io/badge/Python_versions-3.7_3.8_3.9-yellow)](https://www.python.org/downloads/release/python-390/)
 
 Progetto web __Fantacitorio__ nato dai `Google Sheet` gestiti da [@rosyilcapo](https://twitter.com/rosyilcapo)  per strutturare i dati in un database SQL ed visualizzare le classifiche (generale, per lega, politici). 
 

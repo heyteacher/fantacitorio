@@ -20,7 +20,7 @@ Il progetto è composto da:
 
 - una sezione pubblica dove sono visualizzate `classifica generale`, le `classifiche per lega`, la `classifica politico` e la possibilità di visualizzare il `dettaglio` di una squadra dove viene mostrata la `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe e il `dettaglio del punteggio`
 
-- un'area di amministrazione protetta per la gestione dei contenuti:
+- un'area protetta di `admin ` protetta per importare, esportare r gestione i contenuti:
   - `cariche`
   - `politici`
   - `squadre`
@@ -32,35 +32,62 @@ Il progetto è composto da:
 
 ## Demo
 
-Una demo del progetto è disponibile sul Cloud AWS al seguente indirizzo:
+Il deploy sul `Cloud AWS` è raggiungibile al seguente URL:
 
  https://classifiche-fantacitorio.adessospiana.it
 
 Le credenziali in sola lettura per accedere all' area di amministazione per la gestione dei contenuti per:
 
-- __login__: ``fantautente``
-- __password__: ``fantacitorio``
+- __login__: `fantautente`
+- __password__: `fantacitorio`
 
 ## Area Developer
 
-### framekork Django
+In questa sezione viene descritto nel dettaglio lo sviluppo, il popolamento del database e il deploy su AWS. Prerequisito per approcciare questa sezione è di avere una conoscenza almeno base dei seguenti strumenti:
 
-Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `zappa`.
+- il linguaggio di programmazione `Python`
+- il framework `Django`
+- il framework `Zappa`
+- il database `sqlite` e `PostgtreSQL` 
+- il cloud `AWS` (`Amazon Web Services`) e nello specifico
+  - `AWS S3`: l'object storage di AWS
+  - `AWS Api Gateway`
+  - `AWS Lambda` l'infrastruttura `Serverless/FaaS` (`Function as a Service`)
+  - `AWS RDS` il servizio cloud dei DBMS 
+  - `AWS CloudFront` la `CDN` (`Content Delivery Network`) di AWS
+  - `AWS Route53` il servizio di gestione `DNS` dei domini in  AWS
+  - `AWS Certificate` il servizio per creare certificati SSL validi
+  
 
-Di seguito la lista package python utilizzati:
+Nella trattazione, la conoscenza di questi strumenti è data per acquisita. Per lo studio e l'approfondimento si rimanda alla documentazione ufficiale di ciascun strumento.
 
-- `zappa`: tool per il rilascio stateless su cloud AWS
-- `django`: storico framework CMS in `python` che, tra i tanti, ha dato i natali ad `Instagram`
-- `django-s3-sqlite`: backend database django per `sqlite` su `AWS S3`
-- `django_s3_storage`: modulo django per la gestione dalle risorse statiche su `AWS S3`
-- `django-dynamodb-cache`: bachend cache django per `AWS DynamoDB`
-- `django-tables2`: modulo django che implementa una datadrid avanzata
-- `django-filter`: modulo django che implementa filtri avanzati 
-- `django-bootstrap3`: modulo django per utilizzare `bootstrap 3` nei template
-- `django-import-export`: modulo Django per importazione ed espostazione dei dati
-- `django-admin-autocomplete-filter`: modulo Django che implementa i filtri autocomplete nell'admin
+### Il progetto Django
 
-Una alternativa al database `sqlite` è  `PostgreSql` quindi i package `django-s3-sqlite` è sostituito con i driver python di `PostgreSql`:
+Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `zappa`. La lista dei `package python` utilizzati dal progetto sono:
+
+- [django](https://github.com/django/django): storico framework CMS in `python` che, tra i tanti, ha dato i natali ad `Instagram`
+
+- [zappa](https://github.com/zappa/Zappa): tool per il rilascio `serverless` su cloud AWS
+
+- [django-s3-sqlite](https://github.com/FlipperPA/django-s3-sqlite): backend database django per `sqlite` su `AWS S3`
+
+- [django_s3_storage](https://github.com/etianen/django-s3-storage): modulo django per la gestione dalle risorse statiche su `AWS S3`
+
+- [django-dynamodb-cache](https://github.com/xncbf/django-dynamodb-cache): bachend cache django per `AWS DynamoDB`
+
+- [django-tables2](https://github.com/jieter/django-tables2): modulo django che implementa una datadrid avanzata
+
+- [django-filter](https://github.com/carltongibson/django-filter): modulo django che implementa filtri avanzati 
+
+- [django-bootstrap5](https://github.com/zostera/django-bootstrap5): modulo django per utilizzare `bootstrap 3` nei template
+
+- [django-import-export](ttps://github.com/django-import-export/django-import-export): modulo Django per importazione ed espostazione dei dati
+
+- [django-admin-autocomplete-filter](https://github.com/farhan0581/django-admin-autocomplete-filter): modulo Django che implementa i filtri autocomplete nell'admin
+
+- [django-debug-toolbar](https://github.com/jazzband/django-debug-toolbar): modulo Django mostra metriche delle query, template utilizzati, messaggi di log, variabili di sistema, insomma tutto ciò che serve per fare debugging e tuning del sistema
+
+Lo sviluppo è iniziato in locale con db `PostgreSQL`. Per una questione meramente economica, con il deploy su AWS si è passati a `sqlite` quindi i package `django-s3-sqlite`. Naturalmente l'ambiente di produzione ideale prevede l'utilizzo di un vero database come `PostgreSQL` o meglio ancora `AWS Aurora` la versione cloud in alta affidabilità di `PostgreSQL. In tal caso i package sqlite andrebbero sostituiti con i package python:
 
 - `psycopg2` 
 - `psycopg2-binary` 
@@ -145,7 +172,7 @@ python manage.py loaddata fc_gestione_app
 
 Le `fixture` sono agnostiche rispetto al database utilizzato, quindi possono essere utilizzate per migrare i data verso qualsiasi database supportato da Django.
 
-### Deploy su AWS
+## architettura su AWS
 
 `zappa` è lo strumento che permette di rilasciare facilmente su cloud `AWS` dell'ambiente di stage e produzione. Nel dettaglio l'architettura del sito sul Cloud:
 
@@ -173,11 +200,16 @@ Il vantaggio di questa configurazione è che utilizza risorse AWS il cui costo �
    
 L'infrastuttura ha costo praticamente zero fino anche a 100.000 di accessi mensili.
 
+Di seguito lo schema architturale su AWS
+![Schema architetturale su AWS ](./images/fantacitorio_architecture_schema.png)
+
+
+### deploy
 La configurazione di `Zappa` per il rilascio su AWS è nella  sezione `stage` di `zappa_settings.json`
 
 Come pre-requisito è necessario un account AWS personale con le chiavi configurate in locale per l'accesso all'infartruttura. Di seguito i comandi `Zappa` per il rilascio dell'ambiente di stage: 
 
-1. deploy dell'ambiente (solo la prima volta)
+1. deploy dell'ambiente (solo la prima volta)++++++
    ```
    zappa deploy stage
    ```
@@ -264,9 +296,9 @@ La configurazione di `CloudFront` per le applicazioni `Django` deployate con `za
 
 1. Per il `beaviour`  `Default (*)` è stata specificato il passaggio dei `Cookie` alla Origin dato che di default ciò non avviene. Di seguito la configurazione del `beaviour` ![Configurazione AWS CloudFront del beaviour Default (*) ](./images/cloudfront_default_beaviour_config.png)
 
-## Deploy su AWS con database `AWS RDS` di `PostgreSql`
+## Deploy su AWS con database `AWS RDS` di `PostgreSQL`
 
-In alternativa, è possibile deployare su AWS il progetto utilizzando un database di classe enterprice come `PostgreSql` e fornito da AWS tramite il servizio `AWS RDS`. Naturalmente in questi casi i costi aumentano dato che il database si paga dal momento che si avvia e non solo quanto viene utilizzato.
+In alternativa, è possibile deployare su AWS il progetto utilizzando un database di classe enterprice come `PostgreSQL` e fornito da AWS tramite il servizio `AWS RDS`. Naturalmente in questi casi i costi aumentano dato che il database si paga dal momento che si avvia e non solo quanto viene utilizzato.
 
 Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzato `production` anche se non è stato deployata su AWS l'ambiente di `stage` sopra descritto. Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
 

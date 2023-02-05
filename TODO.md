@@ -11,10 +11,12 @@
     - [x] lega - squadra
 - [x] Django cache DynamoDB
 - [x] homepage classifiche (django table2)
-- [ ] descrizione architettura nel README
+- [x] descrizione architettura nel README
 - [x] descrizione certificati nel README
-- [ ] auth twitter
 - [x] cloudfront
+- [ ] auth twitter
+- [ ] inserimento squadra via SQS
+- [ ] inserimento lega via SQS
 - [ ] custom error message
 - [ ] form inserimento squadra + SQS
 - [ ] rest api

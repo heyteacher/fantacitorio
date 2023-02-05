@@ -1,5 +1,5 @@
 
-# Progetto Web Fantacitorio 
+# Fantacitorio in _Django_ su AWS con _Zappa_ (2022-2023)
 
 [![GitHub license](https://img.shields.io/github/license/heyteacher/fantacitorio)](https://github.com//fantacitorio/blob/master/LICENSE) 
 [![GitHub commit](https://img.shields.io/github/last-commit/heyteacher/fantacitorio)](https://github.com/heyteacher/fantacitorio/commits/main) 
@@ -204,6 +204,7 @@ Il vantaggio di questa configurazione è che utilizza risorse AWS il cui costo �
 L'infrastuttura ha costo praticamente zero fino anche a 100.000 di accessi mensili.
 
 Di seguito lo schema architturale su AWS
+
 ![Schema architetturale su AWS ](./images/fantacitorio_architecture_schema.png)
 
 
@@ -297,7 +298,9 @@ La configurazione di `CloudFront` per le applicazioni `Django` deployate con `za
    * tutte le richieste `/static/*` sono indirizzate all'origin `fc-zappa-static` 
    * tutto il resto `Default (*)` viene indirizzato alla origin custon `fc-project-api-stage.adessospiana.it` 
 
-1. Per il `beaviour`  `Default (*)` è stata specificato il passaggio dei `Cookie` alla Origin dato che di default ciò non avviene. Di seguito la configurazione del `beaviour` ![Configurazione AWS CloudFront del beaviour Default (*) ](./images/cloudfront_default_beaviour_config.png)
+1. Per il `beaviour`  `Default (*)` è stata specificato il passaggio dei `Cookie` alla Origin dato che di default ciò non avviene. Di seguito la configurazione del `beaviour` 
+   
+   ![Configurazione AWS CloudFront del beaviour Default (*) ](./images/cloudfront_default_beaviour_config.png)
 
 ## Deploy su AWS con database `AWS RDS` di `PostgreSQL`
 

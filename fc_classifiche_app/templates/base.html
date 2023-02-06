@@ -29,20 +29,27 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link {% if request.path == "/" %}active{% endif %}" href="/" aria-current="page">
+            <a class="nav-link {% if request.resolver_match.url_name == "home" %}active{% endif %}" href="/" aria-current="page">
               <i class="bi bi-list-ol"></i> Generale
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.path == "/classifica_per_lega" %}active{% endif %}" href="/classifica_per_lega" aria-current="page">
+            <a class="nav-link {% if request.resolver_match.url_name == "classifica_per_lega" %}active{% endif %}" href="/classifica_per_lega" aria-current="page">
               <i class="bi bi-list-ol"></i>  Per Lega
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.path == "/classifica_politico" %}active{% endif %}" href="/classifica_politico" aria-current="page">
+            <a class="nav-link {% if request.resolver_match.url_name == "classifica_politico" %}active{% endif %}" href="/classifica_politico" aria-current="page">
               <i class="bi bi-list-ol"></i> Per Politico
             </a>
           </li>
+          {% if request.resolver_match.url_name == "squadra_punti" %} 
+          <li class="nav-item">
+            <a class="nav-link active" href="#" aria-current="page">
+              <i class="bi bi-layout-text-sidebar-reverse"></i> Dettaglio Squadra
+            </a>
+          </li>
+          {% endif %}
         </ul>
         <ul class="navbar-nav mt-2 mt-md-0">
           <li class="nav-item dropdown dropstart">

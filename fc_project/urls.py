@@ -25,9 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', ClassificaGeneraleListView.as_view(), name='home'),
-    path('classifica_per_lega', ClassificaPerLegaListView.as_view()),
-    path('classifica_politico', ClassificaPoliticoListView.as_view()),
-    path('classifica_politico', ClassificaPoliticoListView.as_view()),
+    path('classifica_per_lega', ClassificaPerLegaListView.as_view(), name='classifica_per_lega'),
+    path('classifica_politico', ClassificaPoliticoListView.as_view(), name='classifica_politico'),
     path('squadra_punti/<squadra_id>', SquadraPuntiListView.as_view(), name='squadra_punti'),
   ] 
 

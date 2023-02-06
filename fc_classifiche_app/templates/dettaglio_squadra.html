@@ -104,9 +104,10 @@
         <span class="badge rounded-pill bg-info text-dark">{{classifica.fanfani}} / 160</span>
     </dd>
     <dt class="col-sm-2">
-        Dettaglio Punteggio
+        Dettaglio Punti
     </dt>
     <dd class="col-sm-10">
+        <p class="fw-light fst-italic"><span class="fw-bold">{{table.rows|length }}</span> {{entity_plural_name}}</p>
         {% render_table table %} 
         {% endblock%}
     </dd>

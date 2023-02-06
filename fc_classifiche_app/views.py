@@ -13,18 +13,30 @@ class ClassificaGeneraleListView(SingleTableMixin, FilterView):
     template_name = 'table.html'
     filterset_class = ClassificaGeneraleFilter
     pagination_class = LazyPaginator
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['entity_plural_name'] = 'squadre'
+        return context
 
 class ClassificaPerLegaListView(SingleTableMixin, FilterView):
     model = ClassificaPerLega
     table_class = ClassificaPerLegaTable
     template_name = 'table.html'
     filterset_class = ClassificaPerLegaFilter
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['entity_plural_name'] = 'squadre'
+        return context
 
 class ClassificaPoliticoListView(SingleTableMixin, FilterView):
     model = ClassificaPolitico
     table_class = ClassificaPoliticoTable
     template_name = 'table.html'
     filterset_class = ClassificaPoliticoFilter
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['entity_plural_name'] = 'politici'
+        return context
 
 class SquadraPuntiListView(SingleTableView):
     table_class = SquadraPuntiTable
@@ -38,4 +50,5 @@ class SquadraPuntiListView(SingleTableView):
         context = super().get_context_data(**kwargs)
         context['classifica'] = ClassificaGenerale.objects.get(squadra_id=self.kwargs['squadra_id'])
         context['classifica_leghe'] = ClassificaPerLega.objects.filter(squadra_id=self.kwargs['squadra_id'])
+        context['entity_plural_name'] = 'punteggi'
         return context

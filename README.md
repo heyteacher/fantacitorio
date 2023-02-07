@@ -251,7 +251,7 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
 
 1. primo refresh delle classifiche (comando poi eseguito ogni ora dal `AWS Event`)
    ```
-   zappa manage stage sqlite_refresh_views
+   zappa manage stage sqlite_refresh_classifiche
    ```
 
 ### certificato HTTPS e dominio 
@@ -353,6 +353,7 @@ Per comodità in locale il database è stati disegnato usando PostgreSQL è lo s
 
 1. eseguire i comandi per creare le viste classifiche, le viste materializzate e i trigger di refresh dei dati  
   ```
+  zappa manage production pg_drop_mat_views
   zappa manage production create_classifiche_views
   zappa manage production pg_create_mat_views
   zappa manage production pg_create_triggers_fuction_proc

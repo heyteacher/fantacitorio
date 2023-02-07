@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
      # moduli aggiuntivi
     'django_s3_storage',
-    'django_s3_sqlite',
     'django_dynamodb_cache',
     'django_filters',
     'admin_auto_filters',
@@ -63,6 +62,9 @@ INSTALLED_APPS = [
     # debug tootbar
     "debug_toolbar"
 ]
+
+if not os.environ.get('DATABASE_DEFAULT_BUCKET','') == '':
+    INSTALLED_APPS.append('django_s3_sqlite')
 
 # ALLAUTH CONFIG
 SITE_ID = 1
@@ -129,7 +131,7 @@ DATABASES = {
     }
 }
 
-if not os.environ.get('DATABASE_CLASSIFICHE_ENGINE') == '':
+if not os.environ.get('DATABASE_CLASSIFICHE_ENGINE','') == '':
     DATABASES['db_classifiche'] = {
             'ENGINE': os.environ.get('DATABASE_CLASSIFICHE_ENGINE'),
             'NAME': os.environ.get('DATABASE_CLASSIFICHE_NAME'),

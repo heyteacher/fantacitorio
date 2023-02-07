@@ -148,7 +148,7 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
 
 - generazione delle viste e refresh dei dati di fc_classifiche_app 
   ```
-  python manage.py sqlite_create_views
+  python manage.py create_classifiche_views
   python manage.py sqlite_refresh_classifiche
   ```
 
@@ -246,7 +246,7 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
 
 1. creazione delle viste classifiche
    ```
-   zappa manage stage sqlite_create_views
+   zappa manage stage create_classifiche_views
    ```
 
 1. primo refresh delle classifiche (comando poi eseguito ogni ora dal `AWS Event`)
@@ -306,10 +306,13 @@ La configurazione di `CloudFront` per le applicazioni `Django` deployate con `za
 
 In alternativa, è possibile deployare su AWS il progetto utilizzando un database di classe enterprice come `PostgreSQL` e fornito da AWS tramite il servizio `AWS RDS`. Naturalmente in questi casi i costi aumentano dato che il database si paga dal momento che si avvia e non solo quanto viene utilizzato.
 
-Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzato `production` anche se non è stato deployata su AWS l'ambiente di `stage` sopra descritto. Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
+Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzato `production`. Questo ambiente attualmente non è deployato su AWS 
 
-1. installare i pacchetti python con il requirement specifico:
+Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
+
+1. installare i pacchetti python con il requirement specifico di produzione disinstallando il default:
   ``` 
+  pip uninstall -r requirements.txt
   pip install -r requirements_production.txt
   ```
 
@@ -318,19 +321,52 @@ Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzat
 1. deployare l'applicazione nel cloud
   ```
   zappa deploy production
-  zappa manage production migrate
-  zappa manage production createcachetable
-  zappa invoke production "from django.contrib.auth.models import User; User.objects.create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
-  zappa manage production loaddata fc_gestione_app
-  zappa manage production pg_create_views
-  zappa manage production pg_refresh_classifiche
   ```
+ 
+1. applicare la migrazione dell'applicazione delle classifiche in modalità __fake__ dato che in `postgresql` le tabelle sono viste materializzate non gestite da Django come del caso di `sqlite`
+  ```
+  zappa manage production migrate fc_classifica_app --fake
+  ```
+1. applicare la migrazione delle restanti app per creare le tabelle gestite da Django  
+  ```
+  zappa manage production migrate
+  ```
+
+1. creare la tabella DynamoDB per la cache di session e delle pagine  
+  ```
+  zappa manage production createcachetable
+  ```
+
+1. creare l'utente superuser  
+  ```
+  zappa invoke production "from django.contrib.auth.models import User; User.objects.create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
+  ```
+
+1. rimuovere eventuali trigger di refresh delle viste materializzate
+
+  zappa manage production pg_drop_triggers_fuction_proc
+
+1. popolare le tabelle con le fixture  
+  ```
+  zappa manage production loaddata fc_gestione_app
+  ```
+
+1. eseguire i comandi per creare le viste classifiche, le viste materializzate e i trigger di refresh dei dati  
+  ```
+  zappa manage production create_classifiche_views
+  zappa manage production pg_create_mat_views
+  zappa manage production pg_create_triggers_fuction_proc
+  ```
+
+1. eseguire un refresh manuale delle viste materializzate 
+  zappa manage production pg_refresh_classifiche
+
 
 ## Creazione progetto Django
 
-A titolo digulgativo, questa sezione mostra la genesi del progetto descrivendo i comandi per crearlo e il modo in cui è stata disegnata la base dati.
+In questa sezione è mostrata la genesi del progetto descrivendo i comandi utilizzati per crearlo e il modo in cui è stata disegnata la base dati.
 
-Di seguito i comandi iniziali con cui sono stati creati:
+Di seguito i comandi iniziali con cui sono stati creati il progetto e le due app django:
 
 ```
 django-admin startproject fc_project .
@@ -338,28 +374,28 @@ django-admin startapp fc_gestione_app
 django-admin startapp fc_classifiche_app
 ```
 
-Inizialmente il database di `fc_gestione_app` è stato creato graficamente con `PgAdmin ERD` poi generato nel postgres locale. 
+Per comodità il database principale `fc_gestione_app` è stato creato graficamente con `PgAdmin ERD` poi generato nel postgres locale. 
 
 Di seguito lo schema ER generato da PgAdmin ERD:
 
 ![Schema ER generato da PgAdmin ERD](./images/fantacitorio_dbschema.png)
 
-Quindi i models di Django sono stati creati tramite `reverse engineering` con il comando `inspectdb`
+Quindi i models di Django sono stati creati tramite il comando `inspectdb` che genera i models partendo da un database esistente
 
 ```
 python manage.py inspectdb > fc_gestione_app/models.py
 ```
 
-I models Django di `fc_classifiche_app` sono stati creati manualmente sulle tre viste materializzate e non gestite da Django (vedi nei models `managed=False`)
+I models Django di `fc_classifiche_app` sono stati creati manualmente sulle tre viste materializzate per `PostgreSQL` e tre tabelle per `Sqlite`
 
 La configurazione inziale di `Zappa` è stata generata eseguendo il comando `zappa init` __eseguito dentro il virtualenv del progetto__. In questo modo riconosce l'ambiente Django installato nel virtualenv e crea il file `zappa_setting.json` tramite un wizard. 
 
 ## Per Contribuire
 
-puoi contribuire:
+Puoi contribuire:
 
-* eseguendo un `fork` del progetto e contribuendo allo sviluppo 
-* segnalando malfunzionamenti
-* suggerendo nuove funzionalità
+* aprendo una [segnalazione](https://github.com/heyteacher/fantacitorio/issues/new) per
+  * segnalare malfunzionamenti
+  * suggerire nuove funzionalità
 
-Aprendo una [segnalazione](https://github.com/heyteacher/fantacitorio/issues/new).
+* eseguendo un `fork` del progetto e contribuendo allo sviluppo.

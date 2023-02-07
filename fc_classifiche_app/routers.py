@@ -1,6 +1,8 @@
+from django.conf import settings
+
 class ClassificheRouter:
     route_app_label = 'fc_classifiche_app'
-    route_db = 'db_classifiche'
+    route_db = 'db_classifiche' if 'db_classifiche' in settings.DATABASES else 'default'
     
     def db_for_read(self, model, **hints):
         if model._meta.app_label == self.route_app_label:

@@ -14,11 +14,12 @@
 - [x] descrizione architettura nel README
 - [x] descrizione certificati nel README
 - [x] cloudfront
-- [ ] auth twitter
+- [x] sistemare progetto per backend postresql
+- [x] aggiuntegere pagina punteggi
+- [ ] custom error message
 - [ ] inserimento squadra via SQS
 - [ ] inserimento lega via SQS
-- [ ] custom error message
-- [ ] form inserimento squadra + SQS
+- [ ] auth twitter
 - [ ] rest api
 - [ ] wireframe client
 - [ ] app client

@@ -66,3 +66,18 @@ class SquadraPunti(models.Model):
         indexes = [
             Index(fields = ('squadra_id',), name='squadra_id_idx'),
         ]
+
+class PunteggioPuntata(models.Model):
+    puntata_numero = models.IntegerField()
+    puntata_data = models.DateTimeField(auto_now_add=True)
+    politico_name = models.CharField(max_length=200)
+    punti = models.IntegerField()
+    creato_il = models.DateTimeField(auto_now_add=True)
+    @property
+    def puntata(self):
+        return '%s° del %s' % (self.puntata_numero, date(self.puntata_data,'d/m/Y'))
+
+    class Meta:
+        db_table = 'punteggio_puntata'
+        verbose_name_plural = 'punteggi'
+        ordering = ('-creato_il',)

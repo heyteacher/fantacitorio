@@ -1,11 +1,11 @@
 from django_filters.views import FilterView
 from django_tables2.paginators import LazyPaginator
 from django_tables2 import SingleTableMixin, SingleTableView
-from .models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico, SquadraPunti
+from .models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico, SquadraPunti, PunteggioPuntata 
 from .tables import ClassificaGeneraleTable, ClassificaGeneraleFilter, \
                     ClassificaPerLegaTable, ClassificaPerLegaFilter, \
                     ClassificaPoliticoTable, ClassificaPoliticoFilter, \
-                    SquadraPuntiTable
+                    SquadraPuntiTable, PunteggioPuntataTable, PunteggioPuntataFilter
 
 class ClassificaGeneraleListView(SingleTableMixin, FilterView):
     model = ClassificaGenerale
@@ -50,5 +50,15 @@ class SquadraPuntiListView(SingleTableView):
         context = super().get_context_data(**kwargs)
         context['classifica'] = ClassificaGenerale.objects.get(squadra_id=self.kwargs['squadra_id'])
         context['classifica_leghe'] = ClassificaPerLega.objects.filter(squadra_id=self.kwargs['squadra_id'])
+        context['entity_plural_name'] = 'punteggi'
+        return context
+
+class PunteggioPuntataListView(SingleTableMixin, FilterView):
+    model = PunteggioPuntata
+    table_class = PunteggioPuntataTable
+    template_name = 'table.html'
+    filterset_class = PunteggioPuntataFilter
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'punteggi'
         return context

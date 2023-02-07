@@ -43,6 +43,11 @@
               <i class="bi bi-list-ol"></i> Per Politico
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == "punteggio_puntata" %}active{% endif %}" href="/punteggio_puntata" aria-current="page">
+              <i class="bi bi-person-video"></i> Punteggi 
+            </a>
+          </li>
           {% if request.resolver_match.url_name == "squadra_punti" %} 
           <li class="nav-item">
             <a class="nav-link active" href="#" aria-current="page">

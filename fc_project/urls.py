@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.decorators import login_required
-from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, ClassificaPoliticoListView, SquadraPuntiListView
+from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, \
+    ClassificaPoliticoListView, SquadraPuntiListView, PunteggioPuntataListView
 from fc_project import settings
-
+#from django.contrib.auth.decorators import login_required
 #admin.site.login = login_required(admin.site.login)
 
 urlpatterns = [
@@ -27,6 +27,7 @@ urlpatterns = [
     path('', ClassificaGeneraleListView.as_view(), name='home'),
     path('classifica_per_lega', ClassificaPerLegaListView.as_view(), name='classifica_per_lega'),
     path('classifica_politico', ClassificaPoliticoListView.as_view(), name='classifica_politico'),
+    path('punteggio_puntata', PunteggioPuntataListView.as_view(), name='punteggio_puntata'),
     path('squadra_punti/<squadra_id>', SquadraPuntiListView.as_view(), name='squadra_punti'),
   ] 
 

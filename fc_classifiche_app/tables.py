@@ -12,10 +12,10 @@ attrs =  {
 }
 
 class ClassificaGeneraleFilter(FilterSet):
-    nome_squadra = CharFilter('nome_squadra','icontains' , label="Filtra per squadra")
+    squadra = CharFilter('nome_squadra','icontains' , label="squadra")
     class Meta:
         model = ClassificaGenerale
-        fields = ['nome_squadra']
+        fields = ['squadra']
 
 class ClassificaGeneraleTable(tables.Table):
     nome_squadra = tables.LinkColumn("squadra_punti", args=[A("squadra_id")])
@@ -29,10 +29,10 @@ class ClassificaGeneraleTable(tables.Table):
 
 class ClassificaPerLegaFilter(FilterSet):
     lega_id = ChoiceFilter(choices=Lega.objects.all().values_list('id','name'), empty_label="- Seleziona lega -")
-    nome_squadra = CharFilter('nome_squadra','icontains' , label="Filtra per squadra")
+    squadra = CharFilter('nome_squadra','icontains' , label="squadra")
     class Meta:
         model = ClassificaPerLega
-        fields = ['lega_id','nome_squadra']
+        fields = ['lega_id','squadra']
 
 class ClassificaPerLegaTable(tables.Table):
     nome_squadra = tables.LinkColumn("squadra_punti", args=[A("squadra_id")])
@@ -44,10 +44,10 @@ class ClassificaPerLegaTable(tables.Table):
         exclude = ['id','lega_id', 'squadra_id']
 
 class ClassificaPoliticoFilter(FilterSet):
-    nome_politico = CharFilter('nome_politico','icontains' , label="Filtra per politico")
+    politico = CharFilter('nome_politico','icontains' , label="politico")
     class Meta:
         model = ClassificaPolitico
-        fields = ['nome_politico']
+        fields = ['politico']
 
 class ClassificaPoliticoTable(tables.Table):
     class Meta:
@@ -58,10 +58,10 @@ class ClassificaPoliticoTable(tables.Table):
 
 class PunteggioPuntataFilter(FilterSet):
     puntata_numero = ChoiceFilter(choices= [(puntata.numero, puntata) for puntata in Puntata.objects.all()], empty_label="- Seleziona puntata -")
-    nome_politico = CharFilter('nome_politico','icontains' , label="Filtra per politico")
+    politico = CharFilter('politico_name','icontains' , label="politico")
     class Meta:
         model = PunteggioPuntata
-        fields = ['puntata_numero','nome_politico']
+        fields = ['puntata_numero','politico']
 
 class PunteggioPuntataTable(tables.Table):
     class Meta:

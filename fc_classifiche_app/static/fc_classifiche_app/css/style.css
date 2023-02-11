@@ -11,11 +11,4 @@ select, input {
     --bs-text-opacity: 1;
     color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important;
 }
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    --bs-text-opacity: 1;
-    color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important;
- }      
-::-ms-input-placeholder { /* Microsoft Edge */
-    --bs-text-opacity: 1;
-    color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important;
-}
+

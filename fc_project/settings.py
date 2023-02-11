@@ -35,6 +35,13 @@ DEBUG = "true" == os.environ.get('DEBUG', '').lower()
 
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS_1'),os.environ.get('ALLOWED_HOSTS_2'),]
 
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT','') == 'true'
+
+if not os.environ.get('SECURE_HSTS_SECONDS','') == '':
+    SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS'))
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -210,13 +217,20 @@ if not os.environ.get('CACHE_DEFAULT_BACHEND','') == '':
 ### SMTP
 if not os.environ.get('EMAIL_HOST','') == '':
     EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT= os.environ.get('EMAIL_PORT')
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-    EMAIL_PORT= os.environ.get('EMAIL_PORT')
     DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
     EMAIL_SUBJECT_PREFIX = os.environ.get('EMAIL_SUBJECT_PREFIX')
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '').lower() == 'true'
     EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', '').lower() == 'true'
+    # send error via email to ADMINS
+    if not os.environ.get('EMAIL_ADMIN_EMAIL','') == '':
+        ADMINS = [(os.environ.get('EMAIL_ADMIN_NAME'), os.environ.get('EMAIL_ADMIN_EMAIL')),]
+    # send page not found via email to MANAGERS
+    if not os.environ.get('EMAIL_MANAGER_EMAIL','') == '':
+        MANAGERS = [(os.environ.get('EMAIL_MANAGER_NAME'), os.environ.get('EMAIL_MANAGER_EMAIL')),]
+        
 
 ### DJANGO TABLE2
 DJANGO_TABLES2_PAGE_RANGE=5
@@ -243,6 +257,7 @@ if DEBUG:
     }
 
 ### DJANGO DEBUG TOOLBAR
+# enable debug toolbar if DEBUG is TRUE
 def show_toolbar(request):
     return DEBUG
 DEBUG_TOOLBAR_CONFIG = {

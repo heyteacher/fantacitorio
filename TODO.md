@@ -16,7 +16,7 @@
 - [x] cloudfront
 - [x] sistemare progetto per backend postresql
 - [x] aggiuntegere pagina punteggi
-- [ ] custom error message
+- [x] custom error message
 - [ ] inserimento squadra via SQS
 - [ ] inserimento lega via SQS
 - [ ] auth twitter

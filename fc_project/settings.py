@@ -81,6 +81,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'fc_project.account_adapter.NoNewUsersAccountAdapter'
 
 MIDDLEWARE = [
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -221,6 +222,7 @@ if not os.environ.get('EMAIL_HOST','') == '':
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
     DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+    SERVER_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
     EMAIL_SUBJECT_PREFIX = os.environ.get('EMAIL_SUBJECT_PREFIX')
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '').lower() == 'true'
     EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', '').lower() == 'true'
@@ -230,7 +232,6 @@ if not os.environ.get('EMAIL_HOST','') == '':
     # send page not found via email to MANAGERS
     if not os.environ.get('EMAIL_MANAGER_EMAIL','') == '':
         MANAGERS = [(os.environ.get('EMAIL_MANAGER_NAME'), os.environ.get('EMAIL_MANAGER_EMAIL')),]
-        
 
 ### DJANGO TABLE2
 DJANGO_TABLES2_PAGE_RANGE=5

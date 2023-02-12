@@ -13,7 +13,11 @@
             "SubnetIds": ["subnet-***********", "subnet-***********"],
             "SecurityGroupIds": ["sg-***************"]
         },
-        "exclude": [".git*", "db.sqlite3", "*.md", "images", "static"],
+        "events": [{
+            "function": "zappa_commands.pg_refresh_classifiche",
+            "expression": "rate(1 hour)"
+        }],
+        "exclude": [".git*", "db.sqlite3", "*.md", "images", "static", "venv", "venvstage", "requirements*", "zappa_settings.json.template"],
 
         "aws_environment_variables": {
             "DEBUG": "false",
@@ -36,7 +40,22 @@
 
             "CACHE_DEFAULT_BACHEND": "django_dynamodb_cache.backend.DjangoCacheBackend",
             "CACHE_DEFAULT_LOCATION": "<TABELLA DYNAMODB>",
-            "CACHE_DEFAULT_AWS_REGION": "<REGIONE AWS>"
+            "CACHE_DEFAULT_AWS_REGION": "<REGIONE AWS>",
+
+            "EMAIL_HOST": "<MAIL HOST>",
+            "EMAIL_PORT": "<PORT>",
+            "EMAIL_HOST_USER": "<USER>",
+            "EMAIL_HOST_PASSWORD": "<PASSWORD>",
+            "DEFAULT_FROM_EMAIL": "<DEFAULT FROM EMAIL>",
+            "EMAIL_SUBJECT_PREFIX": "[FC_PROD] ",
+            "EMAIL_USE_SSL": "true",
+            "EMAIL_ADMIN_NAME": "<ADMIN NAME>",
+            "EMAIL_ADMIN_EMAIL": "<ADMIN EMAIL>",
+            "EMAIL_MANAGER_NAME": "<MANAGER NAME>",
+            "EMAIL_MANAGER_EMAIL": "<MANAGER EMAIL>",
+
+            "SECURE_SSL_REDIRECT": "true",
+            "SECURE_HSTS_SECONDS": "864000"
         }
     },
     "stage": {
@@ -50,15 +69,15 @@
         "use_precompiled_packages": false,
         "domain": "<AWS DOMAIN>",
         "certificate_arn": "<CERTIFICATE_ARN>",
-       "exclude": [".git*", "rankdb.sqlite3", "db.sqlite3", "*.md", "images", "static"],
- 
+        "exclude": [".git*", "rankdb.sqlite3", "db.sqlite3", "*.md", "images", "static", "venv", "venvprod", "requirements*", "zappa_settings.json.template"],
+        "debug": false,
         "events": [{
             "function": "zappa_commands.sqlite_refresh_classifiche",
             "expression": "rate(1 hour)"
         }],
 
         "aws_environment_variables": {
-            "DEBUG": "true",
+            "DEBUG": "false",
 
             "SECRET_KEY": "<GENERA CASUALMENTE UNA CHIAVE DI ALMENO 20 CARATTERI CON LETTERE MINUSCOLE, MAUISCOLE E CARATTERI SPECIALI>",
             "ALLOWED_HOSTS_1": "<ENDPOINT 1 SU CUI é ESPOSTO IL SITO",
@@ -79,7 +98,23 @@
 
             "CACHE_DEFAULT_BACHEND": "django_dynamodb_cache.backend.DjangoCacheBackend",
             "CACHE_DEFAULT_LOCATION": "<TABELLA DYNAMODB>",
-            "CACHE_DEFAULT_AWS_REGION": "<REGIONE AWS>"
+            "CACHE_DEFAULT_AWS_REGION": "<REGIONE AWS>",
+
+            "EMAIL_HOST": "<MAIL HOST>",
+            "EMAIL_PORT": "<PORT>",
+            "EMAIL_HOST_USER": "<USER>",
+            "EMAIL_HOST_PASSWORD": "<PASSWORD>",
+            "DEFAULT_FROM_EMAIL": "<DEFAULT FROM EMAIL>",
+            "EMAIL_SUBJECT_PREFIX": "[FC_PROD] ",
+            "EMAIL_USE_SSL": "true",
+            "EMAIL_ADMIN_NAME": "<ADMIN NAME>",
+            "EMAIL_ADMIN_EMAIL": "<ADMIN EMAIL>",
+            "EMAIL_MANAGER_NAME": "<MANAGER NAME>",
+            "EMAIL_MANAGER_EMAIL": "<MANAGER EMAIL>",
+
+
+            "SECURE_SSL_REDIRECT": "true",
+            "SECURE_HSTS_SECONDS": "864000"
         }
     },
     "local": {
@@ -94,7 +129,20 @@
             "DATABASE_DEFAULT_NAME": "db.sqlite3",
 
             "DATABASE_CLASSIFICHE_ENGINE": "django.db.backends.sqlite3",
-            "DATABASE_CLASSIFICHE_NAME": "rankdb.sqlite3"
+            "DATABASE_CLASSIFICHE_NAME": "rankdb.sqlite3",
+
+            "EMAIL_HOST": "<MAIL HOST>",
+            "EMAIL_PORT": "<PORT>",
+            "EMAIL_HOST_USER": "<USER>",
+            "EMAIL_HOST_PASSWORD": "<PASSWORD>",
+            "DEFAULT_FROM_EMAIL": "<DEFAULT FROM EMAIL>",
+            "EMAIL_SUBJECT_PREFIX": "[FC_DEV] ",
+            "EMAIL_USE_SSL": "true",
+            "EMAIL_ADMIN_NAME": "<ADMIN NAME>",
+            "EMAIL_ADMIN_EMAIL": "<ADMIN EMAIL>",
+            "EMAIL_MANAGER_NAME": "<MANAGER NAME>",
+            "EMAIL_MANAGER_EMAIL": "<MANAGER EMAIL>",
+
         }
     }
 }

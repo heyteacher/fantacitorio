@@ -213,6 +213,14 @@ La configurazione di `Zappa` per il rilascio su AWS è nella  sezione `stage` di
 
 Come pre-requisito è necessario un account AWS personale con le chiavi configurate in locale per l'accesso all'infartruttura. Di seguito i comandi `Zappa` per il rilascio dell'ambiente di stage: 
 
+
+1. creazione virtualenv per stage e installazione dei moduli python di stage
+   ```
+   virtualenv  venvstage --python python3.9 --pip 23.0
+   source venvstage/bin/activate
+   pip install -r requirements-stage.txt
+   ```
+
 1. deploy dell'ambiente (solo la prima volta)++++++
    ```
    zappa deploy stage
@@ -302,6 +310,21 @@ La configurazione di `CloudFront` per le applicazioni `Django` deployate con `za
    
    ![Configurazione AWS CloudFront del beaviour Default (*) ](./images/cloudfront_default_beaviour_config.png)
 
+### reporting errore 
+
+Dato che nell'ambiente AWS `settings.DEBUG` è `False`, gli amministratori ricevono gli errori server (errori `500`) via email tramite la configurazione del server `SMTP` e la configurazione di `settings.ADMINS`, array di tuple `(nome,email)`
+
+Mentre errori `404` sono notificate agli indirizzi specificati in `settings.MANAGERS`. Prima è necessario aggiungere ai `settings.MIDDLEWARE` `django.middleware.common.BrokenLinkEmailsMiddleware`. Da notare che vengono notificati solo gli errori 404 con `Refers` valorizzato con un url del sito, quindi sono notificate le pagine non trovate clicando i link presenti nel sito. Se generiamo l'errore modificando a mano l'url del browser, otterremo un errore `404` ma non verrà inviata ai managers alcuna mail.
+
+### personalizzazione pagine di errore
+
+Sempre nell'ambiente AWS gli errori 400 403 404 e 500 sono indirizzate su pagine specifiche personalizzata, rispettivamente:
+
+* `templates/400.html` richiesta non valida
+* `templates/403.html` richiesta non autorizzata
+* `templates/404.html` pagina non trovata
+* `templates/500.html` errore server
+
 ## Deploy su AWS con database `AWS RDS` di `PostgreSQL`
 
 In alternativa, è possibile deployare su AWS il progetto utilizzando un database di classe enterprice come `PostgreSQL` e fornito da AWS tramite il servizio `AWS RDS`. Naturalmente in questi casi i costi aumentano dato che il database si paga dal momento che si avvia e non solo quanto viene utilizzato.
@@ -310,11 +333,12 @@ Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzat
 
 Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
 
-1. installare i pacchetti python con il requirement specifico di produzione disinstallando il default:
-  ``` 
-  pip uninstall -r requirements.txt
-  pip install -r requirements_production.txt
-  ```
+1. creazione virtualenv per stage e installazione dei moduli python di stage
+   ```
+   virtualenv  venvprod --python python3.9 --pip 23.0
+   source venvprod/bin/activate
+   pip install -r requirements-stage.txt
+   ```
 
 1. configurare la sezione `production` del file `zappa_settings.json`
 
@@ -362,7 +386,6 @@ Per comodità in locale il database è stati disegnato usando PostgreSQL è lo s
 1. eseguire un refresh manuale delle viste materializzate 
   zappa manage production pg_refresh_classifiche
 
-
 ## Creazione progetto Django
 
 In questa sezione è mostrata la genesi del progetto descrivendo i comandi utilizzati per crearlo e il modo in cui è stata disegnata la base dati.
@@ -377,9 +400,13 @@ django-admin startapp fc_classifiche_app
 
 Per comodità il database principale `fc_gestione_app` è stato creato graficamente con `PgAdmin ERD` poi generato nel postgres locale. 
 
-Di seguito lo schema ER generato da PgAdmin ERD:
+Di seguito gli schema ER generati con `python manage.py graph_models`, comando di `django-extension`:
 
-![Schema ER generato da PgAdmin ERD](./images/fantacitorio_dbschema.png)
+* `fc_gestione_app`: generato con `python manage.py graph_models fc_gestione_app -o images/fc_gestione_app__model.png`
+![graph model fc_gestione_app](./images/fc_gestione_app_model.png)
+
+* `fc_classifiche_app` generato con `python manage.py graph_models fc_classifiche_app -o images/fc_classifiche_app__model.png`
+![graph model fc_classifiche_app](./images/fc_classifiche_app_model.png)
 
 Quindi i models di Django sono stati creati tramite il comando `inspectdb` che genera i models partendo da un database esistente
 

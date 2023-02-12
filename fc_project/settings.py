@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
      # moduli aggiuntivi
-    'django_s3_storage',
     'django_dynamodb_cache',
     'django_filters',
     'admin_auto_filters',
@@ -65,10 +64,13 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     # le due applicazioni
     'fc_gestione_app',
-    'fc_classifiche_app',
-    # debug tootbar
-    "debug_toolbar"
+    'fc_classifiche_app'
 ]
+
+# debug tootbar module
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
+    INSTALLED_APPS.append('django_extensions')
 
 if not os.environ.get('DATABASE_DEFAULT_BUCKET','') == '':
     INSTALLED_APPS.append('django_s3_sqlite')
@@ -90,9 +92,12 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
+
+# debug tootbar module
+if DEBUG:
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'fc_project.urls'
 
@@ -258,7 +263,7 @@ if DEBUG:
     }
 
 ### DJANGO DEBUG TOOLBAR
-# enable debug toolbar if DEBUG is TRUE
+# enable debug toolbar if DEBUG is TRUE 
 def show_toolbar(request):
     return DEBUG
 DEBUG_TOOLBAR_CONFIG = {

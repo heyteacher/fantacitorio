@@ -1,0 +1,12 @@
+django 
+django-admin-autocomplete-filter  
+django-import-export
+django-s3-sqlite
+django-tables2
+django-filter
+django-bootstrap5
+django-allauth
+django-dynamodb-cache
+django_extensions
+zappa
+django-debug-toolbar

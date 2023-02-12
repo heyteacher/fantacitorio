@@ -1,5 +1,8 @@
 *.pyc
-zappa_settings.json
 *.sqlite3
-/static
-venv
+static/
+venv/
+venvstage/
+venvprod/
+zappa_settings.json
+de

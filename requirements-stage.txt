@@ -6,5 +6,5 @@ django-tables2
 django-filter
 django-bootstrap5
 django-allauth
-django-dynamodb-cache
+git+https://github.com/heyteacher/django-dynamodb-cache.git
 zappa

@@ -17,6 +17,7 @@
 - [x] sistemare progetto per backend postresql
 - [x] aggiuntegere pagina punteggi
 - [x] custom error message
+- [x] fixare logging eccessivo di django-s3-sqlite (log_level zappa a INFO) 
 - [ ] inserimento squadra via SQS
 - [ ] inserimento lega via SQS
 - [ ] auth twitter

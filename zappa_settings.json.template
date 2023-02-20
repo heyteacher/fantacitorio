@@ -13,11 +13,13 @@
             "SubnetIds": ["subnet-***********", "subnet-***********"],
             "SecurityGroupIds": ["sg-***************"]
         },
+        "exclude": [".git*", "db.sqlite3", "*.md", "images", "static", "venv", "venvstage", "requirements*", "zappa_settings.json.template"],
+       "debug": false,
+        "log_level": "INFO",
         "events": [{
             "function": "zappa_commands.pg_refresh_classifiche",
             "expression": "rate(1 hour)"
         }],
-        "exclude": [".git*", "db.sqlite3", "*.md", "images", "static", "venv", "venvstage", "requirements*", "zappa_settings.json.template"],
 
         "aws_environment_variables": {
             "DEBUG": "false",
@@ -49,6 +51,7 @@
             "DEFAULT_FROM_EMAIL": "<DEFAULT FROM EMAIL>",
             "EMAIL_SUBJECT_PREFIX": "[FC_PROD] ",
             "EMAIL_USE_SSL": "true",
+            "EMAIL_USE_TLS": "false",
             "EMAIL_ADMIN_NAME": "<ADMIN NAME>",
             "EMAIL_ADMIN_EMAIL": "<ADMIN EMAIL>",
             "EMAIL_MANAGER_NAME": "<MANAGER NAME>",
@@ -71,9 +74,11 @@
         "certificate_arn": "<CERTIFICATE_ARN>",
         "exclude": [".git*", "rankdb.sqlite3", "db.sqlite3", "*.md", "images", "static", "venv", "venvprod", "requirements*", "zappa_settings.json.template"],
         "debug": false,
+        "log_level": "INFO",
+        "keep_warm": false,
         "events": [{
             "function": "zappa_commands.sqlite_refresh_classifiche",
-            "expression": "rate(1 hour)"
+            "expression": "rate(5 minutes)"
         }],
 
         "aws_environment_variables": {
@@ -107,6 +112,7 @@
             "DEFAULT_FROM_EMAIL": "<DEFAULT FROM EMAIL>",
             "EMAIL_SUBJECT_PREFIX": "[FC_PROD] ",
             "EMAIL_USE_SSL": "true",
+            "EMAIL_USE_TLS": "false",
             "EMAIL_ADMIN_NAME": "<ADMIN NAME>",
             "EMAIL_ADMIN_EMAIL": "<ADMIN EMAIL>",
             "EMAIL_MANAGER_NAME": "<MANAGER NAME>",
@@ -138,6 +144,7 @@
             "DEFAULT_FROM_EMAIL": "<DEFAULT FROM EMAIL>",
             "EMAIL_SUBJECT_PREFIX": "[FC_DEV] ",
             "EMAIL_USE_SSL": "true",
+            "EMAIL_USE_TLS": "false",
             "EMAIL_ADMIN_NAME": "<ADMIN NAME>",
             "EMAIL_ADMIN_EMAIL": "<ADMIN EMAIL>",
             "EMAIL_MANAGER_NAME": "<MANAGER NAME>",

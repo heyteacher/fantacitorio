@@ -64,6 +64,7 @@ class PunteggioPuntataFilter(FilterSet):
         fields = ['puntata_numero','politico']
 
 class PunteggioPuntataTable(tables.Table):
+    puntata = tables.Column(order_by=("puntata_data"))
     class Meta:
         model = PunteggioPuntata
         template_name = template_name
@@ -72,6 +73,7 @@ class PunteggioPuntataTable(tables.Table):
         fields = ['puntata', 'politico_name', 'punti', 'creato_il']
 
 class SquadraPuntiTable(tables.Table):
+    puntata = tables.Column(order_by=("puntata_data"))
     class Meta:
         model = SquadraPunti
         template_name = template_name

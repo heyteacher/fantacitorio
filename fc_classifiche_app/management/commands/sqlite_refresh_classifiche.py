@@ -1,11 +1,20 @@
 from django.db import connection
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from fc_classifiche_app.models import ClassificaGenerale
+from fc_classifiche_app.models import ClassificaGenerale, PunteggioPuntata
+from fc_gestione_app.models import Punteggio,Squadra
 
 class Command(BaseCommand):
     help = 'refresh sqlite classifiche'
 
+    def add_arguments(self, parser):
+   
+        # Named (optional) arguments
+        parser.add_argument(
+            '--force',
+            action='store_true',
+            help='force refresh',
+        )
 
     def handle(self, *args, **options):
  
@@ -59,11 +68,34 @@ insert into rankdb.punteggio_puntata (puntata_numero, puntata_data, politico_nam
 """
         },{ 'action':'detach database rankdb', 'query': "DETACH DATABASE rankdb"
 }]
-        self.stdout.write(self.style.SUCCESS('Starting create Sqlite views'))
-        self.stdout.write(self.style.SUCCESS('ClassificaGenerale count before: %s' % ClassificaGenerale.objects.count()))
-        with connection.cursor() as cursor:
-         for command in commands:
-            self.stdout.write(self.style.NOTICE(command['action']))
-            cursor.execute(command['query'])
-        self.stdout.write(self.style.SUCCESS('ClassificaGenerale count after: %s' % ClassificaGenerale.objects.count()))
-        self.stdout.write(self.style.SUCCESS('All Done'))
+        punteggioPuntataCount = PunteggioPuntata.objects.count()
+        classificaGeneraleCount = ClassificaGenerale.objects.count()
+        squadraCount = Squadra.objects.count()
+        punteggioCount = Punteggio.objects.count()
+        output_rows = []
+
+        if not options['force'] and classificaGeneraleCount == squadraCount and punteggioPuntataCount == punteggioCount:
+                output_rows.append('Skip refresh sqlite classifiche: force %s, ClassificaGenerale %s, Squadre %s, PunteggiPuntata %s, Punteggi %s' % (
+                        options['force'],
+                        classificaGeneraleCount,
+                        squadraCount,
+                        punteggioPuntataCount,
+                        punteggioCount
+                        )
+                )
+                return "\n".join(output_rows)
+        else:
+                output_rows.append('Refresh sqlite classifiche: force %s, ClassificaGenerale %s, Squadre %s, PunteggiPuntata %s, Punteggi %s' % (
+                        options['force'],
+                        classificaGeneraleCount,
+                        squadraCount,
+                        punteggioPuntataCount,
+                        punteggioCount
+                        )
+                )
+                with connection.cursor() as cursor:
+                        for command in commands:
+                                output_rows.append(command['action'])    
+                                cursor.execute(command['query'])
+                output_rows.append('All Done')
+                return "\n".join(output_rows)

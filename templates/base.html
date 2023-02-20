@@ -55,6 +55,13 @@
             </a>
           </li>
           {% endif %}
+          {% if perms.fc_classifiche_app.change_classificagenerale %}
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'refresh_classifiche' %}" aria-current="page">
+              <i class="bi bi-arrow-clockwise"></i>
+            </a>
+          </li>
+          {% endif %}
         </ul>
         <ul class="navbar-nav mt-2 mt-md-0">
           <li class="nav-item dropdown dropstart">

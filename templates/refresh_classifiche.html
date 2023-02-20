@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %} 
+
+{% block content %}
+    <h2>Refresh Classifiche</h2>
+    <p class="font-monospace text-success">
+    {% for output_row in output_rows %}
+        {{output_row}}<br/>
+    {% endfor %}
+    </p>
+{% endblock%}

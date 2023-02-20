@@ -1,3 +1,9 @@
+from django.views import View
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+from django.shortcuts import render
+from django.core.management import call_command
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django_filters.views import FilterView
 from django_tables2.paginators import LazyPaginator
 from django_tables2 import SingleTableMixin, SingleTableView
@@ -62,3 +68,13 @@ class PunteggioPuntataListView(SingleTableMixin, FilterView):
         context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'punteggi'
         return context
+
+@method_decorator(never_cache, name='get')
+class RefreshClassificheView(PermissionRequiredMixin,View):
+    template_name = 'refresh_classifiche.html'
+    permission_required = 'fc_classifiche_app.change_classificagenerale'
+    raise_exception = True
+
+    def get(self, request, *args, **kwargs):
+        output_rows = call_command('sqlite_refresh_classifiche','--force').split("\n")
+        return render(request, self.template_name, {'output_rows': output_rows})

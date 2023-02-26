@@ -5,6 +5,7 @@ from import_export.admin import ImportExportActionModelAdmin
 from .models import Carica, Lega, LegaSquadra, Politico, Puntata, Punteggio, Squadra
 from .filters import CaricaFilter, LegaFilter, PuntataFilter, SquadraFilter, PoliticoFilter
 from .import_export_resources import CaricaResource, LegaResource, LegaSquadraResource, PoliticoResource, PuntataResource,PunteggioResource,SquadraResource
+from datetime import datetime
 
 admin.ModelAdmin.save_on_top=True
 admin.ModelAdmin.save_as = True
@@ -122,8 +123,15 @@ class PunteggioPuntataInline(admin.TabularInline):
     #readonly_fields = ('politico','punti')
     extra = 0
 
+class PuntataAdminForm( forms.ModelForm ):
+    def __init__(self, *args, **kwargs):
+        super(PuntataAdminForm, self).__init__(*args, **kwargs)
+        now = datetime.now()
+        self.fields['data'].initial = now.replace(hour=21,minute=15,second=0)
+
 @admin.register(Puntata)
 class PuntataAdmin(ImportExportActionModelAdmin):
+    form = PuntataAdminForm
     resource_classes = [PuntataResource]
     search_fields = ('numero', 'data')
     inlines = [

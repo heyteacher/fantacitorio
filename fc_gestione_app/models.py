@@ -177,18 +177,18 @@ class LegaSquadra(models.Model):
         ordering = ('lega__name', 'squadra__name')
 
 class PuntataManager(models.Manager):
-    def get_by_natural_key(self, numero, data):
-        return self.get(numero, data)
+    def get_by_natural_key(self, numero):
+        return self.get(numero)
 
 class Puntata(models.Model):
     numero = models.IntegerField(unique=True, )
-    data = models.DateField(unique=True, )
+    data = models.DateTimeField()
     creato_il = models.DateTimeField(auto_now_add=True)
     aggiornato_il = models.DateTimeField(auto_now=True) 
 
     objects = PuntataManager()
     def natural_key(self):
-        return (self.numero, self.data)
+        return (self.numero, )
 
     def __str__(self):
         return str(self.numero) + '° del ' + date(self.data,'D d/m/Y')

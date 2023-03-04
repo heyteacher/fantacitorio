@@ -18,7 +18,7 @@
 - [x] aggiuntegere pagina punteggi
 - [x] custom error message
 - [x] fixare logging eccessivo di django-s3-sqlite (log_level zappa a INFO)
-- [ ] aggiungere nel dettaglio squadra, il punteggio acquisito da ogni politico in formazione
+- [x] aggiungere nel dettaglio squadra, il punteggio acquisito da ogni politico in formazione
 - [ ] inserimento squadra via SQS
 - [ ] inserimento lega via SQS
 - [ ] auth twitter

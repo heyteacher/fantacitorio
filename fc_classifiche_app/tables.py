@@ -56,9 +56,16 @@ class ClassificaPoliticoTable(tables.Table):
         per_page = per_page
         attrs = attrs
 
+def loadPuntate():
+    try:
+        return [(puntata.numero, puntata) for puntata in Puntata.objects.all()]
+    except:
+        pass
+
 class PunteggioPuntataFilter(FilterSet):
-    puntata_numero = ChoiceFilter(choices= [(puntata.numero, puntata) for puntata in Puntata.objects.all()], empty_label="- Seleziona puntata -")
+    puntata_numero = ChoiceFilter(choices=loadPuntate(), empty_label="- Seleziona puntata -")
     politico = CharFilter('politico_name','icontains' , label="politico")
+
     class Meta:
         model = PunteggioPuntata
         fields = ['puntata_numero','politico']

@@ -9,6 +9,7 @@
     {% endblock %}
 
     {% bootstrap_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   </head>
   <body  class="bg-dark text-light">
     {% block body %}
@@ -38,9 +39,12 @@
       </ul>
     </div>
     -->
-
-    {% block content %}
-    {% endblock %}
+    <div class="row justify-content-md-center mt-5">
+      <div class="col-6 text-center">
+      {% block content %}
+      {% endblock %}
+      </div>
+    </div>
     {% endblock %}
     {% block extra_body %}
     {% endblock %}

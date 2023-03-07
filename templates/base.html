@@ -63,6 +63,35 @@
           </li>
           {% endif %}
         </ul>
+        {% block login %}
+        <ul class="navbar-nav mt-2 mt-md-0">
+          {% if user.is_authenticated %}
+            <li class="nav-item me-md-2">
+              Ciao <span class="fw-bold">{{user.username}}</span>
+            </li>
+            <li class="nav-item">
+              {% bootstrap_button content="Esci <i class='bi bi-unlock-fill'></i>" href="/accounts/logout/" button_type="link" button_class="btn-danger" size="sm" %} 
+            </li>
+          {% else %}
+            <li class="nav-item">
+              {% bootstrap_button content="Entra <i class='bi bi-lock-fill'></i>" href="/accounts/twitter/login/?process=login" button_type="link" button_class="btn-success"  size="sm" %} 
+            </li>
+          {% endif %}          
+        </ul>
+        {% endblock %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid bg-dark">
+    {% block content %}{% endblock %}
+  </div>
+  {% bootstrap_javascript  %}
+  
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-0">
+    <div class="container-fluid">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        </ul>
         <ul class="navbar-nav mt-2 mt-md-0">
           <li class="nav-item dropdown dropstart">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
@@ -167,11 +196,6 @@
     </div>
   </nav>
 
-  <div class="container-fluid bg-dark">
-    {% block content %}{% endblock %}
-  </div>
-  {% bootstrap_javascript  %}
-  
   <script>
     const select = document.querySelector("select")
     if (select) {

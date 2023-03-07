@@ -16,7 +16,7 @@ from .tables import ClassificaGeneraleTable, ClassificaGeneraleFilter, \
 class ClassificaGeneraleListView(SingleTableMixin, FilterView):
     model = ClassificaGenerale
     table_class = ClassificaGeneraleTable
-    template_name = 'table.html'
+    template_name = 'fc_classifiche_app/table.html'
     filterset_class = ClassificaGeneraleFilter
     pagination_class = LazyPaginator
     def get_context_data(self, **kwargs):
@@ -27,7 +27,7 @@ class ClassificaGeneraleListView(SingleTableMixin, FilterView):
 class ClassificaPerLegaListView(SingleTableMixin, FilterView):
     model = ClassificaPerLega
     table_class = ClassificaPerLegaTable
-    template_name = 'table.html'
+    template_name = 'fc_classifiche_app/table.html'
     filterset_class = ClassificaPerLegaFilter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -37,7 +37,7 @@ class ClassificaPerLegaListView(SingleTableMixin, FilterView):
 class ClassificaPoliticoListView(SingleTableMixin, FilterView):
     model = ClassificaPolitico
     table_class = ClassificaPoliticoTable
-    template_name = 'table.html'
+    template_name = 'fc_classifiche_app/table.html'
     filterset_class = ClassificaPoliticoFilter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,7 +46,7 @@ class ClassificaPoliticoListView(SingleTableMixin, FilterView):
 
 class SquadraPuntiListView(SingleTableView):
     table_class = SquadraPuntiTable
-    template_name = 'dettaglio_squadra.html'
+    template_name = 'fc_classifiche_app/dettaglio_squadra.html'
     table_pagination = False
     
     def get_queryset(self):
@@ -62,7 +62,7 @@ class SquadraPuntiListView(SingleTableView):
 class PunteggioPuntataListView(SingleTableMixin, FilterView):
     model = PunteggioPuntata
     table_class = PunteggioPuntataTable
-    template_name = 'table.html'
+    template_name = 'fc_classifiche_app/table.html'
     filterset_class = PunteggioPuntataFilter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -71,7 +71,7 @@ class PunteggioPuntataListView(SingleTableMixin, FilterView):
 
 @method_decorator(never_cache, name='get')
 class RefreshClassificheView(PermissionRequiredMixin,View):
-    template_name = 'refresh_classifiche.html'
+    template_name = 'fc_classifiche_app/refresh_classifiche.html'
     permission_required = 'fc_classifiche_app.change_classificagenerale'
     raise_exception = True
 

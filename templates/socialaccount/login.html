@@ -19,9 +19,11 @@
   </div>
 </div>
 <div class="row justify-content-md-center">
-  <form class="col-4" method="post">
+  <div class="col-2 text-center">
+    <form method="post">
     {% csrf_token %}
-    {% bootstrap_button  content="<i class='bi bi-twitter' style='font-size: 2rem;'></i>" button_type="submit" button_class="btn-primary"  extra_classes="input-group" %}
+    {% bootstrap_button  content="<i class='bi bi-twitter' style='font-size: 2rem;'></i>" button_type="submit" button_class="btn-primary" size="sm" extra_classes="input-group" %}
   </form>
+</div>
 </div>
 {% endblock %}

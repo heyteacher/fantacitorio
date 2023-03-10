@@ -17,20 +17,24 @@ from django.contrib import admin
 from django.urls import path, include
 from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, \
     ClassificaPoliticoListView, SquadraPuntiListView, PunteggioPuntataListView, RefreshClassificheView
+from fc_gestione_app.views import SquadraUpdateView, SquadraCreateView, PoliticoAutocompleteView
 from fc_project import settings
-#from django.contrib.auth.decorators import login_required
-#admin.site.login = login_required(admin.site.login)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+
+    path('squadra/add/', SquadraCreateView.as_view(), name='squadra-add'),
+    path('squadra/<int:pk>/', SquadraUpdateView.as_view(), name='squadra-update'),
+
     path('', ClassificaGeneraleListView.as_view(), name='home'),
     path('classifica_per_lega', ClassificaPerLegaListView.as_view(), name='classifica_per_lega'),
     path('classifica_politico', ClassificaPoliticoListView.as_view(), name='classifica_politico'),
     path('punteggio_puntata', PunteggioPuntataListView.as_view(), name='punteggio_puntata'),
     path('squadra_punti/<squadra_id>', SquadraPuntiListView.as_view(), name='squadra_punti'),
     path('refresh_classifiche', RefreshClassificheView.as_view(), name='refresh_classifiche'),
-  ] 
+    path('politico-autocomplete/', PoliticoAutocompleteView.as_view(), name='politico-autocomplete'),
+] 
 
 # DEBUG TOOLBAR
 if settings.DEBUG:

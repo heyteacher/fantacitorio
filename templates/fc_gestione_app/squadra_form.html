@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %} 
+{% load static %}
+
+{% block content %}
+
+{% bootstrap_form_errors form %}
+
+<form method="post">    
+    {% bootstrap_form form %}
+
+    {% bootstrap_button content="Salva <i class='bi bi-save-fill'></i>" %} 
+
+</form>
+
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+
+{% endblock %}
+

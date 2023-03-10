@@ -44,6 +44,8 @@ CSRF_COOKIE_SECURE = True
 
 # Application definition
 INSTALLED_APPS = [
+    'dal',
+     'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,6 +64,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.twitter',
+    'djhacker',
     # le due applicazioni
     'fc_gestione_app',
     'fc_classifiche_app'

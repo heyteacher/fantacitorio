@@ -3,6 +3,7 @@ from django.conf import settings
 from django.template.defaultfilters import date
 from django.forms import ValidationError
 from django.db.models.functions import Lower
+from django.urls import reverse
 
 class CaricaManager(models.Manager):
     def get_by_natural_key(self, name):
@@ -120,6 +121,9 @@ class Squadra(models.Model):
     creato_il = models.DateTimeField(auto_now_add=True)
     aggiornato_il = models.DateTimeField(auto_now=True) 
 
+    def get_absolute_url(self):
+        return reverse('squadra_punti', kwargs={'squadra_id': self.pk})
+    
     def get_politici(self):
         return [self.leader_politico, self.number_1_politico, self.number_2_politico, self.number_3_politico, self.number_4_politico, self.number_5_politico, self.number_6_politico, self.number_7_politico, self.number_8_politico, self.number_9_politico, self.number_10_politico, self.number_11_politico]
 

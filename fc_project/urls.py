@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, \
     ClassificaPoliticoListView, SquadraPuntiListView, PunteggioPuntataListView, RefreshClassificheView
-from fc_gestione_app.views import SquadraUpdateView, SquadraCreateView, PoliticoAutocompleteView
+from fc_gestione_app.views import SquadraUpdateView, SquadraCreateView, SquadraDetailView, PoliticoAutocompleteView
 from fc_project import settings
 
 urlpatterns = [
@@ -25,7 +25,8 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
 
     path('squadra/add/', SquadraCreateView.as_view(), name='squadra-add'),
-    path('squadra/<int:pk>/', SquadraUpdateView.as_view(), name='squadra-update'),
+    path('squadra/edit/<int:pk>/', SquadraUpdateView.as_view(), name='squadra-update'),
+    path('squadra/detail/<int:pk>/', SquadraDetailView.as_view(), name='squadra-detail'),
 
     path('', ClassificaGeneraleListView.as_view(), name='home'),
     path('classifica_per_lega', ClassificaPerLegaListView.as_view(), name='classifica_per_lega'),

@@ -8,7 +8,7 @@
 <form class="row row-cols-lg-auto g-1 align-items-center " novalidate>
     {% for field in filter.form %}
         <div class="col-12">
-        {% bootstrap_field field show_label=False placeholder=field.label size='sm' field_class='input-group mb-2 pr-2 bg-dark' %}
+        {% bootstrap_field field show_label=False placeholder=field.label size='sm' field_class='input-group mb-2 pr-2' %}
         </div>
     {% endfor %}
     <div class="col-12">

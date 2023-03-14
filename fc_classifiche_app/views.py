@@ -46,7 +46,7 @@ class ClassificaPoliticoListView(SingleTableMixin, FilterView):
 
 class SquadraPuntiListView(SingleTableView):
     table_class = SquadraPuntiTable
-    template_name = 'fc_classifiche_app/dettaglio_squadra.html'
+    template_name = 'dettaglio_squadra.html'
     table_pagination = False
     
     def get_queryset(self):

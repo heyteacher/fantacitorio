@@ -18,7 +18,7 @@
 
 <body class="bg-dark text-light">
 
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-0">
+  <nav class="navbar navbar-expand-md navbar-dark mb-0">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'home' %}">
         Classifiche Fantacitorio
@@ -55,11 +55,9 @@
             </a>
           </li>
           {% endif %}
-          {% if perms.fc_classifiche_app.change_classificagenerale %}
+          {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'refresh_classifiche' %}" aria-current="page">
-              <i class="bi bi-arrow-clockwise"></i>
-            </a>
+            {% bootstrap_button content="La mia squadra <i class='bi bi-people-fill'></i>" href="/squadra/add" button_type="link" button_class="btn-danger"  size="sm" %} 
           </li>
           {% endif %}
         </ul>
@@ -76,38 +74,45 @@
             <li class="nav-item">
               {% bootstrap_button content="Entra <i class='bi bi-lock-fill'></i>" href="/accounts/twitter/login/?process=login" button_type="link" button_class="btn-success"  size="sm" %} 
             </li>
-          {% endif %}          
+          {% endif %}
         </ul>
         {% endblock %}
       </div>
     </div>
   </nav>
 
-  <div class="container-fluid bg-dark">
+  <div class="container-fluid">
     {% block content %}{% endblock %}
   </div>
   {% bootstrap_javascript  %}
   
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-0">
+  <nav class="navbar navbar-expand-md navbar-dark mb-0">
     <div class="container-fluid">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
         </ul>
         <ul class="navbar-nav mt-2 mt-md-0">
+          {% if perms.fc_classifiche_app.change_classificagenerale %}
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'refresh_classifiche' %}" aria-current="page">
+              <i class="bi bi-arrow-clockwise"></i>
+            </a>
+          </li>
+          {% endif %}
           <li class="nav-item dropdown dropstart">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-twitter"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark">
-              <li><a class="dropdown-item text-light" target="_blank" href="https://twitter.com/radical_scic">
+              <li><a class="dropdown-item" target="_blank" href="https://twitter.com/radical_scic">
                 <i class="bi bi-twitter"></i> Io</a>
               </li>
-              <li><a class="dropdown-item text-light" target="_blank" href="https://twitter.com/Fanta_citorio">
+              <li><a class="dropdown-item" target="_blank" href="https://twitter.com/Fanta_citorio">
                 <i class="bi bi-twitter"></i> Fantacitorio Official</a>
               </li>
-              <li><a class="dropdown-item text-light" target="_blank" href="https://twitter.com/welikeduel">
+              <li><a class="dropdown-item" target="_blank" href="https://twitter.com/welikeduel">
                 <i class="bi bi-twitter"></i> Propaganda Live</a>
               </li>
-              <li><a class="dropdown-item text-light" target="_blank"  href="https://twitter.com/RosyilCapo">
+              <li><a class="dropdown-item" target="_blank"  href="https://twitter.com/RosyilCapo">
                 <i class="bi bi-twitter"></i> Rosy</a>
               </li>
             </ul>
@@ -119,62 +124,62 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-dark">
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/heyteacher/fantacitorio">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/heyteacher/fantacitorio">
                     <i class="bi bi-github"></i> Fantacitorio (questo progetto)
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/django/django">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/django/django">
                     <i class="bi bi-github"></i> django
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/zappa/Zappa">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/zappa/Zappa">
                     <i class="bi bi-github"></i> zappa
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/FlipperPA/django-s3-sqlite">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/FlipperPA/django-s3-sqlite">
                     <i class="bi bi-github"></i> django-s3-sqlite
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/etianen/django-s3-storage">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/etianen/django-s3-storage">
                     <i class="bi bi-github"></i> django_s3_storage
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/xncbf/django-dynamodb-cache">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/xncbf/django-dynamodb-cache">
                     <i class="bi bi-github"></i> django-dynamodb-cache
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/jieter/django-tables2">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/jieter/django-tables2">
                     <i class="bi bi-github"></i> django-tables2
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/carltongibson/django-filter">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/carltongibson/django-filter">
                     <i class="bi bi-github"></i> django-filter
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/zostera/django-bootstrap5">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/zostera/django-bootstrap5">
                     <i class="bi bi-github"></i> django-bootstrap5
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/django-import-export/django-import-export">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/django-import-export/django-import-export">
                     <i class="bi bi-github"></i> django-import-export
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/farhan0581/django-admin-autocomplete-filter">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/farhan0581/django-admin-autocomplete-filter">
                     <i class="bi bi-github"></i> django-admin-autocomplete-filter
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item text-light" target="_blank" href="https://github.com/jazzband/django-debug-toolbar">
+                  <a class="dropdown-item" target="_blank" href="https://github.com/jazzband/django-debug-toolbar">
                     <i class="bi bi-github"></i> django-debug-toolbar
                   </a>
                 </li>
@@ -182,7 +187,7 @@
             </li>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" target="_blank" href="https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit#gid=0">
+            <a class="nav-link" target="_blank" href="https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit#gid=0">
               <i class="bi bi-file-earmark-spreadsheet-fill"></i>
             </a>
           </li>

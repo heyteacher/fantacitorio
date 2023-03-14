@@ -5,10 +5,23 @@ a {
     --bs-bg-opacity: 1;
     background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;
 }
-select, input {
+.select2-selection__rendered, .select2-selection, .select2-dropdown, select, input {
     --bs-bg-opacity: 1;
     background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;
     --bs-text-opacity: 1;
     color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important;
 }
 
+.select2-container .select2-selection--single {
+    height: 38px!important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    --bs-bg-opacity: 1;
+    background-color: var(--bs-gray)!important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    --bs-bg-opacity: 1;
+    background-color: var(--bs-blue)!important;
+}

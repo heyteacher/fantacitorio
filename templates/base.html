@@ -20,7 +20,7 @@
 
   <nav class="navbar navbar-expand-md navbar-dark mb-0">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'home' %}">
+      <a class="navbar-brand text-warning" href="{% url 'home' %}">
         Classifiche Fantacitorio
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,34 +30,39 @@
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == "home" %}active{% endif %}" href="{% url 'home' %}" aria-current="page">
-              <i class="bi bi-list-ol"></i> Generale
+              Generale <i class="bi bi-list-ol"></i> 
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == "classifica_per_lega" %}active{% endif %}" href="{% url 'classifica_per_lega' %}" aria-current="page">
-              <i class="bi bi-list-ol"></i>  Per Lega
+              Per Lega <i class="bi bi-list-ol"></i>  
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == "classifica_politico" %}active{% endif %}" href="{% url 'classifica_politico' %}" aria-current="page">
-              <i class="bi bi-list-ol"></i> Per Politico
+              Per Politico <i class="bi bi-list-ol"></i>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == "punteggio_puntata" %}active{% endif %}" href="{% url 'punteggio_puntata' %}" aria-current="page">
-              <i class="bi bi-person-video"></i> Punteggi 
+              Punteggi <i class="bi bi-person-video"></i> 
             </a>
           </li>
           {% if request.resolver_match.url_name == "squadra_punti" %} 
           <li class="nav-item">
             <a class="nav-link active" href="#" aria-current="page">
-              <i class="bi bi-layout-text-sidebar-reverse"></i> Dettaglio Squadra
+              Dettaglio Squadra <i class="bi bi-layout-text-sidebar-reverse"></i>
             </a>
           </li>
           {% endif %}
           {% if user.is_authenticated %}
           <li class="nav-item">
-            {% bootstrap_button content="La mia squadra <i class='bi bi-people-fill'></i>" href="/squadra/add" button_type="link" button_class="btn-danger"  size="sm" %} 
+            {% if request.session.squadra_id %}
+              {% url 'squadra-detail' as url_detail %}
+              {% bootstrap_button content="La mia squadra <i class='bi bi-people-fill'></i>" href=url_detail button_type="link" button_class="nav-link active btn-warning  text-dark"  size="sm" %} 
+            {% else %}
+              {% bootstrap_button content="<i class='bi bi-people-fill'></i> Crea la tua squadra" href="/squadra/add" button_type="link" button_class="nav-link active btn-warning text-dark"  size="sm" %} 
+            {% endif %}
           </li>
           {% endif %}
         </ul>
@@ -65,14 +70,18 @@
         <ul class="navbar-nav mt-2 mt-md-0">
           {% if user.is_authenticated %}
             <li class="nav-item me-md-2">
-              Ciao <span class="fw-bold">{{user.username}}</span>
+              <div class="container-fluid">
+                <span class="navbar-text">
+                  Ciao <span class="fw-bold text-light">{{user.username}}</span>
+                </span>
+              </div>
             </li>
             <li class="nav-item">
-              {% bootstrap_button content="Esci <i class='bi bi-unlock-fill'></i>" href="/accounts/logout/" button_type="link" button_class="btn-danger" size="sm" %} 
+              {% bootstrap_button content="Esci <i class='bi bi-unlock-fill'></i>" href="/accounts/logout/" button_type="link" button_class="nav-link active btn-danger" size="sm" %} 
             </li>
           {% else %}
             <li class="nav-item">
-              {% bootstrap_button content="Entra <i class='bi bi-lock-fill'></i>" href="/accounts/twitter/login/?process=login" button_type="link" button_class="btn-success"  size="sm" %} 
+              {% bootstrap_button content="Entra <i class='bi bi-lock-fill'></i>" href="/accounts/twitter/login/?process=login" button_type="link" button_class="nav-link btn-success"  size="sm" %} 
             </li>
           {% endif %}
         </ul>

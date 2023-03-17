@@ -11,7 +11,7 @@
     </dt>
     <dd class="col-sm-10">
         <h1>
-            <span class="badge rounded-pill bg-primary">{{squadra.name}}</span>
+            <span class="badge rounded-pill bg-warning text-dark">{{squadra.name}}</span>
         </h1>
     </dd>
     <dt class="col-sm-2">
@@ -24,27 +24,29 @@
         Data Creazione
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-danger">{{squadra.creato_il}}</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{squadra.creato_il}}</span>
     </dd>
     <dt class="col-sm-2">
         Totale Punti
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-secondary">{{squadra.totale_punti}}</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{squadra.totale_punti}}</span>
     </dd>
+    {% if classifica.posizione is not None %}
     <dt class="col-sm-2">
         Posizione in Generale
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-success">{{classifica.posizione}}°</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{classifica.posizione}}°</span>
     </dd>
+    {% endif %}
     {% if classifica_leghe %}
     <dt class="col-sm-2">
         Posizione nelle Leghe
     </dt>
     <dd class="col-sm-10">
         {% for classifica_lega in classifica_leghe %}
-        <span class="badge rounded-pill bg-success">{{classifica_lega.posizione}}°</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{classifica_lega.posizione}}°</span>
         <span class="badge rounded-pill bg-secondary">{{classifica_lega.nome_lega}}</span> &nbsp;&nbsp;&nbsp;
         {% endfor %}
     </dd>
@@ -148,7 +150,7 @@
         Fanfani
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-info text-dark">{{squadra.totale_fanfani}} / 160</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{squadra.totale_fanfani}} / 160</span>
     </dd>
     {% if table is not None %}
     <dt class="col-sm-2">

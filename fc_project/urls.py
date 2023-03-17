@@ -25,8 +25,8 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
 
     path('squadra/add/', SquadraCreateView.as_view(), name='squadra-add'),
-    path('squadra/edit/<int:pk>/', SquadraUpdateView.as_view(), name='squadra-update'),
-    path('squadra/detail/<int:pk>/', SquadraDetailView.as_view(), name='squadra-detail'),
+    path('squadra/edit/', SquadraUpdateView.as_view(), name='squadra-update'),
+    path('squadra/detail/', SquadraDetailView.as_view(), name='squadra-detail'),
 
     path('', ClassificaGeneraleListView.as_view(), name='home'),
     path('classifica_per_lega', ClassificaPerLegaListView.as_view(), name='classifica_per_lega'),

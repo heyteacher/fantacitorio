@@ -48,7 +48,7 @@ class Politico(models.Model):
         return (self.name,)
 
     def get_totale_punti(self, from_datetime = None):
-        punteggi = self.punteggio_set.all() if from_datetime is None else self.punteggio_set.filter(puntata__data__lt=from_datetime)
+        punteggi = self.punteggio_set.all() if from_datetime is None else self.punteggio_set.filter(puntata__data__gt=from_datetime)
         return sum(p.punti for p in punteggi) if len(punteggi) > 0 else 0
 
     @property
@@ -126,7 +126,7 @@ class Squadra(models.Model):
     aggiornato_il = models.DateTimeField(auto_now=True) 
 
     def get_absolute_url(self):
-        return reverse('squadra-detail', args=[self.pk])
+        return reverse('squadra-detail')
     
     def get_politici(self):
         return [self.leader_politico, self.number_1_politico, self.number_2_politico, self.number_3_politico, self.number_4_politico, self.number_5_politico, self.number_6_politico, self.number_7_politico, self.number_8_politico, self.number_9_politico, self.number_10_politico, self.number_11_politico]
@@ -152,55 +152,55 @@ class Squadra(models.Model):
 
     @property
     def totale_punti(self):
-        return  sum(p.get_totale_punti(self.aggiornato_il) for p in self.get_politici() if p != None)
+        return  sum(p.get_totale_punti(self.creato_il) for p in self.get_politici() if p != None)
 
     @property
     def totale_punti_leader_politico(self):
-        return  self.leader_politico.get_totale_punti(self.aggiornato_il) if self.leader_politico != None else 0
+        return  self.leader_politico.get_totale_punti(self.creato_il) if self.leader_politico != None else 0
 
     @property
     def totale_punti_politico_1(self):
-        return  self.number_1_politico.get_totale_punti(self.aggiornato_il) if self.number_1_politico != None else 0
+        return  self.number_1_politico.get_totale_punti(self.creato_il) if self.number_1_politico != None else 0
 
     @property
     def totale_punti_politico_2(self):
-        return  self.number_2_politico.get_totale_punti(self.aggiornato_il) if self.number_2_politico != None else 0
+        return  self.number_2_politico.get_totale_punti(self.creato_il) if self.number_2_politico != None else 0
 
     @property
     def totale_punti_politico_3(self):
-        return  self.number_3_politico.get_totale_punti(self.aggiornato_il) if self.number_3_politico != None else 0
+        return  self.number_3_politico.get_totale_punti(self.creato_il) if self.number_3_politico != None else 0
 
     @property
     def totale_punti_politico_4(self):
-        return  self.number_4_politico.get_totale_punti(self.aggiornato_il) if self.number_4_politico != None else 0
+        return  self.number_4_politico.get_totale_punti(self.creato_il) if self.number_4_politico != None else 0
 
     @property
     def totale_punti_politico_5(self):
-        return  self.number_5_politico.get_totale_punti(self.aggiornato_il) if self.number_5_politico != None else 0
+        return  self.number_5_politico.get_totale_punti(self.creato_il) if self.number_5_politico != None else 0
 
     @property
     def totale_punti_politico_6(self):
-        return  self.number_6_politico.get_totale_punti(self.aggiornato_il) if self.number_6_politico != None else 0
+        return  self.number_6_politico.get_totale_punti(self.creato_il) if self.number_6_politico != None else 0
 
     @property
     def totale_punti_politico_7(self):
-        return  self.number_7_politico.get_totale_punti(self.aggiornato_il) if self.number_7_politico != None else 0
+        return  self.number_7_politico.get_totale_punti(self.creato_il) if self.number_7_politico != None else 0
 
     @property
     def totale_punti_politico_8(self):
-        return  self.number_8_politico.get_totale_punti(self.aggiornato_il) if self.number_8_politico != None else 0
+        return  self.number_8_politico.get_totale_punti(self.creato_il) if self.number_8_politico != None else 0
 
     @property
     def totale_punti_politico_9(self):
-        return  self.number_9_politico.get_totale_punti(self.aggiornato_il) if self.number_9_politico != None else 0
+        return  self.number_9_politico.get_totale_punti(self.creato_il) if self.number_9_politico != None else 0
 
     @property
     def totale_punti_politico_10(self):
-        return  self.number_10_politico.get_totale_punti(self.aggiornato_il) if self.number_10_politico != None else 0
+        return  self.number_10_politico.get_totale_punti(self.creato_il) if self.number_10_politico != None else 0
 
     @property
     def totale_punti_politico_11(self):
-        return  self.number_11_politico.get_totale_punti(self.aggiornato_il) if self.number_11_politico != None else 0
+        return  self.number_11_politico.get_totale_punti(self.creato_il) if self.number_11_politico != None else 0
 
     def __str__(self):
         return self.name

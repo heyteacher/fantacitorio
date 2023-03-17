@@ -1,9 +1,14 @@
 a {
     text-decoration: none;
+    color: var(--bs-yellow);
 }
 .pagination .page-link {
     --bs-bg-opacity: 1;
+    color: var(--bs-yellow);
     background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;
+}
+.pagination {
+    --bs-pagination-active-border-color: var(--bs-yellow);
 }
 .select2-selection__rendered, .select2-selection, .select2-dropdown, select, input {
     --bs-bg-opacity: 1;

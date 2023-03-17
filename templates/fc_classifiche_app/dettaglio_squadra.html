@@ -11,7 +11,7 @@
     </dt>
     <dd class="col-sm-10">
         <h1>
-            <span class="badge rounded-pill bg-primary">{{classifica.nome_squadra}}</span>
+            <span class="badge rounded-pill bg-warning text-dark">{{classifica.nome_squadra}}</span>
         </h1>
     </dd>
     <dt class="col-sm-2">
@@ -24,19 +24,19 @@
         Data Creazione
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-danger">{{classifica.creato_il}}</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{classifica.creato_il}}</span>
     </dd>
     <dt class="col-sm-2">
         Totale Punti
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-secondary">{{classifica.totale_punti}}</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{classifica.totale_punti}}</span>
     </dd>
     <dt class="col-sm-2">
         Posizione in Generale
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-success">{{classifica.posizione}}°</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{classifica.posizione}}°</span>
     </dd>
     {% if classifica_leghe %}
     <dt class="col-sm-2">
@@ -44,7 +44,7 @@
     </dt>
     <dd class="col-sm-10">
         {% for classifica_lega in classifica_leghe %}
-        <span class="badge rounded-pill bg-success">{{classifica_lega.posizione}}°</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{classifica_lega.posizione}}°</span>
         <span class="badge rounded-pill bg-secondary">{{classifica_lega.nome_lega}}</span> &nbsp;&nbsp;&nbsp;
         {% endfor %}
     </dd>
@@ -148,7 +148,7 @@
         Fanfani
     </dt>
     <dd class="col-sm-10">
-        <span class="badge rounded-pill bg-info text-dark">{{classifica.fanfani}} / 160</span>
+        <span class="badge rounded-pill bg-warning text-dark">{{classifica.fanfani}} / 160</span>
     </dd>
     <dt class="col-sm-2">
         Dettaglio Punti

@@ -13,12 +13,13 @@
     {% bootstrap_css %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'fc_classifiche_app/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/autocomplete.css' %}">
     <link rel="icon" type="image/svg" sizes="32x32" href="{% static 'fc_classifiche_app/favicon.svg' %}">
   </head>
 
 <body class="bg-dark text-light">
 
-  <nav class="navbar navbar-expand-md navbar-dark mb-0">
+  <nav class="navbar navbar-expand-md navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand text-warning" href="{% url 'home' %}">
         Classifiche Fantacitorio
@@ -55,20 +56,12 @@
             </a>
           </li>
           {% endif %}
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-            {% if request.session.squadra_id %}
-              {% url 'squadra-detail' as url_detail %}
-              {% bootstrap_button content="La mia squadra <i class='bi bi-people-fill'></i>" href=url_detail button_type="link" button_class="nav-link active btn-warning  text-dark"  size="sm" %} 
-            {% else %}
-              {% bootstrap_button content="<i class='bi bi-people-fill'></i> Crea la tua squadra" href="/squadra/add" button_type="link" button_class="nav-link active btn-warning text-dark"  size="sm" %} 
-            {% endif %}
-          </li>
-          {% endif %}
         </ul>
-        {% block login %}
-        <ul class="navbar-nav mt-2 mt-md-0">
-          {% if user.is_authenticated %}
+     
+          {% block login %}
+          {% if ALLAUTH_ENABLED %}
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
             <li class="nav-item me-md-2">
               <div class="container-fluid">
                 <span class="navbar-text">
@@ -76,15 +69,29 @@
                 </span>
               </div>
             </li>
-            <li class="nav-item">
+            <li class="nav-item me-md-2">
+              {% if request.session.squadra_id %}
+                {% if request.resolver_match.url_name != "squadra-detail" %}
+                  {% url 'squadra-detail' as squadra_url %}
+                  {% bootstrap_button content="La mia squadra <i class='bi bi-people-fill'></i>" href=squadra_url button_type="link" button_class="nav-link active btn-warning  text-dark"  size="sm" %} 
+                  {% else %}
+                  {% url 'squadra-update' as squadra_url %}
+                  {% bootstrap_button content="Modifica squadra <i class='bi bi-people-fill'></i>" href=squadra_url button_type="link" button_class="nav-link active btn-primary  text-light"  size="sm" %} 
+                  {% endif %}
+              {% else %}
+                {% bootstrap_button content="<i class='bi bi-people-fill'></i> Crea la tua squadra" href="/squadra/add" button_type="link" button_class="nav-link active btn-warning text-dark"  size="sm" %} 
+              {% endif %}
+            </li>
+            <li class="nav-item me-md-2">
               {% bootstrap_button content="Esci <i class='bi bi-unlock-fill'></i>" href="/accounts/logout/" button_type="link" button_class="nav-link active btn-danger" size="sm" %} 
             </li>
-          {% else %}
-            <li class="nav-item">
-              {% bootstrap_button content="Entra <i class='bi bi-lock-fill'></i>" href="/accounts/twitter/login/?process=login" button_type="link" button_class="nav-link btn-success"  size="sm" %} 
+            {% else %}
+            <li class="nav-itemme-md-2">
+              {% bootstrap_button content="Entra <i class='bi bi-lock-fill'></i>" href="/accounts/twitter/login/?process=login" button_type="link" button_class="nav-link active btn-success"  size="sm" %} 
             </li>
+            {% endif %}
+          </ul>
           {% endif %}
-        </ul>
         {% endblock %}
       </div>
     </div>

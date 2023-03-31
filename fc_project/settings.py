@@ -79,11 +79,22 @@ if not os.environ.get('DATABASE_DEFAULT_BUCKET','') == '':
     INSTALLED_APPS.append('django_s3_sqlite')
 
 # ALLAUTH CONFIG
+ALLAUTH_ENABLED = "true" == os.environ.get('ALLAUTH_ENABLED', '').lower()
+
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 LOGIN_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'fc_project.account_adapter.NoNewUsersAccountAdapter'
+
+if ALLAUTH_ENABLED:
+    AUTHENTICATION_BACKENDS = [
+        'allauth.account.auth_backends.AuthenticationBackend',
+    ]
+else:
+    AUTHENTICATION_BACKENDS = [
+        'django.contrib.auth.backends.ModelBackend',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.common.BrokenLinkEmailsMiddleware',
@@ -115,18 +126,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'fc_project.context_processor.fc_settings'
             ],
             'debug': DEBUG,
         },
     },
-]
-
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    #'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'fc_project.wsgi.application'

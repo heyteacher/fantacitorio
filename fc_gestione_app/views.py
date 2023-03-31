@@ -84,63 +84,70 @@ class PoliticoAutocompleteView(LoginRequiredMixin,autocomplete.Select2QuerySetVi
             qs = qs.filter(name__istartswith=self.q)
         return qs
 
+class PoliticoAutocompleteWidget(autocomplete.ModelSelect2):
+    def build_attrs(self, *args, **kwargs):
+        attrs = super(PoliticoAutocompleteWidget, self).build_attrs(*args, **kwargs)
+        attrs["width"]="100%"
+        return attrs
+
+
 djhacker.formfield(
     Squadra.leader_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_1_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_2_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_3_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_4_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_5_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_6_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_7_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_8_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_9_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_10_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )
 djhacker.formfield(
     Squadra.number_11_politico,
     forms.ModelChoiceField,
-    widget=autocomplete.ModelSelect2(url='politico-autocomplete')
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )

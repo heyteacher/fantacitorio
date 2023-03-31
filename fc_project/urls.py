@@ -22,11 +22,6 @@ from fc_project import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
-
-    path('squadra/add/', SquadraCreateView.as_view(), name='squadra-add'),
-    path('squadra/edit/', SquadraUpdateView.as_view(), name='squadra-update'),
-    path('squadra/detail/', SquadraDetailView.as_view(), name='squadra-detail'),
 
     path('', ClassificaGeneraleListView.as_view(), name='home'),
     path('classifica_per_lega', ClassificaPerLegaListView.as_view(), name='classifica_per_lega'),
@@ -36,6 +31,14 @@ urlpatterns = [
     path('refresh_classifiche', RefreshClassificheView.as_view(), name='refresh_classifiche'),
     path('politico-autocomplete/', PoliticoAutocompleteView.as_view(), name='politico-autocomplete'),
 ] 
+
+if settings.ALLAUTH_ENABLED:
+    urlpatterns += [
+        path('accounts/', include('allauth.urls')),
+        path('squadra/add/', SquadraCreateView.as_view(), name='squadra-add'),
+        path('squadra/edit/', SquadraUpdateView.as_view(), name='squadra-update'),
+        path('squadra/detail/', SquadraDetailView.as_view(), name='squadra-detail'),
+    ]
 
 # DEBUG TOOLBAR
 if settings.DEBUG:

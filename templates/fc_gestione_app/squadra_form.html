@@ -5,17 +5,13 @@
 {% block content %}
 {% bootstrap_form_errors form %}
 
-<h1>La tua squadra</h1>
+<h1  class="mb-5">La tua squadra</h1>
 
 <form method="post">
     {% csrf_token %}
-    <div class="row">    
-    {% for field in form %}
-        <div class="col-6">
-            {% bootstrap_field field %}
-        </div>
-    {% endfor %}
-    </div>
+
+    {% bootstrap_form form layout='horizontal'  %}
+
     {% bootstrap_button content="Salva <i class='bi bi-save-fill'></i>" %} 
 </form>
 

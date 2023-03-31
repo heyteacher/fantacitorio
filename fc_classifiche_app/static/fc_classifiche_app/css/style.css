@@ -10,6 +10,7 @@ a {
 .pagination {
     --bs-pagination-active-border-color: var(--bs-yellow);
 }
+
 .select2-selection__rendered, .select2-selection, .select2-dropdown, select, input {
     --bs-bg-opacity: 1;
     background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;

@@ -125,7 +125,16 @@ class PuntataResource(resources.ModelResource):
         import_id_fields = ('numero', 'data')
 
 class PunteggioResource(resources.ModelResource):
+    politico = fields.Field(
+        column_name='politico',
+        attribute='politico',
+        widget=widgets.ForeignKeyWidget(Politico, field='name'))
+    puntata = fields.Field(
+        column_name='puntata',
+        attribute='puntata',
+        widget=widgets.ForeignKeyWidget(Puntata, field='numero'))
     class Meta:
         model = Punteggio
         skip_unchanged = True
-        exclude = ('creato_il','aggiornato_il')
+        import_id_fields = ('politico', 'puntata', 'punti')
+        exclude = ('id','creato_il','aggiornato_il','name')

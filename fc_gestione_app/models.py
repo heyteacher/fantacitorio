@@ -258,6 +258,10 @@ class Puntata(models.Model):
         verbose_name_plural = 'puntate'
         ordering = ('-numero',)
 
+class PunteggioManager(models.Manager):
+    def get_by_natural_key(self, numero, puntata, punti):
+        return self.get(numero, puntata, punti)
+
 class Punteggio(models.Model):
     politico = models.ForeignKey(Politico, models.PROTECT, )
     puntata = models.ForeignKey(Puntata, models.PROTECT, )
@@ -265,6 +269,10 @@ class Punteggio(models.Model):
     name = models.CharField(max_length=200, verbose_name='nomimativo', null=True)
     creato_il = models.DateTimeField(auto_now_add=True)
     aggiornato_il = models.DateTimeField(auto_now=True) 
+
+    objects = PunteggioManager()
+    def natural_key(self):
+        return (self.politico, self.puntata, self.punti)
 
     def __str__(self):
         return str(self.puntata) + ' - ' + str(self.politico) + ' - ' + str(self.punti) + ' punti'

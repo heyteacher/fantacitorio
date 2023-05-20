@@ -13,9 +13,10 @@ from .tables import ClassificaGeneraleTable, ClassificaGeneraleFilter, \
                     ClassificaPoliticoTable, ClassificaPoliticoFilter, \
                     SquadraPuntiTable, PunteggioPuntataTable, PunteggioPuntataFilter
 
-cache_one_minute = cache_page(60)
+#def_cache_page = cache_page(60)
+def_cache_page = never_cache
 
-@method_decorator(cache_one_minute, name='get')
+@method_decorator(def_cache_page, name='get')
 class ClassificaGeneraleListView(SingleTableMixin, FilterView):
     model = ClassificaGenerale
     table_class = ClassificaGeneraleTable
@@ -27,7 +28,7 @@ class ClassificaGeneraleListView(SingleTableMixin, FilterView):
         context['entity_plural_name'] = 'squadre'
         return context
 
-@method_decorator(cache_one_minute, name='get')
+@method_decorator(def_cache_page, name='get')
 class ClassificaPerLegaListView(SingleTableMixin, FilterView):
     model = ClassificaPerLega
     table_class = ClassificaPerLegaTable
@@ -38,7 +39,7 @@ class ClassificaPerLegaListView(SingleTableMixin, FilterView):
         context['entity_plural_name'] = 'squadre'
         return context
 
-@method_decorator(cache_one_minute, name='get')
+@method_decorator(def_cache_page, name='get')
 class ClassificaPoliticoListView(SingleTableMixin, FilterView):
     model = ClassificaPolitico
     table_class = ClassificaPoliticoTable
@@ -49,7 +50,7 @@ class ClassificaPoliticoListView(SingleTableMixin, FilterView):
         context['entity_plural_name'] = 'politici'
         return context
 
-@method_decorator(cache_one_minute, name='get')
+@method_decorator(def_cache_page, name='get')
 class SquadraPuntiListView(SingleTableView):
     table_class = SquadraPuntiTable
     template_name = 'fc_classifiche_app/dettaglio_squadra.html'
@@ -65,7 +66,7 @@ class SquadraPuntiListView(SingleTableView):
         context['entity_plural_name'] = 'punteggi'
         return context
 
-@method_decorator(cache_one_minute, name='get')
+@method_decorator(def_cache_page, name='get')
 class PunteggioPuntataListView(SingleTableMixin, FilterView):
     model = PunteggioPuntata
     table_class = PunteggioPuntataTable

@@ -13,8 +13,8 @@ from .tables import ClassificaGeneraleTable, ClassificaGeneraleFilter, \
                     ClassificaPoliticoTable, ClassificaPoliticoFilter, \
                     SquadraPuntiTable, PunteggioPuntataTable, PunteggioPuntataFilter
 
-#def_cache_page = cache_page(60)
-def_cache_page = never_cache
+def_cache_page = cache_page(600)
+#def_cache_page = never_cache
 
 @method_decorator(def_cache_page, name='get')
 class ClassificaGeneraleListView(SingleTableMixin, FilterView):

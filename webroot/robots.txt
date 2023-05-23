@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /?page
+Disallow: /classifica_per_lega
+Disallow: /classifica_politico?page
+Disallow: /punteggio_puntata?page
+Disallow: /admin
+Disallow: /squadra_punti
+Disallow: /refresh_classifiche
+Disallow: /politico-autocomplete
+
+
+Sitemap: https://classifiche-fantacitorio.adessospiana.it/sitemap.xml

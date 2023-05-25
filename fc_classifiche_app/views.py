@@ -16,8 +16,24 @@ from .tables import ClassificaGeneraleTable, ClassificaGeneraleFilter, \
 def_cache_page = cache_page(600)
 #def_cache_page = never_cache
 
+class NoIndexRobotsMixin:
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        response['X-Robots-Tag'] = 'noindex'
+        #print('noindex', request.path)
+        return response
+
+
+class NoIndexRobotsPageSortMixin:
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if 'page' in  request.GET or 'sort' in  request.GET:
+            response['X-Robots-Tag'] = 'noindex'
+            #print('noindex sortpage', request.path, request.GET)
+        return response
+
 @method_decorator(def_cache_page, name='get')
-class ClassificaGeneraleListView(SingleTableMixin, FilterView):
+class ClassificaGeneraleListView(NoIndexRobotsPageSortMixin, SingleTableMixin, FilterView):
     model = ClassificaGenerale
     table_class = ClassificaGeneraleTable
     template_name = 'fc_classifiche_app/table.html'
@@ -29,7 +45,7 @@ class ClassificaGeneraleListView(SingleTableMixin, FilterView):
         return context
 
 @method_decorator(def_cache_page, name='get')
-class ClassificaPerLegaListView(SingleTableMixin, FilterView):
+class ClassificaPerLegaListView(NoIndexRobotsMixin, SingleTableMixin, FilterView):
     model = ClassificaPerLega
     table_class = ClassificaPerLegaTable
     template_name = 'fc_classifiche_app/table.html'
@@ -40,7 +56,7 @@ class ClassificaPerLegaListView(SingleTableMixin, FilterView):
         return context
 
 @method_decorator(def_cache_page, name='get')
-class ClassificaPoliticoListView(SingleTableMixin, FilterView):
+class ClassificaPoliticoListView(NoIndexRobotsPageSortMixin, SingleTableMixin, FilterView):
     model = ClassificaPolitico
     table_class = ClassificaPoliticoTable
     template_name = 'fc_classifiche_app/table.html'
@@ -51,7 +67,7 @@ class ClassificaPoliticoListView(SingleTableMixin, FilterView):
         return context
 
 @method_decorator(def_cache_page, name='get')
-class SquadraPuntiListView(SingleTableView):
+class SquadraPuntiListView(NoIndexRobotsMixin, SingleTableView):
     table_class = SquadraPuntiTable
     template_name = 'fc_classifiche_app/dettaglio_squadra.html'
     table_pagination = False
@@ -67,7 +83,7 @@ class SquadraPuntiListView(SingleTableView):
         return context
 
 @method_decorator(def_cache_page, name='get')
-class PunteggioPuntataListView(SingleTableMixin, FilterView):
+class PunteggioPuntataListView(NoIndexRobotsPageSortMixin, SingleTableMixin, FilterView):
     model = PunteggioPuntata
     table_class = PunteggioPuntataTable
     template_name = 'fc_classifiche_app/table.html'
@@ -78,7 +94,7 @@ class PunteggioPuntataListView(SingleTableMixin, FilterView):
         return context
 
 @method_decorator(never_cache, name='get')
-class RefreshClassificheView(PermissionRequiredMixin,View):
+class RefreshClassificheView(NoIndexRobotsMixin, PermissionRequiredMixin,View):
     template_name = 'fc_classifiche_app/refresh_classifiche.html'
     permission_required = 'fc_classifiche_app.change_classificagenerale'
     raise_exception = True

@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.sitemaps.views import sitemap
 from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, \
     ClassificaPoliticoListView, SquadraPuntiListView, PunteggioPuntataListView, RefreshClassificheView
+from fc_classifiche_app.sitemaps import ClassificaGeneraleSitemap, ClassificaPoliticoSitemap, PunteggioPuntataPoliticoSitemap
 from fc_gestione_app.views import SquadraUpdateView, SquadraCreateView, SquadraDetailView, PoliticoAutocompleteView
 from fc_project import settings
 
@@ -30,6 +32,17 @@ urlpatterns = [
     path('squadra_punti/<squadra_id>', SquadraPuntiListView.as_view(), name='squadra_punti'),
     path('refresh_classifiche', RefreshClassificheView.as_view(), name='refresh_classifiche'),
     path('politico-autocomplete/', PoliticoAutocompleteView.as_view(), name='politico-autocomplete'),
+    path('sitemap.xml', 
+        sitemap, 
+        {
+            "sitemaps": {
+                'classifica_generale': ClassificaGeneraleSitemap(), 
+                'classifica_politico': ClassificaPoliticoSitemap(), 
+                'punteggio_puntata': PunteggioPuntataPoliticoSitemap()
+            }
+        }, 
+        name="django.contrib.sitemaps.views.sitemap"
+    )
 ] 
 
 if settings.ALLAUTH_ENABLED:

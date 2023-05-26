@@ -1,8 +1,11 @@
 User-agent: *
 Disallow: /?page
+Disallow: /?sort
 Disallow: /classifica_per_lega
 Disallow: /classifica_politico?page
+Disallow: /classifica_politico?sort
 Disallow: /punteggio_puntata?page
+Disallow: /punteggio_puntata?sort
 Disallow: /admin
 Disallow: /squadra_punti
 Disallow: /refresh_classifiche

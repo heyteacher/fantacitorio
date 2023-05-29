@@ -6,7 +6,13 @@ class Command(BaseCommand):
     help = 'Refresh Postgres materialized views'
 
     def handle(self, *args, **options):
-        queries = ['call public.refresh_mat_views()']
+        queries = [
+            'REFRESH MATERIALIZED VIEW classifica_generale',
+            'REFRESH MATERIALIZED VIEW classifica_per_lega',
+            'REFRESH MATERIALIZED VIEW classifica_politico',
+            'REFRESH MATERIALIZED VIEW squadra_punti',
+            'REFRESH MATERIALIZED VIEW punteggio_puntata',
+        ]
         self.stdout.write(self.style.SUCCESS('Starting Refresh Postgres materialized views'))
         self.stdout.write(self.style.SUCCESS('ClassificaGenerale count before: %s' % ClassificaGenerale.objects.count()))
         with connection.cursor() as cursor:

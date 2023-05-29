@@ -221,7 +221,7 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
    pip install -r requirements-stage.txt
    ```
 
-1. deploy dell'ambiente (solo la prima volta)++++++
+1. deploy dell'ambiente (solo la prima volta)
    ```
    zappa deploy stage
    ```
@@ -349,7 +349,7 @@ Per comodità in locale il database è stati disegnato usando PostgreSQL è lo s
  
 1. applicare la migrazione dell'applicazione delle classifiche in modalità __fake__ dato che in `postgresql` le tabelle sono viste materializzate non gestite da Django come del caso di `sqlite`
   ```
-  zappa manage production migrate fc_classifica_app --fake
+  zappa manage production "migrate fc_classifiche_app --fake"
   ```
 1. applicare la migrazione delle restanti app per creare le tabelle gestite da Django  
   ```
@@ -377,10 +377,8 @@ Per comodità in locale il database è stati disegnato usando PostgreSQL è lo s
 
 1. eseguire i comandi per creare le viste classifiche, le viste materializzate e i trigger di refresh dei dati  
   ```
-  zappa manage production pg_drop_mat_views
   zappa manage production create_classifiche_views
   zappa manage production pg_create_mat_views
-  zappa manage production pg_create_triggers_fuction_proc
   ```
 
 1. eseguire un refresh manuale delle viste materializzate 

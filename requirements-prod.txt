@@ -1,6 +1,7 @@
 django 
 psycopg2 
 psycopg2-binary 
+django-cockroachdb==4.2.*
 django-admin-autocomplete-filter  
 django-import-export
 django-tables2
@@ -8,4 +9,8 @@ django-filter
 django-bootstrap5
 django-allauth
 django-dynamodb-cache
+django-autocomplete-light
+djhacker  
 zappa
+#django_extensions
+#django-debug-toolbar

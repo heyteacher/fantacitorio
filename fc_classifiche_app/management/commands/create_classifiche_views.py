@@ -26,7 +26,7 @@ DROP VIEW IF EXISTS v_squadra_punti
 """
 DROP VIEW IF EXISTS v_punteggio_puntata
 """
-   },{ 'action':'create view v_classifica_politico', 'query':
+},{ 'action':'create view v_classifica_politico', 'query':
 """
 CREATE VIEW v_classifica_politico
 AS
@@ -40,7 +40,7 @@ AS
            FROM politico
              JOIN punteggio ON punteggio.politico_id = politico.id
           GROUP BY politico.id, politico.name
-          ORDER BY (sum(punteggio.punti)) DESC) classifica_politico
+        ) classifica_politico
 """
    },{ 'action':'create view v_squadra_punti', 'query':
 """
@@ -215,72 +215,72 @@ FROM squadra
 JOIN punteggio ON squadra."11_politico_id" = punteggio.politico_id
 JOIN puntata ON punteggio.puntata_id = puntata.id AND squadra.creato_il <= puntata.data
 JOIN politico ON punteggio.politico_id = politico.id
-) squadra_punti ORDER BY squadra_name, puntata_numero, politico_name
+) squadra_punti
 """
    },{ 'action':'create view v_classifica_generale', 'query':
 """
 CREATE VIEW v_classifica_generale
 AS
 SELECT 
-    row_number() OVER ( ORDER BY totale_punti DESC) as posizione ,
+    row_number() OVER ( ORDER BY totale_punti DESC) as posizione,
     classifica_squadre.squadra_id,
     classifica_squadre.squadra_codice as codice_squadra,
     classifica_squadre.squadra_name as nome_squadra,
     classifica_squadre.creato_il,
     classifica_squadre.totale_punti,
     classifica_squadre.leader_politico,
-    classifica_squadre.totale_leader_politico,
+    classifica_squadre.leader_politico_id,
     classifica_squadre.politico_1,
-    classifica_squadre.totale_politico_1,
+    classifica_squadre."1_politico_id",
     classifica_squadre.politico_2,
-    classifica_squadre.totale_politico_2,
+    classifica_squadre."2_politico_id",
     classifica_squadre.politico_3,
-    classifica_squadre.totale_politico_3,
+    classifica_squadre."3_politico_id",
     classifica_squadre.politico_4,
-    classifica_squadre.totale_politico_4,
+    classifica_squadre."4_politico_id",
     classifica_squadre.politico_5,
-    classifica_squadre.totale_politico_5,
+    classifica_squadre."5_politico_id",
     classifica_squadre.politico_6,
-    classifica_squadre.totale_politico_6,
+    classifica_squadre."6_politico_id",
     classifica_squadre.politico_7,
-    classifica_squadre.totale_politico_7,
+    classifica_squadre."7_politico_id",
     classifica_squadre.politico_8,
-    classifica_squadre.totale_politico_8,
+    classifica_squadre."8_politico_id",
     classifica_squadre.politico_9,
-    classifica_squadre.totale_politico_9,
+    classifica_squadre."9_politico_id",
     classifica_squadre.politico_10,
-    classifica_squadre.totale_politico_10,
+    classifica_squadre."10_politico_id",
     classifica_squadre.politico_11,
-    classifica_squadre.totale_politico_11,
+    classifica_squadre."11_politico_id",
     classifica_squadre.fanfani
    FROM ( SELECT squadra.id AS squadra_id,
             squadra.codice AS squadra_codice,
             squadra.name AS squadra_name,
             creato_il,
             (select name from politico where id = squadra.leader_politico_id) as leader_politico,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra.leader_politico_id),0) as totale_leader_politico,
+            squadra.leader_politico_id,
             (select name from politico where id = squadra."1_politico_id") as politico_1,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."1_politico_id"),0) as totale_politico_1,
+            squadra."1_politico_id",
             (select name from politico where id = squadra."2_politico_id") as politico_2,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."2_politico_id"),0) as totale_politico_2,
+            squadra."2_politico_id",
             (select name from politico where id = squadra."3_politico_id") as politico_3,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."3_politico_id"),0) as totale_politico_3,
+            squadra."3_politico_id",
             (select name from politico where id = squadra."4_politico_id") as politico_4,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."4_politico_id"),0) as totale_politico_4,
+            squadra."4_politico_id",
             (select name from politico where id = squadra."5_politico_id") as politico_5,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."5_politico_id"),0) as totale_politico_5,
+            squadra."5_politico_id",
             (select name from politico where id = squadra."6_politico_id") as politico_6,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."6_politico_id"),0) as totale_politico_6,
+            squadra."6_politico_id",
             (select name from politico where id = squadra."7_politico_id") as politico_7,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."7_politico_id"),0) as totale_politico_7,
+            squadra."7_politico_id",
             (select name from politico where id = squadra."8_politico_id") as politico_8,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."8_politico_id"),0) as totale_politico_8,
+            squadra."8_politico_id",
             (select name from politico where id = squadra."9_politico_id") as politico_9,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."9_politico_id"),0) as totale_politico_9,
+            squadra."9_politico_id",
             (select name from politico where id = squadra."10_politico_id") as politico_10,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."10_politico_id"),0) as totale_politico_10,
+            squadra."10_politico_id",
             (select name from politico where id = squadra."11_politico_id") as politico_11,
-            COALESCE((select sum(punti) from v_squadra_punti where squadra_id = squadra.id AND politico_id = squadra."11_politico_id"),0) as totale_politico_11,
+            squadra."11_politico_id",
             (COALESCE((select fanfani from politico where id = squadra.leader_politico_id),0) +
              COALESCE((select fanfani from politico where id = squadra."1_politico_id"),0) +
              COALESCE((select fanfani from politico where id = squadra."2_politico_id"),0) +
@@ -331,43 +331,7 @@ SELECT
                      JOIN puntata ON punteggio.puntata_id = puntata.id
                   WHERE squadra."11_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) AS totale_punti
            FROM squadra
-          ORDER BY ((( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra.leader_politico_id = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."1_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."2_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."3_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."4_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."5_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."6_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."7_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."8_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."9_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."10_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data))) + (( SELECT COALESCE(sum(punteggio.punti), 0) AS "coalesce"
-                   FROM punteggio
-                     JOIN puntata ON punteggio.puntata_id = puntata.id
-                  WHERE squadra."11_politico_id" = punteggio.politico_id AND squadra.creato_il <= (puntata.data)))) DESC) classifica_squadre
+          ) classifica_squadre
 """
    },{ 'action':'create view v_classifica_per_lega', 'query':
 """
@@ -383,7 +347,6 @@ AS
    FROM v_classifica_generale
      JOIN lega_squadra ON v_classifica_generale.squadra_id = lega_squadra.squadra_id
      JOIN lega ON lega_squadra.lega_id = lega.id
-   ORDER BY lega_squadra.lega_id, row_number() OVER (PARTITION BY lega_squadra.lega_id ORDER BY v_classifica_generale.totale_punti DESC)
 """
    },{ 'action':'create view v_punteggio_puntata', 'query':
 """
@@ -393,7 +356,6 @@ SELECT puntata.numero as puntata_numero, puntata."data" as puntata_data, politic
 FROM punteggio
 INNER JOIN puntata ON puntata.id = punteggio.puntata_id
 JOIN politico ON punteggio.politico_id = politico.id
-ORDER BY punteggio.creato_il DESC
 """
 }]
         self.stdout.write(self.style.SUCCESS('Starting create classifiche views'))

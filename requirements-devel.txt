@@ -1,4 +1,7 @@
-django 
+django
+psycopg2 
+psycopg2-binary 
+django-cockroachdb==4.2.*
 django-admin-autocomplete-filter  
 django-import-export
 django-s3-sqlite

@@ -6,7 +6,7 @@
 [![Django versions](https://img.shields.io/badge/Django_versions-4.0_4.1_4.2_-blue)](https://github.com/django/django) 
 [![Python versions](https://img.shields.io/badge/Python_versions-3.7_3.8_3.9-yellow)](https://www.python.org/downloads/release/python-390/)
 
-Progetto web __Fantacitorio__ nato dai `Google Sheet` gestiti da [@rosyilcapo](https://twitter.com/rosyilcapo)  per strutturare i dati in un database SQL ed visualizzare le classifiche (generale, per lega, politici). 
+Sito web [Classifiche Fantacitorio](https://classifiche-fantacitorio.adessospiana.it) nato dai `Google Sheet` gestiti da [@rosyilcapo](https://twitter.com/rosyilcapo)  per gestire i dati in un database SQL ed visualizzare le classifiche (generale, per lega, politici). 
 
 In particolare la base dati è stata creata partendo dal `Google Sheet` [* Fantacitorio 2022 - classifica generale PROVVISORIA](https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0).
 
@@ -17,13 +17,15 @@ Info disponibili:
 - [Regolamento](https://www.la7.it/propagandalive/video/fantacitorio-16-02-2022-423442)
 - [Monologo di __Valerio Aprea__](https://www.la7.it/embedded/la7?w=640&h=360&tid=player&content=423442)
 
+Il sito web realizzato dai sorgenti di questo progetto GitHub è raggiungibile al seguente indirizzo: https://classifiche-fantacitorio.adessospiana.it 
+
 ## Struttura del sito
 
 Il progetto è composto da:
 
-- una sezione pubblica dove sono visualizzate `classifica generale`, le `classifiche per lega`, la `classifica politico` e la possibilità di visualizzare il `dettaglio` di una squadra dove viene mostrata la `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe e il `dettaglio del punteggio`
+- un sito pubblico dove sono visualizzate la `classifica generale`, le `classifiche per lega`, la `classifica politico` ed i `punteggi` di ogni puntata. Inoltre, cliccando su una squada è mostrato il suo `dettaglio` costituito dalla `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe nonchè i `punteggi` acquisiti dai politici in formazione.
 
-- un'area protetta di `admin ` protetta per importare, esportare r gestione i contenuti:
+- un'area riservata di `amministrazione` protetta da autenticazione, per gestire, importare, esportare i contenuti:
   - `cariche`
   - `politici`
   - `squadre`
@@ -32,27 +34,22 @@ Il progetto è composto da:
   - `punteggi`
   - `puntate`
 
+## Demo Area Riservata
 
-## Demo
-
-Il deploy sul `Cloud AWS` è raggiungibile al seguente URL:
-
- https://classifiche-fantacitorio.adessospiana.it
-
-Le credenziali in sola lettura per accedere all' area di amministazione per la gestione dei contenuti per:
+E' possibile accedere alla demo dell'area riservata da https://stage-classifiche-fantacitorio.adessospiana.it/admin autenticandosi con le credenziali:
 
 - __login__: `fantautente`
 - __password__: `fantacitorio`
 
 ## Area Developer
 
-In questa sezione viene descritto nel dettaglio lo sviluppo, il popolamento del database e il deploy su AWS. Prerequisito per approcciare questa sezione è di avere una conoscenza almeno base dei seguenti strumenti:
+In questa sezione viene descritto nel dettaglio lo sviluppo, il popolamento del database e il deploy sul cloud AWS. Prerequisito per approcciare questa sezione è di avere una conoscenza almeno base dei seguenti strumenti:
 
 - il linguaggio di programmazione `Python`
 - il framework `Django`
 - il framework `Zappa`
 - il database `sqlite` e `PostgtreSQL` 
-- il cloud `AWS` (`Amazon Web Services`) e nello specifico
+- il cloud `AWS` (`Amazon Web Services`) e nello specifico:
   - `AWS S3`: l'object storage di AWS
   - `AWS Api Gateway`
   - `AWS Lambda` l'infrastruttura `Serverless/FaaS` (`Function as a Service`)
@@ -61,12 +58,11 @@ In questa sezione viene descritto nel dettaglio lo sviluppo, il popolamento del 
   - `AWS Route53` il servizio di gestione `DNS` dei domini in  AWS
   - `AWS Certificate` il servizio per creare certificati SSL validi
   
-
-Nella trattazione, la conoscenza di questi strumenti è data per acquisita. Per lo studio e l'approfondimento si rimanda alla documentazione ufficiale di ciascun strumento.
+Nella trattazione, la conoscenza di questi strumenti è data per acquisita. Per lo studio e l'approfondimento si rimanda alla documentazione ufficiale di ciascun strumento utilizzato.
 
 ### Il progetto Django
 
-Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `zappa`. La lista dei `package python` utilizzati dal progetto sono:
+Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `Zappa`. La lista dei `package python` utilizzati dal progetto sono:
 
 - [django](https://github.com/django/django): storico framework CMS in `python` che, tra i tanti, ha dato i natali ad `Instagram`
 
@@ -90,10 +86,13 @@ Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `za
 
 - [django-debug-toolbar](https://github.com/jazzband/django-debug-toolbar): modulo Django mostra metriche delle query, template utilizzati, messaggi di log, variabili di sistema, insomma tutto ciò che serve per fare debugging e tuning del sistema
 
-Lo sviluppo è iniziato in locale con db `PostgreSQL`. Per una questione meramente economica, con il deploy su AWS si è passati a `sqlite` quindi i package `django-s3-sqlite`. Naturalmente l'ambiente di produzione ideale prevede l'utilizzo di un vero database come `PostgreSQL` o meglio ancora `AWS Aurora` la versione cloud in alta affidabilità di `PostgreSQL. In tal caso i package sqlite andrebbero sostituiti con i package python:
+Lo sviluppo in locale per comodità usa come backend `sqlite` quindi i package `django-s3-sqlite` mentre l'ambiente di produzione è utilizzato il backend [CockroachDB](https://cockroachlabs.cloud) un servizio serverless basato su `PostgreSQL. In tal caso i package sqlite andrebbero sostituiti con i package python:
 
+- `django-cockroachdb`
 - `psycopg2` 
 - `psycopg2-binary` 
+
+Il sito può funzionare senza problemi su qualsiasi installazione `PostgreSQL` come `AWS RDS PostgreSQL` e `AWS Aurora`. In questo caso bisogna utilizzare il backend django di PostgreSQL e il pacchetto `django-cockroachdb` non è necessario.
 
 ### Struttura 
 
@@ -105,17 +104,19 @@ La struttura del progetto è costituita da un Django `project` a due Django `app
 
 ### Prerequisiti
 
-- `Linux` o `WSL` su `Windows` e forse anche `Windows` (non testato)
+- `Linux` o `WSL` su `Windows` 
 - `python3.9` (è attualmente la versione massima supportata dalla `AWS Lambda` in python. Attenzione `python3.10` attualmente non è supportato da `AWS Lambda`)
+
+Potrebbe anche funzionare direttamente su `Windows` ma non è stato testato.
 
 ### Setup local environment
 
-L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per il deploy su `AWS. 
+L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per il deploy su `AWS`. Di seguito le istruzioni per configurare l'ambiente locale:
 
 - creazione del virtualenv che ospiterà Django in locale
   ```
   sudo apt install virtualenv
-  virtualenv  venv --python python3.9 --pip 23.0
+  virtualenv  venv --python python3.9 --pip 23
   ```
 
 - rinominare `zappa_settings.json.template` in `zappa_settings.json`. Nella sezione dev contiene già le impostazioni per utilizzare il database locale `sqlite3`
@@ -127,7 +128,7 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
 
 - Installazione di Django e delle dipendenze contenute in requirements.txt
   ```
-  pip install -r requirements.txt
+  pip install -r requirements-devel.txt
   ```
 
 - generazione delle tabelle di sistema della applicazione fc_gestione_app e fc_classifiche_app. si utilizza il `database routing` per gestire il database di principale e quello delle classifiche.
@@ -141,7 +142,7 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
   python manage.py createsuperuser --username <SUPER UTENTE>
   ```
 
-- caricamento dei dati aggiornati alla 6° puntata di propaganda
+- caricamento dei dati (`fixture`) aggiornati all'ultima puntata
   ```
   python manage.py loaddata fc_gestione_app
   ```
@@ -152,7 +153,7 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
   python manage.py sqlite_refresh_classifiche
   ```
 
-- esecuzione in locale
+- esecuzione in locale di Django
   ```
   python manage.py runserver
   ```
@@ -161,7 +162,7 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
 
 ### Dump dei dati e creazione della fixture di fc_gestione_app
 
-Per generare una `fixture` del database per migrarlo presso un nuovo ambiente si utilizza il comando Django `dumpdata`
+Per generare una `fixture` del database e per migrarlo presso un nuovo ambiente si utilizza il comando Django `dumpdata`
 
 ```
 python manage.py dumpdata fc_gestione_app -o fc_gestione_app/fixtures/fc_gestione_app.json.bz2
@@ -173,42 +174,38 @@ Per caricare la `fixture` utilizzare il comando load data (in automatico cerca l
 python manage.py loaddata fc_gestione_app
 ```
 
-Le `fixture` sono agnostiche rispetto al database utilizzato, quindi possono essere utilizzate per migrare i data verso qualsiasi database supportato da Django.
+Le `fixture` sono agnostiche rispetto al database utilizzato, quindi possono essere utilizzate per migrare i data verso qualsiasi backend supportato da Django.
 
 ## architettura su AWS
 
-`zappa` è lo strumento che permette di rilasciare facilmente su cloud `AWS` dell'ambiente di stage e produzione. Nel dettaglio l'architettura del sito sul Cloud:
+`Zappa` è lo strumento che permette di deployare `Django` , gestendo ambienti separati, ad esempip `stage` e `production`. 
 
-- Django distribuito sul cloud `AWS` in modalità `serverless` tramite `AWS Lambda` e `AWS Api Gateway` 
+Nel dettaglio l'architettura del sito sul Cloud:
 
-- 2 database `sqlite` (`gestione` e `classifiche`) caricati in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` (dove è installato `Django`) per le letture e le scritture, tramite il pacchetto `django-s3-sqlite`.
+- Django distribuito sul cloud `AWS` in modalità  
 
-- `cache Django` attiva su backed `AWS DynamoDB` per le `session` e la `pagine` tramite il pacchetto `django-dynamodb-cache`
+- __CDN__: `AWS Cloudfront` è il punto di ingresso dalla applicazione. Si occupa della distribuzione dei contenuti effettuando il routing delle richieste verso la parte statica `S3` oppure `Django` servito dalle `AWS Api Gateway`
 
-- file statici forniti da un `AWS S3 bucket`, built-in `Django`
+- __DNS__: gestito da `AWS Route53` e certificati di dominio HTTPS generati e gestiti da `AWS Certificate` e configurati sia sul `AWS Cloudfront` che `AWS Api Gateway`    
 
-- `AWS event` schedulato ogni ora per aggiornamento del database classifiche partendo dai dati del database gestione.
+- __Django__: servito in modalità serverless da `Zappa` che effettua il deploy di Django sul cloud `AWS` mediante servizi `serverless` tramite `AWS Lambda` e `AWS Api Gateway` 
 
-- `AWS Cloudfront` le la distribuzione dei contenuti che si occupa anche del routing delle richieste verso la parte statica `S3` oppure il backend servito dalle `AWS Api Gateway`
+- __Database__: l'architettura cambia a seconda dell'ambiente `stage` o `production`
+ 
+  - ambiente di `stage`: database `sqlite` (`gestione` e `classifiche`) caricati in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` (dove è installato `Django`) per le letture e le scritture, tramite il pacchetto `django-s3-sqlite`. Il razionale di avere due database distinti, uno per la gestione dei dati e uno per le classifiche è  separare completamente `presentation` dei dati (database classifiche) dalla `administration` dei dati (database gestione)
+ 
+ - ambiente di `production`: servito esternamente da `CockroachDB` (a sua volta ospitato dal cloud `AWS` ma completamente gestito da `Cockroach Labs`). La parte di `presentation` è realizzata tramite `viste materializzate` create sulle table del layer `administration`
 
-- con un dominio gestito da `AWS Route53` e certificati di dominio HTTPS generati e gestiti da `AWS Certificate` e configurati sia sul `AWS Cloudfront` che `AWS Api Gateway`    
+- __Cache__: la Cache `Django` attiva su backed `AWS DynamoDB` sia per le `session` che la `pagine` tramite il pacchetto `django-dynamodb-cache`
 
-Il razionale di avere due database distinti, uno per la gestione dei dati e uno per le classifiche è  separare completamente `presentation` dei dati (database classifiche) dalla `administration` dei dati (database gestione):
-
-- il database classifiche è readonly aggiornato ogni ora ottimizzato per la visualizzazione (join risolti, poche tabelle di grandi dimensione non in 3° forma normale). Quando viene consultato dalla lambda viene scaricato da S3 ma non sovrascritto in quanto mai modificato. Quindi può essere acceduto concorrentemente ed è il database della parte pubblica del sito.
-
-- il datatanse di gestione (che è il default) è il classico database in 3° forma normale gestito tramite la `Admin` di `Django` ossia un `CRUD`. Durante le modifiche, viene scaricato da S3, modificato tramite query di INSERT, UPDATE, DELETE e ricaricato su S3. Non supporta accessi concorrenti. E' il database della parte privata di amministrazione del sito, acceduta dall'amministratore per aggiornare i dati.
-
-Il vantaggio di questa configurazione è che utilizza risorse AWS il cui costo è calcolato esclusivamente a consumo e non utilizza risorse AWS a canone come i classici database relazionali (`AWS RDS` con `PostgreSQL`, `Oracle`, `MariaDB`, `MySql`, `Sql Server` ) 
-   
-L'infrastuttura ha costo praticamente zero fino anche a 100.000 di accessi mensili.
 
 Di seguito lo schema architturale su AWS
 
 ![Schema architetturale su AWS ](./images/fantacitorio_architecture_schema.png)
 
 
-### deploy
+### deploy ambiente di stage
+
 La configurazione di `Zappa` per il rilascio su AWS è nella  sezione `stage` di `zappa_settings.json`
 
 Come pre-requisito è necessario un account AWS personale con le chiavi configurate in locale per l'accesso all'infartruttura. Di seguito i comandi `Zappa` per il rilascio dell'ambiente di stage: 
@@ -325,7 +322,7 @@ Sempre nell'ambiente AWS gli errori 400 403 404 e 500 sono indirizzate su pagine
 * `templates/404.html` pagina non trovata
 * `templates/500.html` errore server
 
-## Deploy su AWS con database `AWS RDS` di `PostgreSQL`
+## deploy ambiente di produzione
 
 In alternativa, è possibile deployare su AWS il progetto utilizzando un database di classe enterprice come `PostgreSQL` e fornito da AWS tramite il servizio `AWS RDS`. Naturalmente in questi casi i costi aumentano dato che il database si paga dal momento che si avvia e non solo quanto viene utilizzato.
 
@@ -337,7 +334,7 @@ Per comodità in locale il database è stati disegnato usando PostgreSQL è lo s
    ```
    virtualenv  venvprod --python python3.9 --pip 23.0
    source venvprod/bin/activate
-   pip install -r requirements-stage.txt
+   pip install -r requirements-production.txt
    ```
 
 1. configurare la sezione `production` del file `zappa_settings.json`

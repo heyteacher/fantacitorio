@@ -77,7 +77,7 @@ class PunteggioPuntataTable(tables.Table):
         template_name = template_name
         per_page = per_page
         attrs = attrs
-        fields = ['puntata', 'politico_name', 'punti', 'creato_il']
+        fields = ['puntata', 'politico_name', 'punti']
 
 class SquadraPuntiTable(tables.Table):
     puntata = tables.Column(order_by=("puntata_data"))

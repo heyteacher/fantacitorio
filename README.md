@@ -109,7 +109,7 @@ L'ambiente di produzione utilizza come database [CockroachDB](https://cockroachl
 
 La struttura del progetto è costituita da un Django `project` a due Django `app`:
 
-- `_fc_project__`: il project che contiene i `settings` e `url resolver`  
+- `__fc_project__`: il project che contiene i `settings` e `url resolver`  
 - `fc_gestione_app`: app dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi tramite l'`admin` di Django
 - `fc_classifiche_app`: app per la generazione/visualizzazione delle classifiche
 
@@ -120,7 +120,7 @@ La struttura del progetto è costituita da un Django `project` a due Django `app
 
 Potrebbe anche funzionare direttamente su `Windows` ma non è stato testato.
 
-### Setup local environment
+### Setup ed esecuzione in locale
 
 L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per il deploy su `AWS`. Di seguito le istruzioni per configurare l'ambiente locale:
 

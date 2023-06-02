@@ -108,14 +108,14 @@ La struttura del progetto è costituita da un Django `project` a due Django `app
 - `Linux` o `WSL` su `Windows` e forse anche `Windows` (non testato)
 - `python3.9` (è attualmente la versione massima supportata dalla `AWS Lambda` in python. Attenzione `python3.10` attualmente non è supportato da `AWS Lambda`)
 
-### Setup local environment
+### Setup ambiente in locale
 
 L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per il deploy su `AWS. 
 
 - creazione del virtualenv che ospiterà Django in locale
   ```
   sudo apt install virtualenv
-  virtualenv  venv --python python3.9 --pip 23.0
+  virtualenv  venv --python python3.9 --pip 23.1.2
   ```
 
 - rinominare `zappa_settings.json.template` in `zappa_settings.json`. Nella sezione dev contiene già le impostazioni per utilizzare il database locale `sqlite3`
@@ -213,13 +213,6 @@ La configurazione di `Zappa` per il rilascio su AWS è nella  sezione `stage` di
 
 Come pre-requisito è necessario un account AWS personale con le chiavi configurate in locale per l'accesso all'infartruttura. Di seguito i comandi `Zappa` per il rilascio dell'ambiente di stage: 
 
-
-1. creazione virtualenv per stage e installazione dei moduli python di stage
-   ```
-   virtualenv  venvstage --python python3.9 --pip 23.0
-   source venvstage/bin/activate
-   pip install -r requirements-stage.txt
-   ```
 
 1. deploy dell'ambiente (solo la prima volta)
    ```
@@ -333,12 +326,6 @@ Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzat
 
 Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
 
-1. creazione virtualenv per stage e installazione dei moduli python di stage
-   ```
-   virtualenv  venvprod --python python3.9 --pip 23.0
-   source venvprod/bin/activate
-   pip install -r requirements-stage.txt
-   ```
 
 1. configurare la sezione `production` del file `zappa_settings.json`
 

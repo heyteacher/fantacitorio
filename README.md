@@ -6,7 +6,7 @@
 [![Django versions](https://img.shields.io/badge/Django_versions-4.0_4.1_4.2_-blue)](https://github.com/django/django) 
 [![Python versions](https://img.shields.io/badge/Python_versions-3.7_3.8_3.9-yellow)](https://www.python.org/downloads/release/python-390/)
 
-Sito web [Classifiche Fantacitorio](https://classifiche-fantacitorio.adessospiana.it) nato dai `Google Sheet` gestiti da [@rosyilcapo](https://twitter.com/rosyilcapo)  per gestire i dati in un database SQL ed visualizzare le classifiche (generale, per lega, politici). 
+Sito web [Classifiche Fantacitorio](https://classifiche-fantacitorio.adessospiana.it) nato dai `Google Sheet` gestiti da [@rosyilcapo](https://twitter.com/rosyilcapo)  per gestire i dati in un database SQL ed visualizzare le classifiche (generale, per lega, politici, punteggi). 
 
 In particolare la base dati è stata creata partendo dal `Google Sheet` [* Fantacitorio 2022 - classifica generale PROVVISORIA](https://docs.google.com/spreadsheets/d/19RcqYZYyrCdjMHyFA2bcChaxnd7JIuzjXxYbKNRN3jM/edit?pli=1#gid=0).
 
@@ -23,7 +23,7 @@ Il sito web realizzato dai sorgenti di questo progetto GitHub è raggiungibile a
 
 Il progetto è composto da:
 
-- un sito pubblico dove sono visualizzate la `classifica generale`, le `classifiche per lega`, la `classifica politico` ed i `punteggi` di ogni puntata. Inoltre, cliccando su una squada è mostrato il suo `dettaglio` costituito dalla `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe nonchè i `punteggi` acquisiti dai politici in formazione.
+- un sito pubblico dove sono visualizzate la `classifica generale`, le `classifiche per lega`, la `classifica politico` ed i `punteggi`. Inoltre, cliccando su una squada è mostrato il suo `dettaglio` costituito dalla `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe nonchè i `punteggi` acquisiti dai politici in formazione.
 
 - un'area riservata di `amministrazione` protetta da autenticazione, per gestire, importare, esportare i contenuti:
   - `cariche`
@@ -36,10 +36,12 @@ Il progetto è composto da:
 
 ## Demo Area Riservata
 
-E' possibile accedere alla demo dell'area riservata da https://stage-classifiche-fantacitorio.adessospiana.it/admin autenticandosi con le credenziali:
+E' disponibile una demo dell'area riservata nell'ambiente di stage https://stage-classifiche-fantacitorio.adessospiana.it/admin autenticandosi con le credenziali:
 
 - __login__: `fantautente`
 - __password__: `fantacitorio`
+
+Non è detto che i dati dell'ambiente di stage siano aggiornati rispetto alla produzione
 
 ## Area Developer
 
@@ -57,18 +59,14 @@ In questa sezione viene descritto nel dettaglio lo sviluppo, il popolamento del 
   - `AWS CloudFront` la `CDN` (`Content Delivery Network`) di AWS
   - `AWS Route53` il servizio di gestione `DNS` dei domini in  AWS
   - `AWS Certificate` il servizio per creare certificati SSL validi
-  
-Nella trattazione, la conoscenza di questi strumenti è data per acquisita. Per lo studio e l'approfondimento si rimanda alla documentazione ufficiale di ciascun strumento utilizzato.
 
 ### Il progetto Django
 
-Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `Zappa`. La lista dei `package python` utilizzati dal progetto sono:
+Il progetto è basato sul framework `Django` caricato sul Cloud AWS tramite `Zappa`. La lista dei `package python` utilizzati dal progetto sono:
 
 - [django](https://github.com/django/django): storico framework CMS in `python` che, tra i tanti, ha dato i natali ad `Instagram`
 
 - [zappa](https://github.com/zappa/Zappa): tool per il rilascio `serverless` su cloud AWS
-
-- [django-s3-sqlite](https://github.com/FlipperPA/django-s3-sqlite): backend database django per `sqlite` su `AWS S3`
 
 - [django_s3_storage](https://github.com/etianen/django-s3-storage): modulo django per la gestione dalle risorse statiche su `AWS S3`
 
@@ -86,19 +84,32 @@ Il progetto è basato sul framework `Django` deployato sul Cloud AWS tramite `Za
 
 - [django-debug-toolbar](https://github.com/jazzband/django-debug-toolbar): modulo Django mostra metriche delle query, template utilizzati, messaggi di log, variabili di sistema, insomma tutto ciò che serve per fare debugging e tuning del sistema
 
-Lo sviluppo in locale per comodità usa come backend `sqlite` quindi i package `django-s3-sqlite` mentre l'ambiente di produzione è utilizzato il backend [CockroachDB](https://cockroachlabs.cloud) un servizio serverless basato su `PostgreSQL. In tal caso i package sqlite andrebbero sostituiti con i package python:
+Django supporta diversi database:
 
-- `django-cockroachdb`
-- `psycopg2` 
-- `psycopg2-binary` 
+- supporto ufficiale per `MariaDB`, `MySQL`, `Oracle` e `PostgreSQL` (di conseguenza supporta `AWS RDS PostgreSQL` e `AWS Aurora`)
 
-Il sito può funzionare senza problemi su qualsiasi installazione `PostgreSQL` come `AWS RDS PostgreSQL` e `AWS Aurora`. In questo caso bisogna utilizzare il backend django di PostgreSQL e il pacchetto `django-cockroachdb` non è necessario.
+- backend di terze parti `CockroachDB`, `Firebird`, `Google Cloud Spanner`, `Microsoft SQL Server`, `Snowflake`, `TiDB`, `YugabyteDB`
+
+Per i dettagòo fare rifermimento alla documentaziond del [Backend Django](https://docs.djangoproject.com/en/4.2/ref/databases/#postgresql-notes)
+
+Per lo sviluppo in locale si utilizza `sqlite` mentre per stage si utilizza un backend non ufficiale che usa `sqlite` su `AWS S3 :
+
+- [django-s3-sqlite](https://github.com/FlipperPA/django-s3-sqlite): backend database django per `sqlite` su `AWS S3`
+
+L'ambiente di produzione utilizza come database [CockroachDB](https://cockroachlabs.cloud) un servizio serverless basato su `PostgreSQL`. In tal caso usa i package:
+
+- [django-cockroachdb](https://github.com/cockroachdb/django-cockroachdb): backend database django per `CockroachDB`
+
+- [psycopg2](https://github.com/psycopg/psycopg2): sorgenti driver di `PostgreSQL` per `python`
+
+- [psycopg2-binary](https://pypi.org/project/psycopg2-binary/): binary del driver di `PostgreSQL` per `python`
+
 
 ### Struttura 
 
 La struttura del progetto è costituita da un Django `project` a due Django `app`:
 
-- `_fc_project__`: il project che contiene i `settings` e `url resolver`  
+- `__fc_project__`: il project che contiene i `settings` e `url resolver`  
 - `fc_gestione_app`: app dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi tramite l'`admin` di Django
 - `fc_classifiche_app`: app per la generazione/visualizzazione delle classifiche
 
@@ -109,7 +120,7 @@ La struttura del progetto è costituita da un Django `project` a due Django `app
 
 Potrebbe anche funzionare direttamente su `Windows` ma non è stato testato.
 
-### Setup local environment
+### Setup ed esecuzione in locale
 
 L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per il deploy su `AWS`. Di seguito le istruzioni per configurare l'ambiente locale:
 

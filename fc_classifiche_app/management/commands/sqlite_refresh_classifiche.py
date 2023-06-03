@@ -3,6 +3,8 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from fc_classifiche_app.models import ClassificaGenerale, PunteggioPuntata
 from fc_gestione_app.models import Punteggio,Squadra
+from django.core.mail import send_mail
+import os
 
 class Command(BaseCommand):
     help = 'refresh sqlite classifiche'
@@ -189,3 +191,16 @@ fanfani)
                                 self.stdout.write(self.style.NOTICE(command['action']))    
                                 cursor.execute(command['query'])
                 self.stdout.write(self.style.SUCCESS('All Done'))
+
+        send_mail(
+                '[%s] Refresh sqlite classifiche' % (os.environ.get('STAGE'),),
+                'force:\t\t%s\nClassificaGenerale:\t\t%s\nSquadre:\t%s\nPunteggiPuntata:\t\t%s\nPunteggi:\t%s' % (
+                        options['force'],
+                        classificaGeneraleCount,
+                        squadraCount,
+                        punteggioPuntataCount,
+                        punteggioCount
+                ),
+                os.environ.get('DEFAULT_FROM_EMAIL'),
+                [os.environ.get('EMAIL_MANAGER_EMAIL')]
+        )

@@ -34,19 +34,6 @@ DROP MATERIALIZED VIEW IF EXISTS punteggio_puntata
 """
 DROP SEQUENCE if EXISTS punteggio_puntata_id_seq;
 """
-        },{ 'action':'create materialized view classifica_politico', 'query':
-"""
-CREATE MATERIALIZED VIEW public.classifica_politico
-AS
-select posizione, politico_id, nome_politico, totale_punti from v_classifica_politico
-WITH DATA
-"""
-        },{ 'action':'create index on classifica_politico_politico_id_idx', 'query':
-"""
-CREATE INDEX classifica_politico_politico_id_idx
-    ON public.classifica_politico USING btree
-    (politico_id ASC)
-"""
         },{ 'action':'create sequence squadra_punti_id_seq', 'query':
 """
 CREATE SEQUENCE squadra_punti_id_seq START 1;
@@ -70,6 +57,32 @@ CREATE INDEX squadra_punti_squadra_id_politico_id_idx
 CREATE INDEX classifica_politico_totale_punti_idx
     ON public.classifica_politico USING btree
     (totale_punti DESC)
+"""
+        },{ 'action':'create materialized view punteggio_puntata', 'query':
+"""
+CREATE MATERIALIZED VIEW public.punteggio_puntata
+AS
+select nextval('punteggio_puntata_id_seq') as id, puntata_numero, puntata_data, politico_name, punti, creato_il FROM v_punteggio_puntata
+WITH DATA
+"""
+        },{ 'action':'create index view punteggio_puntata', 'query':
+"""
+CREATE INDEX punteggio_puntata_creato_id_idx
+    ON public.punteggio_puntata USING btree
+    (creato_il DESC)
+"""
+        },{ 'action':'create materialized view classifica_politico', 'query':
+"""
+CREATE MATERIALIZED VIEW public.classifica_politico
+AS
+select posizione, politico_id, nome_politico, totale_punti from v_classifica_politico
+WITH DATA
+"""
+        },{ 'action':'create index on classifica_politico_politico_id_idx', 'query':
+"""
+CREATE INDEX classifica_politico_politico_id_idx
+    ON public.classifica_politico USING btree
+    (politico_id ASC)
 """
         },{ 'action':'create materialized view classifica_generale', 'query':
 """
@@ -131,19 +144,6 @@ CREATE INDEX classifica_per_lega_lega_id_totale_punti_idx
         },{ 'action':'create sequence punteggio_puntata_id_seq', 'query':
 """
 CREATE SEQUENCE punteggio_puntata_id_seq START 1;
-"""
-        },{ 'action':'create materialized view punteggio_puntata', 'query':
-"""
-CREATE MATERIALIZED VIEW public.punteggio_puntata
-AS
-select nextval('punteggio_puntata_id_seq') as id, puntata_numero, puntata_data, politico_name, punti, creato_il FROM v_punteggio_puntata
-WITH DATA
-"""
-        },{ 'action':'create index view punteggio_puntata', 'query':
-"""
-CREATE INDEX punteggio_puntata_creato_id_idx
-    ON public.punteggio_puntata USING btree
-    (creato_il DESC)
 """
 }]
       self.stdout.write(self.style.SUCCESS('Starting create postgresql materialized views'))

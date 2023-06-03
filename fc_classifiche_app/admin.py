@@ -1,6 +1,5 @@
 from django.contrib import admin
-from admin_auto_filters.filters import AutocompleteFilter
-from fc_classifiche_app.models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico
+from fc_classifiche_app.models import ClassificaGenerale, ClassificaPerLega, ClassificaPolitico, PunteggioPuntata
 from import_export import resources
 from import_export.admin import ExportActionMixin
 
@@ -36,7 +35,6 @@ class ClassificaGeneraleResource(resources.ModelResource):
         skip_unchanged = True   
         report_skipped = False        
         fields = ('posizione', 'nome_squadra','totale_punti')
-
 @admin.register(ClassificaGenerale)
 class ClassificaGeneraleAdmin(ExportActionMixin, admin.ModelAdmin):
     resource_classes = [ClassificaGeneraleResource]
@@ -74,6 +72,29 @@ class ClassificaPerLegaAdmin(ExportActionMixin, admin.ModelAdmin):
     list_display = ('nome_lega', 'posizione', 'nome_squadra', 'totale_punti')
     list_display_links = None
     search_fields = ('nome_lega','nome_squadra')
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class PunteggioPuntataResource(resources.ModelResource):
+    class Meta:
+        model = PunteggioPuntata
+        skip_unchanged = True
+        report_skipped = False
+        fields = ('puntata_numero', 'puntata_data', 'politico_name','punti')
+
+@admin.register(PunteggioPuntata)
+class PunteggioPuntataAdmin(ExportActionMixin, admin.ModelAdmin):
+    resource_classes = [PunteggioPuntataResource]
+    model = PunteggioPuntata
+    list_display = ('puntata_numero', 'puntata_data', 'politico_name','punti')
+    list_display_links = None
+    search_fields = ('puntata_numero','politico_name')
     
     def has_add_permission(self, request, obj=None):
         return False

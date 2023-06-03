@@ -109,7 +109,7 @@ L'ambiente di produzione utilizza come database [CockroachDB](https://cockroachl
 
 La struttura del progetto è costituita da un Django `project` a due Django `app`:
 
-- `__fc_project__`: il project che contiene i `settings` e `url resolver`  
+- `fc_project`: il project che contiene i `settings` e `url resolver`  
 - `fc_gestione_app`: app dedicata alla gestione delle squadre, le leghe i politici, le puntate e i punteggi tramite l'`admin` di Django
 - `fc_classifiche_app`: app per la generazione/visualizzazione delle classifiche
 
@@ -127,8 +127,8 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
 - creazione del virtualenv che ospiterà Django in locale
   ```
   sudo apt install virtualenv
-  virtualenv  venv --python python3.9 --pip 23
-  ```
+  virtualenv  venv --python python3.9 --pip 23.1.2
+  ```d
 
 - rinominare `zappa_settings.json.template` in `zappa_settings.json`. Nella sezione dev contiene già le impostazioni per utilizzare il database locale `sqlite3`
 
@@ -139,7 +139,7 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
 
 - Installazione di Django e delle dipendenze contenute in requirements.txt
   ```
-  pip install -r requirements-devel.txt
+  pip install -r requirements.txt
   ```
 
 - generazione delle tabelle di sistema della applicazione fc_gestione_app e fc_classifiche_app. si utilizza il `database routing` per gestire il database di principale e quello delle classifiche.
@@ -333,13 +333,6 @@ In alternativa, è possibile deployare su AWS il progetto utilizzando un databas
 Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzato `production`. Questo ambiente attualmente non è deployato su AWS 
 
 Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
-
-1. creazione virtualenv per stage e installazione dei moduli python di stage
-   ```
-   virtualenv  venvprod --python python3.9 --pip 23.0
-   source venvprod/bin/activate
-   pip install -r requirements-production.txt
-   ```
 
 1. configurare la sezione `production` del file `zappa_settings.json`
 

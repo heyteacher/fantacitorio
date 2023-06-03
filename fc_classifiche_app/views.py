@@ -1,3 +1,5 @@
+from django.conf import settings
+from zappa.asynchronous import task
 from django.views import View
 from django.views.decorators.cache import never_cache, cache_page
 from django.utils.decorators import method_decorator
@@ -100,5 +102,12 @@ class RefreshClassificheView(NoIndexRobotsMixin, PermissionRequiredMixin,View):
     raise_exception = True
 
     def get(self, request, *args, **kwargs):
-        output_rows = call_command('sqlite_refresh_classifiche','--force').split("\n")
-        return render(request, self.template_name, {'output_rows': output_rows})
+        call_refresh_command()
+        return render(request, self.template_name, {'output_rows': ['Refresh Scheduled']})
+    
+@task
+def call_refresh_command():
+    if 'sqlite' in settings.DATABASES['default']['ENGINE']:
+        call_command('sqlite_refresh_classifiche','--force')
+    else:
+        call_command('pg_refresh_classifiche','--force')

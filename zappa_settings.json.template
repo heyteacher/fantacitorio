@@ -9,18 +9,10 @@
         "timeout_seconds": 600,
         "domain": "<DOMINIO>",
         "certificate_arn": "<ARN DEL CERTIFICATO HTTPS GENERATO IN AWS DEL DOMINIO",
-        "vpc_config": {
-            "SubnetIds": ["subnet-***********", "subnet-***********"],
-            "SecurityGroupIds": ["sg-***************"]
-        },
-        "exclude": [".git*", "db.sqlite3", "*.md", "images", "static", "venv", "venvstage", "requirements*", "zappa_settings.json.template"],
-       "debug": false,
+        "exclude": [".git*", "*.sqlite3", "*.md", "images", "static", "venv", "venvstage", "requirements*", "zappa_settings.json.template"],
+        "debug": false,
         "log_level": "INFO",
-        "events": [{
-            "function": "zappa_commands.pg_refresh_classifiche",
-            "expression": "rate(1 hour)"
-        }],
-
+        "keep_warm": true,
         "aws_environment_variables": {
             "DEBUG": "false",
 
@@ -75,14 +67,12 @@
         "exclude": [".git*", "rankdb.sqlite3", "db.sqlite3", "*.md", "images", "static", "venv", "venvprod", "requirements*", "zappa_settings.json.template"],
         "debug": false,
         "log_level": "INFO",
-        "keep_warm": false,
-        "events": [{
-            "function": "zappa_commands.sqlite_refresh_classifiche",
-            "expression": "rate(5 minutes)"
-        }],
+        "keep_warm": true,
 
         "aws_environment_variables": {
             "DEBUG": "false",
+            "ALLAUTH_ENABLED": "true",
+
 
             "SECRET_KEY": "<GENERA CASUALMENTE UNA CHIAVE DI ALMENO 20 CARATTERI CON LETTERE MINUSCOLE, MAUISCOLE E CARATTERI SPECIALI>",
             "ALLOWED_HOSTS_1": "<ENDPOINT 1 SU CUI é ESPOSTO IL SITO",
@@ -110,7 +100,7 @@
             "EMAIL_HOST_USER": "<USER>",
             "EMAIL_HOST_PASSWORD": "<PASSWORD>",
             "DEFAULT_FROM_EMAIL": "<DEFAULT FROM EMAIL>",
-            "EMAIL_SUBJECT_PREFIX": "[FC_PROD] ",
+            "EMAIL_SUBJECT_PREFIX": "[FC_STAGE] ",
             "EMAIL_USE_SSL": "true",
             "EMAIL_USE_TLS": "false",
             "EMAIL_ADMIN_NAME": "<ADMIN NAME>",

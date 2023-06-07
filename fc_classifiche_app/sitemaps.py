@@ -5,7 +5,7 @@ from .models import SquadraPunti
 class ClassificaGeneraleSitemap(Sitemap):
     changefreq = 'weekly'
     priority = 1.0
-    location = '/'
+    location = '/classifica_generale'
     protocol = 'https'
 
     def items(self):

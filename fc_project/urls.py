@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.sitemaps.views import sitemap
+from django.views.generic.base import RedirectView
 from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLegaListView, \
     ClassificaPoliticoListView, SquadraPuntiListView, PunteggioPuntataListView, RefreshClassificheView
 from fc_classifiche_app.sitemaps import ClassificaGeneraleSitemap, ClassificaPoliticoSitemap, PunteggioPuntataPoliticoSitemap
@@ -25,7 +26,8 @@ from fc_project import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', ClassificaGeneraleListView.as_view(), name='home'),
+    path('',RedirectView.as_view(pattern_name='classifica_generale'), name='home'),
+    path('classifica_generale', ClassificaGeneraleListView.as_view(), name='classifica_generale'),
     path('classifica_per_lega', ClassificaPerLegaListView.as_view(), name='classifica_per_lega'),
     path('classifica_politico', ClassificaPoliticoListView.as_view(), name='classifica_politico'),
     path('punteggio_puntata', PunteggioPuntataListView.as_view(), name='punteggio_puntata'),

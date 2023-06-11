@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.urls import reverse
 from zappa.asynchronous import task
 from django.views import View
 from django.views.decorators.cache import never_cache, cache_page
@@ -44,6 +45,7 @@ class ClassificaGeneraleListView(NoIndexRobotsPageSortMixin, SingleTableMixin, F
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'squadre'
+        context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_generale'))
         return context
 
 @method_decorator(def_cache_page, name='get')
@@ -55,6 +57,7 @@ class ClassificaPerLegaListView(NoIndexRobotsMixin, SingleTableMixin, FilterView
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'squadre'
+        context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_per_lega'))
         return context
 
 @method_decorator(def_cache_page, name='get')
@@ -66,6 +69,7 @@ class ClassificaPoliticoListView(NoIndexRobotsPageSortMixin, SingleTableMixin, F
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'politici'
+        context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_politico'))
         return context
 
 @method_decorator(def_cache_page, name='get')
@@ -93,6 +97,7 @@ class PunteggioPuntataListView(NoIndexRobotsPageSortMixin, SingleTableMixin, Fil
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'punteggi'
+        context['canonical_url'] = self.request.build_absolute_uri(reverse('punteggio_puntata'))
         return context
 
 @method_decorator(never_cache, name='get')

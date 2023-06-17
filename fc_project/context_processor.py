@@ -1,4 +1,4 @@
-from fc_project import settings
+from django.conf import settings
 
 def fc_settings(request):
     return {

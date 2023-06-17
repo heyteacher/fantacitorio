@@ -4,6 +4,9 @@ from django.template.defaultfilters import date
 from django.forms import ValidationError
 from django.db.models.functions import Lower
 from django.urls import reverse
+from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
+
 
 class CaricaManager(models.Manager):
     def get_by_natural_key(self, name):
@@ -31,21 +34,21 @@ class Carica(models.Model):
         ]
         ordering = ('-fanfani',)
 
-
-class PoliticoManager(models.Manager):
-    def get_by_natural_key(self, name):
-        return self.get(name=name)
+class PoliticoManager(CurrentSiteManager):
+    def get_by_natural_key(self, name, site):
+        return self.get(name=name, site=site)
 
 class Politico(models.Model):
     name = models.CharField(max_length=200, verbose_name='nomimativo', )
     carica = models.ForeignKey(Carica, models.PROTECT, )
     fanfani = models.IntegerField(default=0)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     creato_il = models.DateTimeField(auto_now_add=True)
     aggiornato_il = models.DateTimeField(auto_now=True) 
-
+    
     objects = PoliticoManager()
     def natural_key(self):
-        return (self.name,)
+        return (self.name,self.site)
 
     def get_totale_punti(self, from_datetime = None):
         punteggi = self.punteggio_set.all() if from_datetime is None else self.punteggio_set.filter(puntata__data__gt=from_datetime)
@@ -74,18 +77,19 @@ class Politico(models.Model):
         ordering = ('name',)
 
 
-class LegaManager(models.Manager):
-    def get_by_natural_key(self, name):
-        return self.get(name=name)
+class LegaManager(CurrentSiteManager):
+    def get_by_natural_key(self, name, site):
+        return self.get(name=name, site=site)
 
 class Lega(models.Model):
     name = models.CharField(max_length=100, verbose_name='nome', )
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     creato_il = models.DateTimeField(auto_now_add=True)
     aggiornato_il = models.DateTimeField(auto_now=True) 
 
     objects = LegaManager()
     def natural_key(self):
-        return (self.name,)
+        return (self.name, self.site)
 
     def __str__(self):
         return self.name
@@ -100,9 +104,9 @@ class Lega(models.Model):
         ]
         ordering = ('name',)
 
-class SquadraManager(models.Manager):
-    def get_by_natural_key(self, name):
-        return self.get(name=name)
+class SquadraManager(CurrentSiteManager):
+    def get_by_natural_key(self, name, site):
+        return self.get(name=name, site=site)
 
 class Squadra(models.Model):
     objects = SquadraManager()
@@ -122,14 +126,15 @@ class Squadra(models.Model):
     number_10_politico = models.ForeignKey(Politico, models.PROTECT, db_column='10_politico_id', related_name = 'number_10_politico', verbose_name='10° politico',)
     number_11_politico = models.ForeignKey(Politico, models.PROTECT, db_column='11_politico_id', related_name = 'number_11_politico', verbose_name='11° politico',)
     punti_bonus_squadra = models.IntegerField(default=0)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     creato_il = models.DateTimeField(auto_now_add=True)
     aggiornato_il = models.DateTimeField(auto_now=True) 
-
+ 
     def get_absolute_url(self):
         return reverse('squadra-detail')
     
     def get_politici(self):
-        return [self.leader_politico, self.number_1_politico, self.number_2_politico, self.number_3_politico, self.number_4_politico, self.number_5_politico, self.number_6_politico, self.number_7_politico, self.number_8_politico, self.number_9_politico, self.number_10_politico, self.number_11_politico]
+        return [self.leader_politico, self.number_1_politico, self.number_2_politico, self.number_3_politico, self.number_4_politico, self.number_5_politico, self.number_6_politico, self.number_7_politico, self.number_8_politico, self.number_9_politico, self.number_10_politico, self.number_11_politico, self.site]
 
     def clean(self):
         politici_names = [p.name for p in self.get_politici() if p != None]
@@ -144,7 +149,7 @@ class Squadra(models.Model):
             raise ValidationError('il leader politico deve avere una carica di Premier, Leader o Legend')
 
     def natural_key(self):
-        return (self.name,)
+        return (self.name, self.site)
 
     @property
     def totale_fanfani(self):
@@ -236,19 +241,20 @@ class LegaSquadra(models.Model):
         unique_together = ['lega', 'squadra']
         ordering = ('lega__name', 'squadra__name')
 
-class PuntataManager(models.Manager):
-    def get_by_natural_key(self, numero):
-        return self.get(numero)
+class PuntataManager(CurrentSiteManager):
+    def get_by_natural_key(self, numero, site):
+        return self.get(numero, site)
 
 class Puntata(models.Model):
     numero = models.IntegerField(unique=True, )
     data = models.DateTimeField()
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     creato_il = models.DateTimeField(auto_now_add=True)
     aggiornato_il = models.DateTimeField(auto_now=True) 
 
     objects = PuntataManager()
     def natural_key(self):
-        return (self.numero, )
+        return (self.numero, self.site)
 
     def __str__(self):
         return str(self.numero) + '° del ' + date(self.data,'D d/m/Y')

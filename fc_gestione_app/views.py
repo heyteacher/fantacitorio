@@ -1,5 +1,6 @@
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import DetailView
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dal import autocomplete
 from .models import Squadra, Politico, Punteggio
@@ -31,10 +32,20 @@ class SquadraCreateView(LoginRequiredMixin, CreateView):
     model = Squadra
     fields = fields
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context['current_site_name'] = get_current_site(None).name
+        return context
+
 class SquadraUpdateView(LoginRequiredMixin, UpdateView):
     login_url = '/accounts/twitter/login/?process=login'
     model = Squadra
     fields = fields
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context['current_site_name'] = get_current_site(None).name
+        return context
 
     def get_object(self):
         return Squadra.objects.get(id = self.request.session.get('squadra_id'))
@@ -67,6 +78,7 @@ class SquadraDetailView(LoginRequiredMixin, SingleTableMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args,**kwargs)
+        context['current_site_name'] = get_current_site(None).name
         context['classifica'] = ClassificaGenerale.objects.get(squadra_id=self.request.session.get('squadra_id'))
         context['classifica_leghe'] = ClassificaPerLega.objects.filter(squadra_id=self.request.session.get('squadra_id'))
         context['entity_plural_name'] = 'punteggi'
@@ -148,6 +160,11 @@ djhacker.formfield(
 )
 djhacker.formfield(
     Squadra.number_11_politico,
+    forms.ModelChoiceField,
+    widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
+)
+djhacker.formfield(
+    Punteggio.politico,
     forms.ModelChoiceField,
     widget=PoliticoAutocompleteWidget(url='politico-autocomplete')
 )

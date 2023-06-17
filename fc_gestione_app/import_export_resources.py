@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from import_export import resources, fields, widgets
 from import_export.admin import ImportExportActionModelAdmin
 from .models import Carica, Lega, LegaSquadra, Politico, Puntata, Punteggio, Squadra
@@ -20,18 +21,29 @@ class PoliticoResource(resources.ModelResource):
     fanfani = fields.Field(
         column_name='fanfani',
         attribute='fanfani')
+    site = fields.Field(
+        column_name='site',
+        attribute='site',
+        widget=widgets.ForeignKeyWidget(model=Site, field='id'))
     class Meta:
         model = Politico
         skip_unchanged = True
         exclude = ('id', 'creato_il', 'aggiornato_il')
-        import_id_fields = ('name',)
+        import_id_fields = ('name','site')
 
 class LegaResource(resources.ModelResource):
+    name = fields.Field(
+        column_name='name',
+        attribute='name')
+    site = fields.Field(
+        column_name='site',
+        attribute='site',
+        widget=widgets.ForeignKeyWidget(model=Site, field='id'))
     class Meta:
         model = Lega
         exclude = ('id', 'creato_il', 'aggiornato_il')
         skip_unchanged = True
-        import_id_fields = ('name',)
+        import_id_fields = ('name','site')
 
 class SquadraResource(resources.ModelResource):
     codice = fields.Field(
@@ -95,12 +107,16 @@ class SquadraResource(resources.ModelResource):
         column_name='creato_il',
         attribute='creato_il',
         widget=widgets.DateTimeWidget(format='%d/%m/%Y %H:%M'))
+    site = fields.Field(
+        column_name='site',
+        attribute='site',
+        widget=widgets.ForeignKeyWidget(model=Site, field='id'))
     class Meta:
         model = Squadra
         skip_unchanged = True
         report_skipped = False
         exclude = ('id','utente','aggiornato_il')
-        import_id_fields = ('name', 'leader_politico','number_1_politico','number_2_politico','number_3_politico','number_4_politico','number_5_politico','number_6_politico','number_7_politico','number_8_politico','number_9_politico','number_10_politico','number_11_politico')
+        import_id_fields = ('name', 'leader_politico','number_1_politico','number_2_politico','number_3_politico','number_4_politico','number_5_politico','number_6_politico','number_7_politico','number_8_politico','number_9_politico','number_10_politico','number_11_politico', 'site')
 
 class LegaSquadraResource(resources.ModelResource):
     lega = fields.Field(
@@ -118,11 +134,22 @@ class LegaSquadraResource(resources.ModelResource):
         import_id_fields = ('lega', 'squadra')
 
 class PuntataResource(resources.ModelResource):
+    numero = fields.Field(
+        column_name='numero',
+        attribute='numero')
+    data = fields.Field(
+        column_name='data',
+        attribute='data',
+        widget=widgets.DateTimeWidget(format='%d/%m/%Y'))
+    site = fields.Field(
+        column_name='site',
+        attribute='site',
+        widget=widgets.ForeignKeyWidget(model=Site, field='id'))
     class Meta:
         model = Puntata
         skip_unchanged = True
         exclude = ('id', 'creato_il','aggiornato_il')
-        import_id_fields = ('numero', 'data')
+        import_id_fields = ('numero', 'data', 'site')
 
 class PunteggioResource(resources.ModelResource):
     politico = fields.Field(

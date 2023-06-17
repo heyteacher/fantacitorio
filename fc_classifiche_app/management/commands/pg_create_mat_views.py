@@ -42,7 +42,7 @@ CREATE SEQUENCE squadra_punti_id_seq START 1;
 """
 CREATE MATERIALIZED VIEW public.squadra_punti
 AS
-select nextval('squadra_punti_id_seq') as id, squadra_id, squadra_name, politico_id, politico_name, puntata_numero, puntata_data, punti FROM v_squadra_punti
+select nextval('squadra_punti_id_seq') as id, squadra_id, site_id, squadra_name, politico_id, politico_name, puntata_numero, puntata_data, punti FROM v_squadra_punti
 WITH DATA
 """
         },{ 'action':'create index squadra_punti_squadra_id_politico_id_idx', 'query':
@@ -54,15 +54,19 @@ CREATE INDEX squadra_punti_squadra_id_politico_id_idx
         },{ 'action':'create index classifica_politico_totale_punti_idx', 'query':
 """
 
-CREATE INDEX classifica_politico_totale_punti_idx
-    ON public.classifica_politico USING btree
-    (totale_punti DESC)
+CREATE INDEX squadra_punti_punti_idx
+    ON public.squadra_punti USING btree
+    (punti DESC)
+"""
+        },{ 'action':'create sequence punteggio_puntata_id_seq', 'query':
+"""
+CREATE SEQUENCE punteggio_puntata_id_seq START 1;
 """
         },{ 'action':'create materialized view punteggio_puntata', 'query':
 """
 CREATE MATERIALIZED VIEW public.punteggio_puntata
 AS
-select nextval('punteggio_puntata_id_seq') as id, puntata_numero, puntata_data, politico_name, punti, creato_il FROM v_punteggio_puntata
+select nextval('punteggio_puntata_id_seq') as id, puntata_numero, puntata_data, site_id, politico_name, punti, creato_il FROM v_punteggio_puntata
 WITH DATA
 """
         },{ 'action':'create index view punteggio_puntata', 'query':
@@ -75,7 +79,7 @@ CREATE INDEX punteggio_puntata_creato_id_idx
 """
 CREATE MATERIALIZED VIEW public.classifica_politico
 AS
-select posizione, politico_id, nome_politico, totale_punti from v_classifica_politico
+select posizione, politico_id, site_id, nome_politico, totale_punti from v_classifica_politico
 WITH DATA
 """
         },{ 'action':'create index on classifica_politico_politico_id_idx', 'query':
@@ -88,7 +92,7 @@ CREATE INDEX classifica_politico_politico_id_idx
 """
 CREATE MATERIALIZED VIEW public.classifica_generale
 AS
- select posizione, squadra_id, codice_squadra, nome_squadra, creato_il, totale_punti, 
+ select posizione, squadra_id, site_id, codice_squadra, nome_squadra, creato_il, totale_punti, 
  leader_politico, 
  COALESCE((select sum(punti) from squadra_punti where squadra_punti.squadra_id = v_classifica_generale.squadra_id AND politico_id = leader_politico_id),0) as totale_leader_politico, 
  politico_1, 
@@ -132,7 +136,7 @@ CREATE INDEX classifica_generale_squadra_id_idx
 """
 CREATE MATERIALIZED VIEW public.classifica_per_lega
 AS
-select id, posizione,lega_id, nome_lega, squadra_id, nome_squadra, totale_punti from v_classifica_per_lega
+select id, posizione,lega_id, site_id, nome_lega, squadra_id, nome_squadra, totale_punti from v_classifica_per_lega
 WITH DATA
 """
         },{ 'action':'create index classifica_per_lega_lega_id_totale_punti_idx', 'query':
@@ -140,10 +144,6 @@ WITH DATA
 CREATE INDEX classifica_per_lega_lega_id_totale_punti_idx
     ON public.classifica_per_lega USING btree
     (lega_id ASC, totale_punti DESC)
-"""
-        },{ 'action':'create sequence punteggio_puntata_id_seq', 'query':
-"""
-CREATE SEQUENCE punteggio_puntata_id_seq START 1;
 """
 }]
       self.stdout.write(self.style.SUCCESS('Starting create postgresql materialized views'))

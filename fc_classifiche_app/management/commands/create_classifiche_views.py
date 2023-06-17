@@ -31,10 +31,12 @@ DROP VIEW IF EXISTS v_punteggio_puntata
 CREATE VIEW v_classifica_politico
 AS
  SELECT row_number() OVER (ORDER BY totale_punti desc) AS posizione,
+    classifica_politico.site_id,
     classifica_politico.politico_name as nome_politico,
     classifica_politico.totale_punti,
     classifica_politico.politico_id
    FROM ( SELECT politico.id AS politico_id,
+            politico.site_id,
             politico.name AS politico_name,
             sum(punteggio.punti) AS totale_punti
            FROM politico
@@ -46,10 +48,11 @@ AS
 """
 CREATE VIEW v_squadra_punti
 AS
-select squadra_id, squadra_name, politico_name, puntata_numero, puntata_data, punti, politico_id 
+select squadra_id, site_id, squadra_name, politico_name, puntata_numero, puntata_data, punti, politico_id 
 FROM (
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -64,6 +67,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -78,6 +82,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -92,6 +97,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -106,6 +112,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -120,6 +127,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -134,6 +142,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -148,6 +157,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -162,6 +172,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -176,6 +187,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -190,6 +202,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -204,6 +217,7 @@ JOIN politico ON punteggio.politico_id = politico.id
 UNION
 SELECT
   squadra.id AS squadra_id,
+  squadra.site_id,
   squadra.name AS squadra_name,
   squadra.creato_il,
   punteggio.punti,
@@ -224,6 +238,7 @@ AS
 SELECT 
     row_number() OVER ( ORDER BY totale_punti DESC) as posizione,
     classifica_squadre.squadra_id,
+    classifica_squadre.site_id,
     classifica_squadre.squadra_codice as codice_squadra,
     classifica_squadre.squadra_name as nome_squadra,
     classifica_squadre.creato_il,
@@ -254,6 +269,7 @@ SELECT
     classifica_squadre."11_politico_id",
     classifica_squadre.fanfani
    FROM ( SELECT squadra.id AS squadra_id,
+            squadra.site_id, 
             squadra.codice AS squadra_codice,
             squadra.name AS squadra_name,
             creato_il,
@@ -340,6 +356,7 @@ AS
  SELECT row_number() OVER (ORDER BY totale_punti DESC) AS id,
     row_number() OVER (PARTITION BY lega_squadra.lega_id ORDER BY v_classifica_generale.totale_punti DESC) AS posizione,
     lega_squadra.lega_id,
+    lega.site_id,
     lega.name as nome_lega,
     v_classifica_generale.squadra_id,
     v_classifica_generale.nome_squadra,
@@ -352,7 +369,7 @@ AS
 """
 CREATE VIEW v_punteggio_puntata
 AS
-SELECT puntata.numero as puntata_numero, puntata."data" as puntata_data, politico."name" as politico_name, punteggio.punti, punteggio.creato_il 
+SELECT puntata.numero as puntata_numero, puntata."data" as puntata_data, puntata.site_id, politico."name" as politico_name, punteggio.punti, punteggio.creato_il 
 FROM punteggio
 INNER JOIN puntata ON puntata.id = punteggio.puntata_id
 JOIN politico ON punteggio.politico_id = politico.id

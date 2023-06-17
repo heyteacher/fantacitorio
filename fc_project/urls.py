@@ -21,7 +21,7 @@ from fc_classifiche_app.views import ClassificaGeneraleListView, ClassificaPerLe
     ClassificaPoliticoListView, SquadraPuntiListView, PunteggioPuntataListView, RefreshClassificheView
 from fc_classifiche_app.sitemaps import ClassificaGeneraleSitemap, ClassificaPoliticoSitemap, PunteggioPuntataPoliticoSitemap
 from fc_gestione_app.views import SquadraUpdateView, SquadraCreateView, SquadraDetailView, PoliticoAutocompleteView
-from fc_project import settings
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),

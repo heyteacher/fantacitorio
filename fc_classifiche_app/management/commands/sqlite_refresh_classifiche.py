@@ -31,7 +31,7 @@ drop table if exists rankdb.classifica_generale
 """
         },{ 'action':'create classifica_politico on rankdb', 'query':
 """
-CREATE TABLE rankdb.classifica_generale ("posizione" integer NOT NULL PRIMARY KEY, "nome_squadra" varchar(200) NOT NULL, "totale_punti" integer NOT NULL, "squadra_id" integer NOT NULL, "leader_politico" varchar(100) NULL, "politico_1" varchar(100) NULL, "politico_10" varchar(100) NULL, "politico_11" varchar(100) NULL, "politico_2" varchar(100) NULL, "politico_3" varchar(100) NULL, "politico_4" varchar(100) NULL, "politico_5" varchar(100) NULL, "politico_6" varchar(100) NULL, "politico_7" varchar(100) NULL, "politico_8" varchar(100) NULL, "politico_9" varchar(100) NULL, "creato_il" datetime NULL, "fanfani" integer NOT NULL, "codice_squadra" varchar(20) NULL, "totale_leader_politico" integer NOT NULL, "totale_politico_1" integer NOT NULL, "totale_politico_10" integer NOT NULL, "totale_politico_11" integer NOT NULL, "totale_politico_2" integer NOT NULL, "totale_politico_3" integer NOT NULL, "totale_politico_4" integer NOT NULL, "totale_politico_5" integer NOT NULL, "totale_politico_6" integer NOT NULL, "totale_politico_7" integer NOT NULL, "totale_politico_8" integer NOT NULL, "totale_politico_9" integer NOT NULL)
+CREATE TABLE rankdb.classifica_generale ("posizione" integer NOT NULL PRIMARY KEY, "nome_squadra" varchar(200) NOT NULL, "totale_punti" integer NOT NULL, "squadra_id" integer NOT NULL, "site_id" integer NOT NULL, "leader_politico" varchar(100) NULL, "politico_1" varchar(100) NULL, "politico_10" varchar(100) NULL, "politico_11" varchar(100) NULL, "politico_2" varchar(100) NULL, "politico_3" varchar(100) NULL, "politico_4" varchar(100) NULL, "politico_5" varchar(100) NULL, "politico_6" varchar(100) NULL, "politico_7" varchar(100) NULL, "politico_8" varchar(100) NULL, "politico_9" varchar(100) NULL, "creato_il" datetime NULL, "fanfani" integer NOT NULL, "codice_squadra" varchar(20) NULL, "totale_leader_politico" integer NOT NULL, "totale_politico_1" integer NOT NULL, "totale_politico_10" integer NOT NULL, "totale_politico_11" integer NOT NULL, "totale_politico_2" integer NOT NULL, "totale_politico_3" integer NOT NULL, "totale_politico_4" integer NOT NULL, "totale_politico_5" integer NOT NULL, "totale_politico_6" integer NOT NULL, "totale_politico_7" integer NOT NULL, "totale_politico_8" integer NOT NULL, "totale_politico_9" integer NOT NULL)
 """
         },{ 'action':'create index classifica_generale_totale_punti_idx', 'query':
 """
@@ -47,7 +47,7 @@ drop table if exists rankdb.classifica_politico
 """
         },{ 'action':'create classifica_politico on ran', 'query':
 """
-CREATE TABLE rankdb.classifica_politico ("posizione" integer NOT NULL PRIMARY KEY, "nome_politico" varchar(200) NOT NULL, "totale_punti" integer NOT NULL)
+CREATE TABLE rankdb.classifica_politico ("posizione" integer NOT NULL PRIMARY KEY, "site_id" integer NOT NULL, "nome_politico" varchar(200) NOT NULL, "totale_punti" integer NOT NULL)
 """
         },{ 'action':'create index classifica_politico_totale_punti_idx', 'query':
 """
@@ -59,7 +59,7 @@ drop table  if exists rankdb.classifica_per_lega
 """
         },{ 'action':'create classifica_per_lega on rankdb', 'query':
 """
-CREATE TABLE rankdb.classifica_per_lega ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "posizione" integer NOT NULL, "lega_id" integer NOT NULL, "nome_lega" varchar(100) NOT NULL, "nome_squadra" varchar(200) NOT NULL, "totale_punti" integer NOT NULL, "squadra_id" integer NOT NULL)
+CREATE TABLE rankdb.classifica_per_lega ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "posizione" integer NOT NULL, "lega_id" integer NOT NULL, "site_id" integer NOT NULL, "nome_lega" varchar(100) NOT NULL, "nome_squadra" varchar(200) NOT NULL, "totale_punti" integer NOT NULL, "squadra_id" integer NOT NULL)
 """
         },{ 'action':'create index classifica_per_lega_lega_id_totale_punti_idx', 'query':
 """
@@ -93,15 +93,15 @@ drop table if exists rankdb.punteggio_puntata
 """
         },{ 'action':'create punteggio_puntata on rankdb', 'query':
 """
-CREATE TABLE rankdb.punteggio_puntata ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "puntata_numero" integer NOT NULL, "puntata_data" datetime NOT NULL, "politico_name" varchar(200) NOT NULL, "punti" integer NOT NULL, "creato_il" datetime NOT NULL)
+CREATE TABLE rankdb.punteggio_puntata ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "puntata_numero" integer NOT NULL, "puntata_data" datetime NOT NULL, "site_id" integer NOT NULL, "politico_name" varchar(200) NOT NULL, "punti" integer NOT NULL, "creato_il" datetime NOT NULL)
 """
         },{ 'action':'populate classifica_per_lega on rankdb', 'query':
 """
-insert into rankdb.classifica_per_lega (id, posizione,lega_id, nome_lega, squadra_id, nome_squadra, totale_punti) select id, posizione,lega_id, nome_lega, squadra_id, nome_squadra, totale_punti from v_classifica_per_lega
+insert into rankdb.classifica_per_lega (id, posizione,lega_id, site_id, nome_lega, squadra_id, nome_squadra, totale_punti) select id, posizione,lega_id, site_id,nome_lega, squadra_id, nome_squadra, totale_punti from v_classifica_per_lega
 """
         },{ 'action':'populate classifica_politico on rankdb', 'query':
 """
-insert into rankdb.classifica_politico (posizione, nome_politico, totale_punti) select posizione, nome_politico, totale_punti from v_classifica_politico
+insert into rankdb.classifica_politico (posizione, site_id, nome_politico, totale_punti) select posizione, site_id, nome_politico, totale_punti from v_classifica_politico
 """
         },{ 'action':'populate squadra_punti on rankdb', 'query':
 """
@@ -109,11 +109,11 @@ insert into rankdb.squadra_punti (squadra_id, squadra_name, politico_id, politic
 """
         },{ 'action':'populate punteggio_puntata on rankdb', 'query':
 """
-insert into rankdb.punteggio_puntata (puntata_numero, puntata_data, politico_name, punti, creato_il) select puntata_numero, puntata_data, politico_name, punti, v_punteggio_puntata.creato_il from v_punteggio_puntata
+insert into rankdb.punteggio_puntata (puntata_numero, puntata_data, site_id, politico_name, punti, creato_il) select puntata_numero, puntata_data, site_id, politico_name, punti, v_punteggio_puntata.creato_il from v_punteggio_puntata
 """
         },{ 'action':'populate classifica_generale on rankdb', 'query':
 """
-insert into rankdb.classifica_generale (posizione, squadra_id, codice_squadra, nome_squadra, creato_il, totale_punti, 
+insert into rankdb.classifica_generale (posizione, squadra_id, site_id, codice_squadra, nome_squadra, creato_il, totale_punti, 
 leader_politico, totale_leader_politico, 
 politico_1, totale_politico_1, 
 politico_2, totale_politico_2, 
@@ -127,7 +127,7 @@ politico_9, totale_politico_9,
 politico_10, totale_politico_10, 
 politico_11, totale_politico_11,
 fanfani) 
-  select posizione, squadra_id, codice_squadra, nome_squadra, creato_il, totale_punti, 
+  select posizione, squadra_id, site_id, codice_squadra, nome_squadra, creato_il, totale_punti, 
   leader_politico, 
   COALESCE((select sum(punti) from squadra_punti where squadra_punti.squadra_id = v_classifica_generale.squadra_id AND politico_id = leader_politico_id),0), 
   politico_1, 

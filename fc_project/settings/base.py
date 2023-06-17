@@ -15,7 +15,7 @@ import os
 import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # caricamento il locale delle variabili di ambiente di sviluppo se non già valorizzate
 if os.environ.get('STAGE') is None and os.environ.get('DATABASE_DEFAULT_HOST') is None:
@@ -82,7 +82,6 @@ if not os.environ.get('DATABASE_DEFAULT_BUCKET','') == '':
 # ALLAUTH CONFIG
 ALLAUTH_ENABLED = "true" == os.environ.get('ALLAUTH_ENABLED', '').lower()
 
-SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 LOGIN_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_ON_GET = True
@@ -100,6 +99,7 @@ else:
 MIDDLEWARE = [
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -256,7 +256,7 @@ BOOTSTRAP5 = {
 }
 
 ### LOGGING
-if DEBUG:
+if False:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,

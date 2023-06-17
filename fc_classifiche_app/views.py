@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.sites.shortcuts import get_current_site
 from zappa.asynchronous import task
 from django.views import View
 from django.views.decorators.cache import never_cache, cache_page
@@ -44,6 +45,7 @@ class ClassificaGeneraleListView(NoIndexRobotsPageSortMixin, SingleTableMixin, F
     pagination_class = LazyPaginator
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['current_site_name'] = get_current_site(None).name
         context['entity_plural_name'] = 'squadre'
         context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_generale'))
         return context
@@ -56,6 +58,7 @@ class ClassificaPerLegaListView(NoIndexRobotsMixin, SingleTableMixin, FilterView
     filterset_class = ClassificaPerLegaFilter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['current_site_name'] = get_current_site(None).name
         context['entity_plural_name'] = 'squadre'
         context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_per_lega'))
         return context
@@ -68,6 +71,7 @@ class ClassificaPoliticoListView(NoIndexRobotsPageSortMixin, SingleTableMixin, F
     filterset_class = ClassificaPoliticoFilter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['current_site_name'] = get_current_site(None).name
         context['entity_plural_name'] = 'politici'
         context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_politico'))
         return context
@@ -83,6 +87,7 @@ class SquadraPuntiListView(NoIndexRobotsMixin, SingleTableView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['current_site_name'] = get_current_site(None).name
         context['classifica'] = ClassificaGenerale.objects.get(squadra_id=self.kwargs['squadra_id'])
         context['classifica_leghe'] = ClassificaPerLega.objects.filter(squadra_id=self.kwargs['squadra_id'])
         context['entity_plural_name'] = 'punteggi'
@@ -96,6 +101,7 @@ class PunteggioPuntataListView(NoIndexRobotsPageSortMixin, SingleTableMixin, Fil
     filterset_class = PunteggioPuntataFilter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['current_site_name'] = get_current_site(None).name
         context['entity_plural_name'] = 'punteggi'
         context['canonical_url'] = self.request.build_absolute_uri(reverse('punteggio_puntata'))
         return context
@@ -105,6 +111,11 @@ class RefreshClassificheView(NoIndexRobotsMixin, PermissionRequiredMixin,View):
     template_name = 'fc_classifiche_app/refresh_classifiche.html'
     permission_required = 'fc_classifiche_app.change_classificagenerale'
     raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_site_name'] = get_current_site(None).name
+        return context
 
     def get(self, request, *args, **kwargs):
         call_refresh_command()

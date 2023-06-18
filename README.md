@@ -232,9 +232,10 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
    ```
    Al termine dell'esecuzione di `deploy` e `update`, se non vi sono errori, viene mostrato il URL del sito rilasciato all'interno della proprio cloud AWS.
 
-1. generazione delle tabelle di sistema della applicazione fc_gestione_app
+1. generazione delle tabelle di sistema della applicazione `fc_gestione_app` e `fc_classifiche_app`
    ```
-   zappa manage stage migrate fc_classifiche_app "--database db_classifiche"
+   zappa manage stage migrate fc_classifiche_app "--database db_classifiche --fake"
+   zappa manage stage migrate fc_gestione_app "--database default"
    zappa manage stage migrate
    ```
 

@@ -15,7 +15,7 @@ import os
 import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # caricamento il locale delle variabili di ambiente di sviluppo se non già valorizzate
 if os.environ.get('STAGE') is None and os.environ.get('DATABASE_DEFAULT_HOST') is None:
@@ -29,6 +29,8 @@ if os.environ.get('STAGE') is None and os.environ.get('DATABASE_DEFAULT_HOST') i
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
+
+SITE_ID = int(os.environ.get('SITE_ID'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "true" == os.environ.get('DEBUG', '').lower() 

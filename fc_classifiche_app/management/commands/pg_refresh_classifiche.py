@@ -37,8 +37,12 @@ class Command(BaseCommand):
         ))
         with connection.cursor() as cursor:
             for query in queries:
-                self.stdout.write(self.style.NOTICE('EXECUTE: %s' % query))
-                cursor.execute(query)
+                try:
+                        self.stdout.write(self.style.NOTICE('EXECUTE: %s' % query))
+                        cursor.execute(query)
+                except Exception as e:
+                        self.stderr.write(self.style.ERROR('ERROR EXECUTING: %s error %s' % (query,e)))
+                        
         self.stdout.write(self.style.SUCCESS('Count after: ClassificaGenerale %s, Squadre %s, PunteggiPuntata %s, Punteggi %s' % (
                 classificaGeneraleCount,
                 squadraCount,

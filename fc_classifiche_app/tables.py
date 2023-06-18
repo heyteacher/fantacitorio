@@ -17,6 +17,14 @@ class ClassificaGeneraleFilter(FilterSet):
         model = ClassificaGenerale
         fields = ['squadra']
 
+def disqualified_row_attrs(**kwargs):
+    record = kwargs.get('record', None)
+    tr_class = ''
+    if record:
+        if record.fanfani > 160:
+            tr_class = 'disqualified'
+    return tr_class
+
 class ClassificaGeneraleTable(tables.Table):
     nome_squadra = tables.LinkColumn("squadra_punti", args=[A("squadra_id")])
     class Meta:
@@ -26,6 +34,7 @@ class ClassificaGeneraleTable(tables.Table):
         attrs = attrs
         paginator_class = LazyPaginator
         fields = ['posizione', 'nome_squadra', 'totale_punti']
+        row_attrs = {'class': disqualified_row_attrs}
 
 class ClassificaPerLegaFilter(FilterSet):
     lega_id = ChoiceFilter(choices=Lega.objects.all().values_list('id','name'), empty_label="- Seleziona lega -")

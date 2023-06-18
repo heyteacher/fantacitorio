@@ -50,7 +50,7 @@ class ClassificaPerLegaTable(tables.Table):
         template_name = template_name
         per_page = per_page
         attrs = attrs
-        exclude = ['id','lega_id', 'squadra_id']
+        exclude = ['id','lega_id', 'squadra_id', 'site']
 
 class ClassificaPoliticoFilter(FilterSet):
     politico = CharFilter('nome_politico','icontains' , label="politico")
@@ -59,11 +59,13 @@ class ClassificaPoliticoFilter(FilterSet):
         fields = ['politico']
 
 class ClassificaPoliticoTable(tables.Table):
+    nome_politico =  tables.TemplateColumn('<a href="{% url "punteggio_puntata" %}?politico={{record.nome_politico }}">{{record.nome_politico}}</a>')
     class Meta:
         model = ClassificaPolitico
         template_name = template_name
         per_page = per_page
         attrs = attrs
+        exclude = ['site']
 
 def loadPuntate():
     try:

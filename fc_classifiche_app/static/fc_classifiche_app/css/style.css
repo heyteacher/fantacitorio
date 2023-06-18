@@ -31,3 +31,15 @@ a {
     --bs-bg-opacity: 1;
     background-color: var(--bs-blue)!important;
 }
+
+tr.disqualified td {
+    --bs-table-accent-bg: var(--bs-red)!important;
+}
+
+tr.disqualified td a {
+    color: var(--bs-white)!important;
+}
+
+.disqualified {
+    background-color: var(--bs-red)!important;
+}

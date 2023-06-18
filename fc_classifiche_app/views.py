@@ -46,6 +46,7 @@ class ClassificaGeneraleListView(NoIndexRobotsPageSortMixin, SingleTableMixin, F
         context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'squadre'
         context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_generale'))
+        context['show_disqualified_message'] = True
         return context
 
 @method_decorator(def_cache_page, name='get')
@@ -58,6 +59,7 @@ class ClassificaPerLegaListView(NoIndexRobotsMixin, SingleTableMixin, FilterView
         context = super().get_context_data(**kwargs)
         context['entity_plural_name'] = 'squadre'
         context['canonical_url'] = self.request.build_absolute_uri(reverse('classifica_per_lega'))
+        context['show_disqualified_message'] = True
         return context
 
 @method_decorator(def_cache_page, name='get')

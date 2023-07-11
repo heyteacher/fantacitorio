@@ -23,7 +23,9 @@ Il sito web realizzato dai sorgenti di questo progetto GitHub è raggiungibile a
 
 Il progetto è composto da:
 
-- un sito pubblico dove sono visualizzate la `classifica generale`, le `classifiche per lega`, la `classifica politico` ed i `punteggi`. Inoltre, cliccando su una squada è mostrato il suo `dettaglio` costituito dalla `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe nonchè i `punteggi` acquisiti dai politici in formazione.
+- un sito pubblico dove sono visualizzate la `classifica generale`, le `classifiche per lega`, la `classifica politico` ed i `punteggi`. 
+
+  Inoltre, cliccando su una squadra, è mostrato il suo `dettaglio` costituito dalla `formazione`, i `fanfani` utilizzati, il posizionamento in classifica generale e nelle leghe nonchè i `punteggi` acquisiti dai politici in formazione.
 
 - un'area riservata di `amministrazione` protetta da autenticazione, per gestire, importare, esportare i contenuti:
   - `cariche`
@@ -41,7 +43,6 @@ E' disponibile una demo dell'area riservata nell'ambiente di stage https://stage
 - __login__: `fantautente`
 - __password__: `fantacitorio`
 
-Non è detto che i dati dell'ambiente di stage siano aggiornati rispetto alla produzione
 
 ## Area Developer
 
@@ -50,7 +51,7 @@ In questa sezione viene descritto nel dettaglio lo sviluppo, il popolamento del 
 - il linguaggio di programmazione `Python`
 - il framework `Django`
 - il framework `Zappa`
-- il database `sqlite` e `PostgtreSQL` 
+- il database `CockroachDb` (PostgreSql) e `sqlite`
 - il cloud `AWS` (`Amazon Web Services`) e nello specifico:
   - `AWS S3`: l'object storage di AWS
   - `AWS Api Gateway`
@@ -72,7 +73,7 @@ Il progetto è basato sul framework `Django` caricato sul Cloud AWS tramite `Zap
 
 - [django-dynamodb-cache](https://github.com/xncbf/django-dynamodb-cache): bachend cache django per `AWS DynamoDB`
 
-- [django-tables2](https://github.com/jieter/django-tables2): modulo django che implementa una datadrid avanzata
+- [django-tables2](https://github.com/jieter/django-tables2): modulo django che implementa una datagrid avanzata
 
 - [django-filter](https://github.com/carltongibson/django-filter): modulo django che implementa filtri avanzati 
 
@@ -84,19 +85,17 @@ Il progetto è basato sul framework `Django` caricato sul Cloud AWS tramite `Zap
 
 - [django-debug-toolbar](https://github.com/jazzband/django-debug-toolbar): modulo Django mostra metriche delle query, template utilizzati, messaggi di log, variabili di sistema, insomma tutto ciò che serve per fare debugging e tuning del sistema
 
-Django supporta diversi database:
+#### Backend
+
+Django supporta diversi backend:
 
 - supporto ufficiale per `MariaDB`, `MySQL`, `Oracle` e `PostgreSQL` (di conseguenza supporta `AWS RDS PostgreSQL` e `AWS Aurora`)
 
 - backend di terze parti `CockroachDB`, `Firebird`, `Google Cloud Spanner`, `Microsoft SQL Server`, `Snowflake`, `TiDB`, `YugabyteDB`
 
-Per i dettagòo fare rifermimento alla documentaziond del [Backend Django](https://docs.djangoproject.com/en/4.2/ref/databases/#postgresql-notes)
+Per i dettaglio fare rifermimento alla documentaziond del [Backend Django](https://docs.djangoproject.com/en/4.2/ref/databases/#postgresql-notes)
 
-Per lo sviluppo in locale si utilizza `sqlite` mentre per stage si utilizza un backend non ufficiale che usa `sqlite` su `AWS S3 :
-
-- [django-s3-sqlite](https://github.com/FlipperPA/django-s3-sqlite): backend database django per `sqlite` su `AWS S3`
-
-L'ambiente di produzione utilizza come database [CockroachDB](https://cockroachlabs.cloud) un servizio serverless basato su `PostgreSQL`. In tal caso usa i package:
+Questo progetto utilizza come database di principale per la gestione dei contenuti dalla sezione riservata [CockroachDB](https://cockroachlabs.cloud) un servizio serverless basato su `PostgreSQL`, mentre per le classifiche e la parte pubblicà è utilizzato il backend Sqlite su `AWS S3`. Di seguito i moduli Django:
 
 - [django-cockroachdb](https://github.com/cockroachdb/django-cockroachdb): backend database django per `CockroachDB`
 
@@ -104,6 +103,7 @@ L'ambiente di produzione utilizza come database [CockroachDB](https://cockroachl
 
 - [psycopg2-binary](https://pypi.org/project/psycopg2-binary/): binary del driver di `PostgreSQL` per `python`
 
+- [django-s3-sqlite](https://github.com/FlipperPA/django-s3-sqlite): backend database django per `sqlite` su `AWS S3`
 
 ### Struttura 
 
@@ -118,8 +118,6 @@ La struttura del progetto è costituita da un Django `project` a due Django `app
 - `Linux` o `WSL` su `Windows` 
 - `python3.9` (è attualmente la versione massima supportata dalla `AWS Lambda` in python. Attenzione `python3.10` attualmente non è supportato da `AWS Lambda`)
 
-Potrebbe anche funzionare direttamente su `Windows` ma non è stato testato.
-
 ### Setup ed esecuzione in locale
 
 L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per il deploy su `AWS`. Di seguito le istruzioni per configurare l'ambiente locale:
@@ -130,7 +128,8 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
   virtualenv  venv --python python3.9 --pip 23.1.2
   ```
 
-- rinominare `zappa_settings.json.template` in `zappa_settings.json`. Nella sezione dev contiene già le impostazioni per utilizzare il database locale `sqlite3`
+- rinominare `zappa_settings.json.template` in `zappa_settings.json`. 
+Nella sezione `local` contiene già le impostazioni per utilizzare il database locale `sqlite3` mentre bisogna creare un database di stage su su [Cockroach Labs](https://www.cockroachlabs.com/) e impostare le credenziali 
 
 - Attivazione del virtualenv creato
   ```
@@ -142,10 +141,10 @@ L'ambiente in locale è necessario sia per lo sviluppo dell'applicazione che per
   pip install -r requirements.txt
   ```
 
-- generazione delle tabelle di sistema della applicazione fc_gestione_app e fc_classifiche_app. si utilizza il `database routing` per gestire il database di principale e quello delle classifiche.
+- generazione delle tabelle di sistema della applicazione fc_gestione_app. Si utilizza il `database routing` per gestire il database di principale e quello delle classifiche. Per il database classifiche si esegue una migrazione fake in quanto la tabelle sono generate tramite il comando di refresh classifiche
   ```
   python manage.py migrate fc_gestione_app --database default
-  python manage.py migrate fc_classifiche_app --database db_classifiche 
+  python manage.py migrate fc_classifiche_app --fake 
   ```
 
 - creazione super utente da utilizzare per autenticarsi al sito (es: `admin`)
@@ -201,12 +200,13 @@ Nel dettaglio l'architettura del sito sul Cloud:
 
 - __Django__: servito in modalità serverless da `Zappa` che effettua il deploy di Django sul cloud `AWS` mediante servizi `serverless` tramite `AWS Lambda` e `AWS Api Gateway` 
 
-- __Database__: l'architettura cambia a seconda dell'ambiente `stage` o `production`
+- __Database__: l'architettura sia per l'ambiente di  `stage` che `production` ricalca quella dell'ambiente di sviluppo `local`
  
-  - ambiente di `stage`: database `sqlite` (`gestione` e `classifiche`) caricati in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` (dove è installato `Django`) per le letture e le scritture, tramite il pacchetto `django-s3-sqlite`. Il razionale di avere due database distinti, uno per la gestione dei dati e uno per le classifiche è  separare completamente `presentation` dei dati (database classifiche) dalla `administration` dei dati (database gestione)
  
- - ambiente di `production`: servito esternamente da `CockroachDB` (a sua volta ospitato dal cloud `AWS` ma completamente gestito da `Cockroach Labs`). La parte di `presentation` è realizzata tramite `viste materializzate` create sulle table del layer `administration`
+  - database `default`: servito esternamente da `CockroachDB` 
 
+  - database `classifiche`: database `sqlite` caricato in un `AWS S3 bucket` e acceduto dalla `AWS Lambda` (dove è installato `Django`) per le letture e le scritture, tramite il pacchetto `django-s3-sqlite`
+ 
 - __Cache__: la Cache `Django` attiva su backed `AWS DynamoDB` sia per le `session` che la `pagine` tramite il pacchetto `django-dynamodb-cache`
 
 
@@ -234,9 +234,8 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
 
 1. generazione delle tabelle di sistema della applicazione `fc_gestione_app` e `fc_classifiche_app`
    ```
-   zappa manage stage migrate fc_classifiche_app "--database db_classifiche --fake"
    zappa manage stage migrate fc_gestione_app "--database default"
-   zappa manage stage migrate
+   zappa manage stage migrate fc_classifiche_app "--database db_classifiche --fake"
    ```
 
 1. creazione dell'utente superuser di amministrazione
@@ -254,12 +253,12 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
    zappa manage stage loaddata fc_gestione_app
    ```
 
-1. creazione delle viste classifiche
+1. creazione delle viste per popolare in database classifiche
    ```
    zappa manage stage create_classifiche_views
    ```
 
-1. primo refresh delle classifiche (comando poi eseguito ogni ora dal `AWS Event`)
+1. refresh delle classifiche con la creazione e popolamento del database classifiche 
    ```
    zappa manage stage sqlite_refresh_classifiche
    ```
@@ -268,7 +267,7 @@ Come pre-requisito è necessario un account AWS personale con le chiavi configur
 
 Al termine del deploy e update `zappa` mostra l'endopoint esposto sulle `AWS API Gateway` del nostro ambiente, che risulta già navigabile accedendo ad un URL tipo:
 ```
-https://<STRINGA-RANDOM>.execute-api.eu-west-1.amazonaws.com/stage
+https://<STRINGA-RANDOM>.execute-api.<AWS Region>.amazonaws.com/stage
 ```
 
 Se si ha a disposizione un dominio gestito su `AWS Route53`, è possibile generare un certificato valido HTTPS sul nostro dominio. I certificati creati `AWS Certificate` possono essere utilizzati nelle risorse `AWS` sono gratis e `AWS` si occupa di rinnorarli in automatico dopo la scadenza annuale.
@@ -279,7 +278,7 @@ Quindi dopo aver generato e validato il certificato HTTPS sul dominio, si copia 
 zappa certify stage
 ```
 
-`zappa` si occupa di:
+Questo comando di `Zappa` si occupa di:
 
 1. creare un `Custom Domain` mappandolo allo stage delle `AWS API Gateway` 
 1. associa il certificato HTTPS il cui `ARN` è configurato nei settings 
@@ -308,7 +307,7 @@ La configurazione di `CloudFront` per le applicazioni `Django` deployate con `za
    * tutte le richieste `/static/*` sono indirizzate all'origin `fc-zappa-static` 
    * tutto il resto `Default (*)` viene indirizzato alla origin custon `fc-project-api-stage.adessospiana.it` 
 
-1. Per il `beaviour`  `Default (*)` è stata specificato il passaggio dei `Cookie` alla Origin dato che di default ciò non avviene. Di seguito la configurazione del `beaviour` 
+1. Per il `beaviour`  `Default (*)` la cache è disabilitata e vengono trasmessi tutti li `HTTP Header` eccetto l'Header `Host`. Di seguito la configurazione del `beaviour` 
    
    ![Configurazione AWS CloudFront del beaviour Default (*) ](./images/cloudfront_default_beaviour_config.png)
 
@@ -329,55 +328,21 @@ Sempre nell'ambiente AWS gli errori 400 403 404 e 500 sono indirizzate su pagine
 
 ## deploy ambiente di produzione
 
-In alternativa, è possibile deployare su AWS il progetto utilizzando un database di classe enterprice come `PostgreSQL` e fornito da AWS tramite il servizio `AWS RDS`. Naturalmente in questi casi i costi aumentano dato che il database si paga dal momento che si avvia e non solo quanto viene utilizzato.
+L'ambiente di produzione ribattezzato `zappa_settings.json` ribatezzato `production` ha la stessa architettura di `stage` solo una diversa instanza dei backend, CloudFront, Zappa, certificati e nome a dominio. 
 
-Essendo una soluzione enterprise, per convenzione l'ambiente è stato ribatezzato `production`. Questo ambiente attualmente non è deployato su AWS 
+Di seguito le sequenza del comandi da eseguire dopo aver configurato la sezione `production` del file `zappa_settings.json`:
 
-Per comodità in locale il database è stati disegnato usando PostgreSQL è lo strumento `PgAdmin` (vedi sezione di seguito). 
-
-1. configurare la sezione `production` del file `zappa_settings.json`
-
-1. deployare l'applicazione nel cloud
-  ```
-  zappa deploy production
-  ```
- 
-1. applicare la migrazione dell'applicazione delle classifiche in modalità __fake__ dato che in `postgresql` le tabelle sono viste materializzate non gestite da Django come del caso di `sqlite`
-  ```
-  zappa manage production "migrate fc_classifiche_app --fake"
-  ```
-1. applicare la migrazione delle restanti app per creare le tabelle gestite da Django  
-  ```
-  zappa manage production migrate
-  ```
-
-1. creare la tabella DynamoDB per la cache di session e delle pagine  
-  ```
-  zappa manage production createcachetable
-  ```
-
-1. creare l'utente superuser  
-  ```
-  zappa invoke production "from django.contrib.auth.models import User; User.objects.create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
-  ```
-
-1. rimuovere eventuali trigger di refresh delle viste materializzate
-
-  zappa manage production pg_drop_triggers_fuction_proc
-
-1. popolare le tabelle con le fixture  
-  ```
-  zappa manage production loaddata fc_gestione_app
-  ```
-
-1. eseguire i comandi per creare le viste classifiche, le viste materializzate e i trigger di refresh dei dati  
-  ```
-  zappa manage production create_classifiche_views
-  zappa manage production pg_create_mat_views
-  ```
-
-1. eseguire un refresh manuale delle viste materializzate 
-  zappa manage production pg_refresh_classifiche
+```
+zappa deploy production
+zappa certify production
+zappa manage production "migrate fc_classifiche_app --fake"
+zappa manage production migrate
+zappa manage production createcachetable
+zappa invoke production "from django.contrib.auth.models import User; User.objects.create_superuser('<SUPER USER>', '', '<PASSWORD>')" --raw
+zappa manage production loaddata fc_gestione_app
+zappa manage production create_classifiche_views
+zappa manage production refresh_classifiche
+```
 
 ## Creazione progetto Django
 

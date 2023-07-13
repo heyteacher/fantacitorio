@@ -258,7 +258,7 @@ BOOTSTRAP5 = {
 }
 
 ### LOGGING
-if False:
+if DEBUG:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
